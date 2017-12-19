@@ -61,7 +61,6 @@ public class Hand {
 
     public Card playOrDiscard(int position, Card newCard) {
         assert !this.isFinished;
-        assert 0 <= position && position <= 3;
         assert newCard.possibleColors().equals(Color.ALL_COLORS);
         assert newCard.possibleNumbers().equals(Card.ALL_NUMBERS);
         cards.addLast(newCard);
@@ -72,7 +71,6 @@ public class Hand {
 
     public Card playOrDiscardLast(int position) {
         assert !this.isFinished;
-        assert 0 <= position && position <= 3;
         this.isFinished = true;
         Card removedCard = cards.remove(position);
         checkRep();
