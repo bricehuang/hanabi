@@ -93,6 +93,10 @@ public class Card {
         }
         checkRep();
     }
+    
+    public String shortRep() {
+        return this.color.toString() + this.number;
+    }
 
     @Override
     public String toString() {

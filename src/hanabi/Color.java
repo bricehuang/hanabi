@@ -11,6 +11,15 @@ public enum Color {
     public static final Set<Color> ALL_COLORS = Collections.unmodifiableSet(
         new TreeSet<>(Arrays.asList(BLUE, GREEN, RED, WHITE, YELLOW))
     );
+    
+    public String verboseRep() {
+        if (this.equals(BLUE)) { return "Blue"; }
+        else if (this.equals(GREEN)) { return "Green"; }
+        else if (this.equals(RED)) { return "Red"; }
+        else if (this.equals(WHITE)) { return "White"; }
+        else if (this.equals(YELLOW)) { return "Yellow"; }
+        else { throw new RuntimeException("Should not get here"); }        
+    }
 
     @Override
     public String toString(){
