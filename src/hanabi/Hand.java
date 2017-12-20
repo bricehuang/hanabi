@@ -77,21 +77,11 @@ public class Hand {
         return removedCard;
     }
 
-    private static final int CARD_REP_LENGTH = 17;
-    private String padCardRep(Card card) {
-        String cardRep = card.toString();
-        int len = cardRep.length();
-        for (int i=0; i<CARD_REP_LENGTH - len; i++) {
-            cardRep += " ";
-        }
-        return cardRep;
-    }
-
     @Override
     public String toString() {
         String rep = "[";
         for (Card card: cards) {
-            rep += padCardRep(card) + ", ";
+            rep += card.toString() + ", ";
         }
         rep += "]";
         return rep;

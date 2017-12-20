@@ -134,18 +134,18 @@ public class HandTest {
         );
         hand.hintColor(Color.RED);
         assertEquals(
-            "[B5 (BGWY, 12345) , "+
-             "R1 (R, 12345)    , "+
-             "R2 (R, 12345)    , "+
-             "G2 (BGWY, 12345) , ]", 
+            "[B5 (BGWY , 12345), "+
+             "R1 (R    , 12345), "+
+             "R2 (R    , 12345), "+
+             "G2 (BGWY , 12345), ]", 
              hand.toString()
         );
         hand.hintNumber(2);
         assertEquals(
-            "[B5 (BGWY, 1345)  , "+
-             "R1 (R, 1345)     , "+
-             "R2 (R, 2)        , "+
-             "G2 (BGWY, 2)     , ]", 
+            "[B5 (BGWY , 1345 ), "+
+             "R1 (R    , 1345 ), "+
+             "R2 (R    , 2    ), "+
+             "G2 (BGWY , 2    ), ]", 
              hand.toString()
         );
     }

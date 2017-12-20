@@ -8,6 +8,7 @@ import java.util.TreeSet;
 public enum Color {
     BLUE, GREEN, RED, WHITE, YELLOW;
 
+    public static final int NUM_COLORS = 5;
     public static final Set<Color> ALL_COLORS = Collections.unmodifiableSet(
         new TreeSet<>(Arrays.asList(BLUE, GREEN, RED, WHITE, YELLOW))
     );

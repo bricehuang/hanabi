@@ -73,9 +73,9 @@ public class CardTest {
         Card card = new Card(Color.BLUE, 1);
         assertEquals("B1 (BGRWY, 12345)", card.toString());
         card.learnColor(Color.BLUE);
-        assertEquals("B1 (B, 12345)", card.toString());
+        assertEquals("B1 (B    , 12345)", card.toString());
         card.learnNumber(4);
-        assertEquals("B1 (B, 1235)", card.toString());
+        assertEquals("B1 (B    , 1235 )", card.toString());
     }
 
 }

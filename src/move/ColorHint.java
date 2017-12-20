@@ -11,8 +11,6 @@ public class ColorHint implements Move {
 
     public ColorHint(int actor, int hintee, Color color) {
         assert actor != hintee;
-        assert 1 <= actor && actor <= 5;
-        assert 1 <= hintee && hintee <= 5;
         this.actor = actor;
         this.hintee = hintee;
         this.color = color;
@@ -21,7 +19,7 @@ public class ColorHint implements Move {
     @Override
     public String verboseRep() {
         return "Player " + actor + " hinted Player " + hintee + 
-                "'s " + color.verboseRep() + " cards.";
+                "'s " + color.verboseRep() + "s.";
     }
 
     @Override

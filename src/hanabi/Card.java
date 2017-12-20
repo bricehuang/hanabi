@@ -104,9 +104,15 @@ public class Card {
         for (Color color : this.possibleColors) {
             possibleColorsStr += color;
         }
+        for (int i=0; i< Color.NUM_COLORS - this.possibleColors.size(); i++) {
+            possibleColorsStr += " ";
+        }
         String possibleNumbersStr = "";
         for (Integer number: this.possibleNumbers) {
             possibleNumbersStr += number;
+        }
+        for (int i=0; i< NUMBER_MAX - this.possibleNumbers.size(); i++) {
+            possibleNumbersStr += " ";
         }
         return "" + this.color + this.number + " (" + possibleColorsStr + ", " 
             + possibleNumbersStr + ")"; 

@@ -8,7 +8,6 @@ public class Play implements Move {
     public final boolean isCorrect;
     
     public Play(int actor, int position, boolean isCorrect) {
-        assert 1 <= actor && actor <= 5;
         this.actor = actor;
         this.position = position;
         this.isCorrect = isCorrect;
