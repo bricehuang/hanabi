@@ -42,6 +42,22 @@ public class HandTest {
         G2_NOT_RED_2.learnNumber(2);
     }
 
+    private static final VisibleCardView B5 = new VisibleCardView(
+        Color.BLUE, 5
+    );
+    private static final VisibleCardView R1 = new VisibleCardView(
+        Color.RED, 1
+    );
+    private static final VisibleCardView R2 = new VisibleCardView(
+        Color.RED, 2
+    );
+    private static final VisibleCardView G2 = new VisibleCardView(
+        Color.GREEN, 2
+    );
+    private static final HiddenCardView ALL_CARDS = new HiddenCardView(
+        Color.ALL_COLORS, Card.ALL_NUMBERS
+    );
+
     private static Hand genTestHand() {
         Card b5 = new Card(Color.BLUE, 5);
         Card r1 = new Card(Color.RED, 1);
@@ -62,6 +78,21 @@ public class HandTest {
     @Test(expected=AssertionError.class)
     public void testAssertionsEnabled() {
         assert false;
+    }
+
+    @Test
+    public void testGetters() {
+        Hand hand = genTestHand();
+        assertEquals(4, hand.size());
+        assertEquals(false, hand.isFinished());
+        assertEquals(
+            Arrays.asList(B5, R1, R2, G2), 
+            hand.getView(true)
+        );
+        assertEquals(
+            Arrays.asList(ALL_CARDS, ALL_CARDS, ALL_CARDS, ALL_CARDS), 
+            hand.getView(false)
+        );
     }
 
     @Test

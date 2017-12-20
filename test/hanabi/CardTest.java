@@ -31,6 +31,13 @@ public class CardTest {
     private static final Set<Integer> NUMBERS_ONLY_3 = new TreeSet<>(
         Arrays.asList(3)
     );
+    
+    private static final VisibleCardView R5 = new VisibleCardView(
+        Color.RED, 5
+    );
+    private static final HiddenCardView ALL_CARDS = new HiddenCardView(
+        Color.ALL_COLORS, Card.ALL_NUMBERS
+    );
 
     @Test
     public void testGetters() {
@@ -39,6 +46,8 @@ public class CardTest {
         assertEquals(5, card.number());
         assertEquals(Color.ALL_COLORS, card.possibleColors());
         assertEquals(Card.ALL_NUMBERS, card.possibleNumbers());
+        assertEquals(R5, card.getView(true));
+        assertEquals(ALL_CARDS, card.getView(false));
     }
 
     @Test

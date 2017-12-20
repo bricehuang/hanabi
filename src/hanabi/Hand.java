@@ -1,5 +1,6 @@
 package hanabi;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,6 +34,14 @@ public class Hand {
 
     public boolean isFinished() {
         return isFinished;
+    }
+
+    public List<CardView> getView(boolean visible) {
+        List<CardView> view = new ArrayList<>();
+        for (Card card : cards) {
+            view.add(card.getView(visible));
+        }
+        return Collections.unmodifiableList(view);
     }
 
     public boolean hintColor(Color color) {

@@ -58,6 +58,14 @@ public class Card {
         return Collections.unmodifiableSet(this.possibleNumbers);
     }
 
+    public CardView getView(boolean visible) {
+        if (visible) {
+            return new VisibleCardView(color, number);
+        } else {
+            return new HiddenCardView(possibleColors, possibleNumbers);
+        }
+    }
+
     /**
      * Update this card with positive or negative information about its color 
      * that its holder learned.  
