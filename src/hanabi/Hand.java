@@ -36,12 +36,12 @@ public class Hand {
         return isFinished;
     }
 
-    public List<CardView> getView(boolean visible) {
+    public HandView getView(boolean visible) {
         List<CardView> view = new ArrayList<>();
         for (Card card : cards) {
             view.add(card.getView(visible));
         }
-        return Collections.unmodifiableList(view);
+        return new HandView(visible, view);
     }
 
     public boolean hintColor(Color color) {

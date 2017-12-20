@@ -86,11 +86,17 @@ public class HandTest {
         assertEquals(4, hand.size());
         assertEquals(false, hand.isFinished());
         assertEquals(
-            Arrays.asList(B5, R1, R2, G2), 
+            new HandView(
+                true, 
+                Arrays.asList(B5, R1, R2, G2)
+            ), 
             hand.getView(true)
         );
         assertEquals(
-            Arrays.asList(ALL_CARDS, ALL_CARDS, ALL_CARDS, ALL_CARDS), 
+            new HandView(
+                false, 
+                Arrays.asList(ALL_CARDS, ALL_CARDS, ALL_CARDS, ALL_CARDS)
+            ), 
             hand.getView(false)
         );
     }
