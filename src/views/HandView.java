@@ -1,4 +1,4 @@
-package hanabi;
+package views;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +39,7 @@ public class HandView {
     public String toString() {
         String rep = "[";
         for (CardView cardView : cardViews) {
-            rep += cardView.toString();
+            rep += cardView.toString() + ", ";
         }
         rep += "]";
         return rep;

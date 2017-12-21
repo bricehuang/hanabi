@@ -6,8 +6,8 @@ import java.util.Map;
 import hanabi.Card;
 import hanabi.Color;
 import hanabi.Hand;
-import hanabi.HandView;
 import move.Move;
+import views.HandView;
 
 public class Util {
 

@@ -1,6 +1,8 @@
-package hanabi;
+package views;
 
 import java.util.Set;
+
+import hanabi.Color;
 
 public class VisibleCardView implements CardView {
 

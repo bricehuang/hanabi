@@ -8,6 +8,10 @@ import java.util.TreeSet;
 
 import org.junit.Test;
 
+import views.HiddenCardView;
+import views.OmnescientCardView;
+import views.VisibleCardView;
+
 public class CardTest {
 
     @Test(expected=AssertionError.class)
@@ -38,6 +42,9 @@ public class CardTest {
     private static final HiddenCardView ALL_CARDS = new HiddenCardView(
         Color.ALL_COLORS, Card.ALL_NUMBERS
     );
+    private static final OmnescientCardView R5_ALL_CARDS = new OmnescientCardView(
+        R5, ALL_CARDS
+    );
 
     @Test
     public void testGetters() {
@@ -46,8 +53,14 @@ public class CardTest {
         assertEquals(5, card.number());
         assertEquals(Color.ALL_COLORS, card.possibleColors());
         assertEquals(Card.ALL_NUMBERS, card.possibleNumbers());
+    }
+
+    @Test
+    public void testViews() {
+        Card card = new Card(Color.RED, 5); // GA-BOH-MEEM
         assertEquals(R5, card.getView(true));
         assertEquals(ALL_CARDS, card.getView(false));
+        assertEquals(R5_ALL_CARDS, card.getOmnescientView());
     }
 
     @Test

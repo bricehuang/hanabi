@@ -5,6 +5,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import views.CardView;
+import views.HandView;
+import views.OmnescientCardView;
+import views.OmnescientHandView;
+
 public class Hand {
     private final int handSize;
     private final LinkedList<Card> cards;
@@ -42,6 +47,14 @@ public class Hand {
             view.add(card.getView(visible));
         }
         return new HandView(visible, view);
+    }
+
+    public OmnescientHandView getOmnescientView() {
+        List<OmnescientCardView> view = new ArrayList<>();
+        for (Card card : cards) {
+            view.add(card.getOmnescientView());
+        }
+        return new OmnescientHandView(view);
     }
 
     public boolean hintColor(Color color) {

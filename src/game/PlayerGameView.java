@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import hanabi.Color;
-import hanabi.HandView;
 import move.Move;
+import views.HandView;
 
 public class PlayerGameView {
     public final int player;
@@ -50,6 +50,13 @@ public class PlayerGameView {
         }
         this.discards = Collections.unmodifiableMap(tmpDiscards);
         this.handViews = Collections.unmodifiableList(handViews);
+        checkRep();
+    }
+
+    private void checkRep() {
+        for (int i=0; i<handViews.size(); i++) {
+            assert(handViews.get(i).isVisible == (i != player));
+        }
     }
 
 }

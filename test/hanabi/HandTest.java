@@ -7,6 +7,12 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import views.HandView;
+import views.HiddenCardView;
+import views.OmnescientCardView;
+import views.OmnescientHandView;
+import views.VisibleCardView;
+
 public class HandTest {
     
     private static final Card B5_NO_INFO = new Card(Color.BLUE, 5);
@@ -57,6 +63,15 @@ public class HandTest {
     private static final HiddenCardView ALL_CARDS = new HiddenCardView(
         Color.ALL_COLORS, Card.ALL_NUMBERS
     );
+    
+    private static final OmnescientCardView B5_ALL_CARDS = 
+        new OmnescientCardView(B5, ALL_CARDS);
+    private static final OmnescientCardView R1_ALL_CARDS = 
+        new OmnescientCardView(R1, ALL_CARDS);
+    private static final OmnescientCardView R2_ALL_CARDS = 
+        new OmnescientCardView(R2, ALL_CARDS);
+    private static final OmnescientCardView G2_ALL_CARDS = 
+        new OmnescientCardView(G2, ALL_CARDS);
 
     private static Hand genTestHand() {
         Card b5 = new Card(Color.BLUE, 5);
@@ -85,6 +100,11 @@ public class HandTest {
         Hand hand = genTestHand();
         assertEquals(4, hand.size());
         assertEquals(false, hand.isFinished());
+    }
+
+    @Test
+    public void testViews() {
+        Hand hand = genTestHand();
         assertEquals(
             new HandView(
                 true, 
@@ -99,6 +119,18 @@ public class HandTest {
             ), 
             hand.getView(false)
         );
+        assertEquals(
+            new OmnescientHandView(
+                Arrays.asList(
+                    B5_ALL_CARDS, 
+                    R1_ALL_CARDS, 
+                    R2_ALL_CARDS, 
+                    G2_ALL_CARDS
+                )
+            ),
+            hand.getOmnescientView()
+        );
+        
     }
 
     @Test

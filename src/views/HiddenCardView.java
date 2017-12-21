@@ -1,7 +1,10 @@
-package hanabi;
+package views;
 
 import java.util.Collections;
 import java.util.Set;
+
+import hanabi.Card;
+import hanabi.Color;
 
 public class HiddenCardView implements CardView {
     

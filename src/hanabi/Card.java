@@ -5,6 +5,11 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import views.CardView;
+import views.HiddenCardView;
+import views.OmnescientCardView;
+import views.VisibleCardView;
+
 /**
  * An datatype for cards
  */
@@ -64,6 +69,13 @@ public class Card {
         } else {
             return new HiddenCardView(possibleColors, possibleNumbers);
         }
+    }
+    
+    public OmnescientCardView getOmnescientView() {
+        return new OmnescientCardView(
+            new VisibleCardView(color, number),
+            new HiddenCardView(possibleColors, possibleNumbers)
+        );
     }
 
     /**
