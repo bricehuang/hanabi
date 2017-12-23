@@ -7,7 +7,6 @@ import java.util.TreeMap;
 
 import hanabi.Color;
 import move.Move;
-import views.HandView;
 
 public class PlayerGameView {
     public final int player;
@@ -19,7 +18,7 @@ public class PlayerGameView {
     public final List<Move> history;
     public final Map<Color, Integer> plays;
     public final Map<Color, Map<Integer, Integer> > discards;
-    public final List<HandView> handViews;
+    // TODO: store own and other players' views
 
     public PlayerGameView(
         int player,
@@ -30,8 +29,7 @@ public class PlayerGameView {
         int hints,
         List<Move> history,
         Map<Color, Integer> plays,
-        Map<Color, Map<Integer, Integer> > discards,
-        List<HandView> handViews
+        Map<Color, Map<Integer, Integer> > discards
     ){
         this.player = player;
         this.nPlayers = nPlayers;
@@ -49,14 +47,6 @@ public class PlayerGameView {
             );
         }
         this.discards = Collections.unmodifiableMap(tmpDiscards);
-        this.handViews = Collections.unmodifiableList(handViews);
-        checkRep();
-    }
-
-    private void checkRep() {
-        for (int i=0; i<handViews.size(); i++) {
-            assert(handViews.get(i).isVisible == (i != player));
-        }
     }
 
 }

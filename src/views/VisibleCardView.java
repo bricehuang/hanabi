@@ -4,39 +4,36 @@ import java.util.Set;
 
 import hanabi.Color;
 
-public class VisibleCardView implements CardView {
+public class VisibleCardView {
 
     private final Color color;
     private final Integer number;
-
-    public VisibleCardView(Color color, Integer number) {
+    private final HiddenCardView hiddenView; 
+    
+    public VisibleCardView(
+        Color color, 
+        Integer number, 
+        HiddenCardView hiddenView
+    ) {
         this.color = color;
         this.number = number;
+        this.hiddenView = hiddenView;
     }
 
-    @Override
-    public boolean isVisible() {
-        return true;
-    }
-
-    @Override
     public Color color() {
         return color;
     }
 
-    @Override
     public Integer number() {
         return number;
     }
 
-    @Override
     public Set<Color> colors() {
-        throw new UnsupportedOperationException();
+        return hiddenView.colors();
     }
 
-    @Override
     public Set<Integer> numbers() {
-        throw new UnsupportedOperationException();
+        return hiddenView.numbers();
     }
 
     @Override
@@ -45,18 +42,27 @@ public class VisibleCardView implements CardView {
         VisibleCardView that = (VisibleCardView) other;
         return (
             this.color.equals(that.color) && 
-            this.number == that.number
+            this.number == that.number && 
+            this.hiddenView.equals(that.hiddenView)
         );
     }
 
     @Override
     public int hashCode() {
-        return this.color.hashCode() + this.number.hashCode();
+        return (
+            this.color.hashCode() + 
+            this.number.hashCode() + 
+            this.hiddenView.hashCode()
+        );
     }
 
     @Override
     public String toString() {
-        return this.color.toString()+this.number;
+        return (
+            this.color.toString() + 
+            this.number + 
+            this.hiddenView.toString().substring(2)
+        );
     }
 
 }

@@ -5,9 +5,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import views.CardView;
 import views.HiddenCardView;
-import views.OmnescientCardView;
 import views.VisibleCardView;
 
 /**
@@ -30,21 +28,35 @@ public class Card {
     private final int number;
     private final Set<Color> possibleColors;
     private final Set<Integer> possibleNumbers;
+    private HiddenCardView hiddenView;
+    private VisibleCardView visibleView;
 
     public Card(Color color, Integer number){
         this.color = color;
         this.number = number;
         this.possibleColors = new TreeSet<>(Color.ALL_COLORS);
         this.possibleNumbers = new TreeSet<>(ALL_NUMBERS);
+        refreshViews();
         checkRep();
     }
 
     private void checkRep() {
         assert (NUMBER_MIN <= number && number <= NUMBER_MAX);
-        assert Color.ALL_COLORS.containsAll(this.possibleColors);
-        assert this.possibleColors.contains(this.color);
-        assert ALL_NUMBERS.containsAll(this.possibleNumbers);
-        assert this.possibleNumbers.contains(this.number);
+        assert Color.ALL_COLORS.containsAll(possibleColors);
+        assert possibleColors.contains(color);
+        assert ALL_NUMBERS.containsAll(possibleNumbers);
+        assert possibleNumbers.contains(number);
+        assert color.equals(visibleView.color());
+        assert number == visibleView.number();
+        assert possibleColors.equals(visibleView.colors());
+        assert possibleNumbers.equals(visibleView.numbers());
+        assert possibleColors.equals(hiddenView.colors());
+        assert possibleNumbers.equals(hiddenView.numbers());        
+    }
+
+    private void refreshViews(){
+        this.hiddenView = new HiddenCardView(possibleColors, possibleNumbers);
+        this.visibleView = new VisibleCardView(color, number, hiddenView);
     }
 
     public Color color() {
@@ -55,27 +67,12 @@ public class Card {
         return this.number;
     }
 
-    public Set<Color> possibleColors() {
-        return Collections.unmodifiableSet(this.possibleColors);
+    public HiddenCardView hiddenView() {
+        return hiddenView;
     }
 
-    public Set<Integer> possibleNumbers() {
-        return Collections.unmodifiableSet(this.possibleNumbers);
-    }
-
-    public CardView getView(boolean visible) {
-        if (visible) {
-            return new VisibleCardView(color, number);
-        } else {
-            return new HiddenCardView(possibleColors, possibleNumbers);
-        }
-    }
-    
-    public OmnescientCardView getOmnescientView() {
-        return new OmnescientCardView(
-            new VisibleCardView(color, number),
-            new HiddenCardView(possibleColors, possibleNumbers)
-        );
+    public VisibleCardView visibleView() {
+        return visibleView;
     }
 
     /**
@@ -93,6 +90,7 @@ public class Card {
         } else {
             this.possibleColors.remove(color);
         }
+        refreshViews();
         checkRep();
     }
 
@@ -111,6 +109,7 @@ public class Card {
         } else {
             this.possibleNumbers.remove(number);
         }
+        refreshViews();
         checkRep();
     }
     
@@ -120,22 +119,7 @@ public class Card {
 
     @Override
     public String toString() {
-        String possibleColorsStr = "";
-        for (Color color : this.possibleColors) {
-            possibleColorsStr += color;
-        }
-        for (int i=0; i< Color.NUM_COLORS - this.possibleColors.size(); i++) {
-            possibleColorsStr += " ";
-        }
-        String possibleNumbersStr = "";
-        for (Integer number: this.possibleNumbers) {
-            possibleNumbersStr += number;
-        }
-        for (int i=0; i< NUMBER_MAX - this.possibleNumbers.size(); i++) {
-            possibleNumbersStr += " ";
-        }
-        return "" + this.color + this.number + " (" + possibleColorsStr + ", " 
-            + possibleNumbersStr + ")"; 
+        return visibleView.toString();
     }
 
 }

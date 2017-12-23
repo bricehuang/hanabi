@@ -7,7 +7,6 @@ import hanabi.Card;
 import hanabi.Color;
 import hanabi.Hand;
 import move.Move;
-import views.HandView;
 
 public class Util {
 
@@ -44,13 +43,6 @@ public class Util {
             handsRep += "  Player " + i + ": " + hands.get(i).toString() + "\n";
         }
         return handsRep;
-    }
-    public static String handsViewRep(int nPlayers, List<HandView> hands) {
-        String handViewsRep = "Hand Views:\n";
-        for (int i=0; i<nPlayers; i++){
-            handViewsRep += "  Player " + i + ": " + hands.get(i).toString() + "\n";
-        }
-        return handViewsRep;
     }
 
     public static String lastMoveRep(List<Move> history) {

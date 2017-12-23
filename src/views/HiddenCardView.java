@@ -2,41 +2,29 @@ package views;
 
 import java.util.Collections;
 import java.util.Set;
+import java.util.TreeSet;
 
 import hanabi.Card;
 import hanabi.Color;
 
-public class HiddenCardView implements CardView {
-    
+public class HiddenCardView {
+
+    public static final HiddenCardView NO_INFO = new HiddenCardView(
+        Color.ALL_COLORS, Card.ALL_NUMBERS
+    );
+
     private final Set<Color> colors;
     private final Set<Integer> numbers;
 
     public HiddenCardView(Set<Color> colors, Set<Integer> numbers) {
-        this.colors = colors;
-        this.numbers = numbers;
-    }
-    
-    @Override
-    public boolean isVisible() {
-        return false;
+        this.colors = new TreeSet<>(colors);
+        this.numbers = new TreeSet<>(numbers);
     }
 
-    @Override
-    public Color color() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Integer number() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Set<Color> colors() {
         return Collections.unmodifiableSet(colors);
     }
 
-    @Override
     public Set<Integer> numbers() {
         return Collections.unmodifiableSet(numbers);
     }
@@ -72,7 +60,7 @@ public class HiddenCardView implements CardView {
         for (int i=0; i< Card.NUMBER_MAX - this.numbers.size(); i++) {
             numbersStr += " ";
         }
-        return "("+colorsStr+", "+numbersStr+")";
+        return "?? ("+colorsStr+", "+numbersStr+")";
     }
 
 }

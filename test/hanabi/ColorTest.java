@@ -6,11 +6,6 @@ import org.junit.Test;
 
 public class ColorTest {
 
-    @Test(expected=AssertionError.class)
-    public void testAssertionsEnabled() {
-        assert false;
-    }
-
     @Test
     public void testString(){
         assertEquals("B", Color.BLUE.toString());
