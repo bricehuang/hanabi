@@ -6,7 +6,8 @@ import java.util.Map;
 import hanabi.Card;
 import hanabi.Color;
 import hanabi.Hand;
-import move.MoveHistory;
+import move.Move;
+import util.ImList;
 
 public class Util {
 
@@ -45,11 +46,11 @@ public class Util {
         return handsRep;
     }
 
-    public static String lastMoveRep(MoveHistory history) {
+    public static String lastMoveRep(ImList<Move> history) {
         return history.length() > 0 ? history.last().verboseRep()+"\n" : "";
     }
 
-    public static String historyRep(MoveHistory history) {
+    public static String historyRep(ImList<Move> history) {
         return "History:\n" + history.toString();
     }
     private static final int PRINT_CARDS_PER_ROW = 10;

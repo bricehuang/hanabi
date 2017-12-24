@@ -14,9 +14,10 @@ import hanabi.Hand;
 import javafx.util.Pair;
 import move.ColorHint;
 import move.Discard;
-import move.MoveHistory;
+import move.Move;
 import move.NumberHint;
 import move.Play;
+import util.ImList;
 
 public class Game {
 
@@ -26,7 +27,7 @@ public class Game {
     private int lives;
     private int hints;
     private final LinkedList<Card> deck; 
-    private MoveHistory history;
+    private ImList<Move> history;
     private final Map<Color, Integer> plays;
     private final Map<Color, Map<Integer, Integer> > discards;
     private final List<Hand> hands;
@@ -67,7 +68,7 @@ public class Game {
         this.lives = LIVES;
         this.hints = HINTS;
         this.deck = new LinkedList<>(deck);
-        this.history = MoveHistory.empty();
+        this.history = ImList.<Move>empty();
         this.plays = new TreeMap<>();
         this.discards = new TreeMap<>();
         for (Color color : Color.ALL_COLORS) {

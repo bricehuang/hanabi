@@ -2,9 +2,12 @@ package move;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 
 import hanabi.Color;
+import util.ImList;
 
 public class MoveTest {
 
@@ -23,10 +26,10 @@ public class MoveTest {
 
     @Test
     public void testMoveHistory() {
-        MoveHistory history = MoveHistory.empty().extend(COLOR_HINT).extend(
-            NUMBER_HINT).extend(PLAY).extend(DISCARD);
+        ImList<Move> history = ImList.<Move>empty().extend(
+            COLOR_HINT).extend(NUMBER_HINT).extend(PLAY).extend(DISCARD);
         assertEquals(
-            MoveHistory.empty(), 
+            ImList.<Move>empty(), 
             history.start().start().start().start()
         );
         assertEquals(
@@ -51,6 +54,12 @@ public class MoveTest {
             "2 PLAY 2 incorrect\n" +
             "3 DISCARD 2 safe\n",
             history.toString()
+        );
+        assertEquals(
+            history, 
+            ImList.<Move>convert(
+                Arrays.asList(COLOR_HINT, NUMBER_HINT, PLAY, DISCARD)
+            )
         );
     }
 

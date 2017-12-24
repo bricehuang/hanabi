@@ -1,41 +1,41 @@
-package move;
+package util;
 
-public class ConsMoveHistory implements MoveHistory {
+public class ConsImList<T> implements ImList<T> {
 
     private final int length;
-    private final MoveHistory start;
-    private final Move last;
-
-    public ConsMoveHistory(MoveHistory start, Move last) {
+    private final ImList<T> start;
+    private final T last;
+    
+    public ConsImList (ImList<T> start, T last) {
         this.length = start.length() + 1;
         this.start = start;
         this.last = last;
     }
-
+    
     @Override
     public int length() {
         return length;
     }
 
     @Override
-    public MoveHistory start() {
+    public ImList<T> start() {
         return start;
     }
 
     @Override
-    public Move last() {
+    public T last() {
         return last;
     }
-    
+
     @Override
-    public MoveHistory extend(Move next) {
-        return new ConsMoveHistory(this, next);
+    public ImList<T> extend(T next) {
+        return new ConsImList<T>(this, next);
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ConsMoveHistory)) { return false; }
-        ConsMoveHistory that = (ConsMoveHistory) other;
+        if (!(other instanceof ConsImList<?>)) { return false; }
+        ConsImList<?> that = (ConsImList<?>) other;
         return (this.start.equals(that.start) && this.last.equals(that.last));
     }
 
@@ -48,5 +48,4 @@ public class ConsMoveHistory implements MoveHistory {
     public String toString(){
         return start.toString() + last.toString() + "\n"; 
     }
-
 }

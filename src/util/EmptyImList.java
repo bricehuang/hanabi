@@ -1,9 +1,6 @@
-package move;
+package util;
 
-public class EmptyMoveHistory implements MoveHistory {
-    
-    public EmptyMoveHistory() {
-    }
+public class EmptyImList<T> implements ImList<T> {
 
     @Override
     public int length() {
@@ -11,23 +8,23 @@ public class EmptyMoveHistory implements MoveHistory {
     }
 
     @Override
-    public MoveHistory start() {
+    public ImList<T> start() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Move last() {
+    public T last() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public MoveHistory extend(Move next) {
-        return new ConsMoveHistory(this, next);
+    public ImList<T> extend(T next) {
+        return new ConsImList<T>(this, next);
     }
 
     @Override
     public boolean equals(Object other){
-        return (other instanceof EmptyMoveHistory);
+        return (other instanceof EmptyImList<?>);
     }
 
     @Override
@@ -39,5 +36,4 @@ public class EmptyMoveHistory implements MoveHistory {
     public String toString() {
         return "";
     }
-
 }
