@@ -14,7 +14,7 @@ import hanabi.Hand;
 import javafx.util.Pair;
 import move.ColorHint;
 import move.Discard;
-import move.Move;
+import move.MoveHistory;
 import move.NumberHint;
 import move.Play;
 
@@ -26,7 +26,7 @@ public class Game {
     private int lives;
     private int hints;
     private final LinkedList<Card> deck; 
-    private final List<Move> history;
+    private MoveHistory history;
     private final Map<Color, Integer> plays;
     private final Map<Color, Map<Integer, Integer> > discards;
     private final List<Hand> hands;
@@ -67,7 +67,7 @@ public class Game {
         this.lives = LIVES;
         this.hints = HINTS;
         this.deck = new LinkedList<>(deck);
-        this.history = new ArrayList<>();
+        this.history = MoveHistory.empty();
         this.plays = new TreeMap<>();
         this.discards = new TreeMap<>();
         for (Color color : Color.ALL_COLORS) {
@@ -109,7 +109,7 @@ public class Game {
         } else {
             boolean success = hands.get(player).hintColor(color);
             if (success){
-                this.history.add(
+                this.history = history.extend(
                     new ColorHint(this.playerToMove, player, color)
                 );
                 this.hints -= 1;
@@ -141,7 +141,7 @@ public class Game {
         } else {
             boolean success = hands.get(player).hintNumber(number);
             if (success){
-                this.history.add(
+                this.history = history.extend(
                     new NumberHint(this.playerToMove, player, number)
                 );
                 this.hints -= 1;
@@ -176,14 +176,16 @@ public class Game {
         } else {
             Card playedCard = playOrDiscardPosition(position);
             int expectedRank = plays.get(playedCard.color()) + 1;
-            if (playedCard.number() == expectedRank) {
+            boolean playCorrect = (playedCard.number() == expectedRank);
+            if (playCorrect) {
                 plays.put(playedCard.color(), (Integer) playedCard.number());
-                history.add(new Play(this.playerToMove, position, true));
             } else {
                 addDiscard(playedCard);
                 this.lives--;
-                history.add(new Play(this.playerToMove, position, false));
             }
+            this.history = history.extend(
+                new Play(this.playerToMove, position, playCorrect)
+            );
             updatePlayerToMove();
             return new Pair<Boolean, String>(true, "");
         }
@@ -199,11 +201,10 @@ public class Game {
             if (hints < 8) {
                 hints++;
             }
-            if (discardedCard.number() <= safeRank) {
-                history.add(new Discard(this.playerToMove, position, true));
-            } else {
-                history.add(new Discard(this.playerToMove, position, false));
-            }
+            boolean discardSafe = (discardedCard.number() <= safeRank);
+            this.history = history.extend(
+                new Discard(this.playerToMove, position, discardSafe)
+            );
             updatePlayerToMove();
             return new Pair<Boolean, String>(true, "");
         }

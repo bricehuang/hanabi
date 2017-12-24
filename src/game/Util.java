@@ -6,7 +6,7 @@ import java.util.Map;
 import hanabi.Card;
 import hanabi.Color;
 import hanabi.Hand;
-import move.Move;
+import move.MoveHistory;
 
 public class Util {
 
@@ -45,19 +45,12 @@ public class Util {
         return handsRep;
     }
 
-    public static String lastMoveRep(List<Move> history) {
-        String lastMoveRep = "";
-        if (history.size() > 0) {
-            lastMoveRep = history.get(history.size() - 1).verboseRep() + "\n";
-        }
-        return lastMoveRep;
+    public static String lastMoveRep(MoveHistory history) {
+        return history.length() > 0 ? history.last().verboseRep()+"\n" : "";
     }
-    public static String historyRep(List<Move> history) {
-        String historyRep = "History:\n";
-        for (Move move : history) {
-            historyRep += "  " + move.toString() + "\n";
-        }
-        return historyRep;
+
+    public static String historyRep(MoveHistory history) {
+        return "History:\n" + history.toString();
     }
     private static final int PRINT_CARDS_PER_ROW = 10;
     public static String deckRep(List<Card> deck) {
