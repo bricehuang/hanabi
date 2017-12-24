@@ -14,11 +14,11 @@ public class GameTest {
     @Test
     public void testPrint() {
         Game game = new Game(5);
-        System.err.println(game.fullState());
+        System.err.println(game.toString());
         game.play(0);
-        System.err.println(game.fullState());
+        System.err.println(game.toString());
         game.discard(0);
-        System.err.println(game.fullState());        
+        System.err.println(game.toString());        
     }
 
 }

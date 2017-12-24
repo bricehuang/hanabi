@@ -19,7 +19,7 @@ public interface ImList<T> {
     public static <T> ImList<T> empty() {
         return new EmptyImList<T>();
     }
-    
+
     public static <T> ImList<T> convert(List<T> items) {
         int len = items.size();
         if (len == 0) {

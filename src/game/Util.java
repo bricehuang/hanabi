@@ -3,8 +3,8 @@ package game;
 import java.util.List;
 import java.util.Map;
 
-import hanabi.Card;
 import hanabi.Color;
+import hanabi.DeckCard;
 import hanabi.Hand;
 import move.Move;
 import util.ImList;
@@ -50,22 +50,30 @@ public class Util {
         return history.length() > 0 ? history.last().verboseRep()+"\n" : "";
     }
 
+    private static String parseHistory(ImList<Move> history) {
+        return history.length() > 0 
+            ? parseHistory(history.start()) + "  " + history.last().toString() + "\n" 
+            : "";
+    }
     public static String historyRep(ImList<Move> history) {
-        return "History:\n" + history.toString();
+        return "History:\n" + parseHistory(history); 
     }
+
     private static final int PRINT_CARDS_PER_ROW = 10;
-    public static String deckRep(List<Card> deck) {
-        String deckRep = "Remaining Cards:\n";
-        int thisRowCards = 0;
-        for (Card card : deck) {
-            deckRep += card.shortRep()+ " ";
-            thisRowCards ++;
-            if (thisRowCards == PRINT_CARDS_PER_ROW) {
-                deckRep += "\n";
-                thisRowCards = 0;
-            }
+    private static String parseDeckAux(
+        ImList<DeckCard> cards, int cardsLeftInThisRow
+    ) {
+        if (cards.length() == 0) {
+            return "";
         }
-        deckRep += "\n";
-        return deckRep;
+        if (cardsLeftInThisRow == 1) {
+            return cards.last().toString() + "\n" + parseDeckAux(cards.start(), PRINT_CARDS_PER_ROW);
+        } else {
+            return cards.last().toString() + " " + parseDeckAux(cards.start(), cardsLeftInThisRow-1);
+        }
     }
+    public static String parseDeck(ImList<DeckCard> cards){
+        return parseDeckAux(cards, PRINT_CARDS_PER_ROW);
+    }
+
 }

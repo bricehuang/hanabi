@@ -1,7 +1,6 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.TreeMap;
 
 import hanabi.Card;
 import hanabi.Color;
+import hanabi.Deck;
 import hanabi.Hand;
 import javafx.util.Pair;
 import move.ColorHint;
@@ -26,13 +26,12 @@ public class Game {
     private int playerToMove;
     private int lives;
     private int hints;
-    private final LinkedList<Card> deck; 
+    private final Deck deck; 
     private ImList<Move> history;
     private final Map<Color, Integer> plays;
     private final Map<Color, Map<Integer, Integer> > discards;
     private final List<Hand> hands;
 
-    private static final List<Integer> NUMBER_DIST = Arrays.asList(1,1,1,2,2,3,3,4,4,5);
     private static final Map<Integer, Integer> HAND_SIZE_BY_NPLAYERS;
     static{
         Map<Integer, Integer> tmp = new TreeMap<>();
@@ -45,29 +44,18 @@ public class Game {
     private static final int LIVES = 3;
     private static final int HINTS = 8;
 
-    private static List<Card> generateRandomDeck() {
-        List<Card> deck = new ArrayList<>();
-        for (Color color : Color.ALL_COLORS) {
-            for (Integer number : NUMBER_DIST) {
-                deck.add(new Card(color, number));
-            }
-        }
-        Collections.shuffle(deck);
-        return deck;
-    }
-
     public Game(int nPlayers) {
-        this(generateRandomDeck(), nPlayers);
+        this(new Deck(), nPlayers);
     }
 
-    public Game(List<Card> deck, int nPlayers) {
+    public Game(Deck deck, int nPlayers) {
         this.nPlayers = nPlayers;
         assert HAND_SIZE_BY_NPLAYERS.keySet().contains(nPlayers);
         this.handSize = HAND_SIZE_BY_NPLAYERS.get(nPlayers);
         this.playerToMove = 0;
         this.lives = LIVES;
         this.hints = HINTS;
-        this.deck = new LinkedList<>(deck);
+        this.deck = deck;
         this.history = ImList.<Move>empty();
         this.plays = new TreeMap<>();
         this.discards = new TreeMap<>();
@@ -79,7 +67,7 @@ public class Game {
         for (int i=0; i<this.nPlayers; i++) {
             LinkedList<Card> dealtCards = new LinkedList<>();
             for (int j=0; j<this.handSize; j++) {
-                dealtCards.addLast(this.deck.removeFirst());
+                dealtCards.addLast(deck.draw());
             }
             this.hands.add(new Hand(this.handSize, dealtCards));
         }
@@ -156,7 +144,7 @@ public class Game {
 
     private Card playOrDiscardPosition(int position) { 
         if (deck.size() > 0) {
-            Card newCard = deck.removeFirst();
+            Card newCard = deck.draw();
             return hands.get(playerToMove).playOrDiscard(position, newCard);
         } else {
             return hands.get(playerToMove).playOrDiscardLast(position);
@@ -214,32 +202,9 @@ public class Game {
     /*
      * Print functions
      */
-
-    public String fullState() {
-        return (
-            Util.toMoveRep(playerToMove) + 
-            Util.livesRep(lives) + 
-            Util.hintsRep(hints) + 
-            Util.historyRep(history) + 
-            Util.playsRep(plays) + 
-            Util.discardsRep(discards) + 
-            Util.handsRep(nPlayers, hands) + 
-            Util.deckRep(deck) + 
-            Util.lastMoveRep(history)
-        );
-    }
-
     @Override
     public String toString() {
-        return (
-            Util.toMoveRep(playerToMove) + 
-            Util.livesRep(lives) + 
-            Util.hintsRep(hints) + 
-            Util.playsRep(plays) + 
-            Util.discardsRep(discards) + 
-            Util.handsRep(nPlayers, hands) + 
-            Util.lastMoveRep(history)
-        );
+        return "";  // TODO: return toString of last OmnescientView
     }
 
 }
