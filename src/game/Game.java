@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 import hanabi.Card;
@@ -285,6 +286,73 @@ public class Game {
     @Override
     public String toString() {
         return omnescientView.toString();
+    }
+
+    private static final Map<String, Color> COLOR_BY_SHORT_NAME;
+    static{
+        Map<String, Color> tmp = new TreeMap<>();
+        tmp.put("B", Color.BLUE);
+        tmp.put("G", Color.GREEN);
+        tmp.put("R", Color.RED);
+        tmp.put("W", Color.WHITE);
+        tmp.put("Y", Color.YELLOW);
+        COLOR_BY_SHORT_NAME = Collections.unmodifiableMap(tmp);
+    }
+    
+    /**
+     * Simulate a game
+     */
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Welcome to Hanabi!\nHow many players?");
+        int nPlayers = Integer.parseInt(scanner.nextLine());
+        while (!(2 <= nPlayers && nPlayers <= 5)) {
+            System.out.println("Number of players must be between 2 and 5.\nHow many players?");
+            nPlayers = Integer.parseInt(scanner.nextLine());
+        }
+        Game game = new Game(nPlayers);
+        int maxPlayerIndex = game.nPlayers-1;
+        int maxCardIndex = game.handSize-1;
+        System.out.println(game);
+        while (! game.isOver) {
+            String in = scanner.nextLine();
+            while (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])")){
+                System.out.println(
+                    "Allowed inputs:\n" +
+                    "hint [0-"+maxPlayerIndex+"] [12345BGRWY] to hint\n" +
+                    "play [0-"+maxCardIndex+"] to play\n" +
+                    "discard [0-"+maxCardIndex+"] to discard\n"
+                );
+                in = scanner.nextLine();
+            }
+            Pair<Boolean, String> result;
+            String[] tokens = in.split(" ");
+            if (tokens[0].equals("hint")) {
+                int hintee = Integer.parseInt(tokens[1]);
+                if (tokens[2].matches("[1-5]")) {
+                    int number = Integer.parseInt(tokens[2]);
+                    result = game.hint(hintee, number);
+                } else {
+                    Color color = COLOR_BY_SHORT_NAME.get(tokens[2]);
+                    result = game.hint(hintee, color);
+                }
+            } else if (tokens[0].equals("play")) {
+                int position = Integer.parseInt(tokens[1]);
+                result = game.play(position);
+            } else if (tokens[0].equals("discard")) {
+                int position = Integer.parseInt(tokens[1]);
+                result = game.discard(position);
+            } else {
+                scanner.close();
+                throw new RuntimeException("Should not get here.");
+            }
+            if (!result.getKey()) {
+                System.out.println(result.getValue());
+            } else {
+                System.out.println(game);
+            }
+        }
+        scanner.close();
     }
 
 }
