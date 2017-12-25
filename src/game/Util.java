@@ -5,10 +5,10 @@ import java.util.Map;
 
 import hanabi.Color;
 import hanabi.DeckCard;
-import hanabi.Hand;
 import javafx.util.Pair;
 import move.Move;
 import util.ImList;
+import views.VisibleHandView;
 
 public class Util {
 
@@ -40,7 +40,7 @@ public class Util {
         return discardsRep;
     }
 
-    public static String handsRep(List<Hand> hands) {
+    public static String handsRep(List<VisibleHandView> hands) {
         String handsRep = "Hands:\n";
         for (int i=0; i<hands.size(); i++){
             handsRep += "  Player " + i + ": " + hands.get(i).toString() + "\n";
@@ -62,7 +62,7 @@ public class Util {
     }
 
     private static final int PRINT_CARDS_PER_ROW = 10;
-    public static String parseDeck(ImList<DeckCard> cards){
+    public static String deckRep(ImList<DeckCard> cards){
         ImList<DeckCard> deckPointer = cards;
         String repr = "Deck:";
         int cardsPrinted = 0;

@@ -20,6 +20,7 @@ import move.Move;
 import move.NumberHint;
 import move.Play;
 import util.ImList;
+import views.VisibleHandView;
 
 public class Game {
 
@@ -33,6 +34,8 @@ public class Game {
     private final PlayState plays;
     private final DiscardState discards;
     private final List<Hand> hands;
+    
+    private OmnescientGameView omnescientView;
 
     private static final Map<Integer, Integer> HAND_SIZE_BY_NPLAYERS;
     static{
@@ -69,6 +72,26 @@ public class Game {
             }
             this.hands.add(new Hand(this.handSize, dealtCards));
         }
+        refreshViews();
+    }
+    
+    private void refreshViews() {
+        List<VisibleHandView> handViews = new ArrayList<>();
+        for (Hand hand : hands) {
+            handViews.add(hand.visibleView());
+        }
+        this.omnescientView = new OmnescientGameView(
+            nPlayers,
+            handSize,
+            playerToMove,
+            lives,
+            hints,
+            deck.getView(),
+            history,
+            plays.getView(),
+            discards.getView(),
+            Collections.unmodifiableList(handViews)
+        );
     }
 
     /*
@@ -101,6 +124,7 @@ public class Game {
                 );
                 this.hints -= 1;
                 updatePlayerToMove();
+                refreshViews();
                 return new Pair<Boolean, String>(true, "");
             } else {
                 return new Pair<Boolean, String>(false, "That color doesn't exist in that player's hand");                
@@ -133,6 +157,7 @@ public class Game {
                 );
                 this.hints -= 1;
                 updatePlayerToMove();
+                refreshViews();
                 return new Pair<Boolean, String>(true, "");
             } else {
                 return new Pair<Boolean, String>(false, "That number doesn't exist in that player's hand");                
@@ -165,6 +190,7 @@ public class Game {
                 new Play(this.playerToMove, position, playCorrect)
             );
             updatePlayerToMove();
+            refreshViews();
             return new Pair<Boolean, String>(true, "");
         }
     }
@@ -185,6 +211,7 @@ public class Game {
                 new Discard(this.playerToMove, position, discardSafe)
             );
             updatePlayerToMove();
+            refreshViews();
             return new Pair<Boolean, String>(true, "");
         }
     }
@@ -194,7 +221,7 @@ public class Game {
      */
     @Override
     public String toString() {
-        return "";  // TODO: return toString of last OmnescientView
+        return omnescientView.toString();
     }
 
 }

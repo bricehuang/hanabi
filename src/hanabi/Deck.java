@@ -58,7 +58,7 @@ public class Deck {
 
     @Override
     public String toString() {
-        return Util.parseDeck(cards);
+        return Util.deckRep(cards);
     }
 
 }
