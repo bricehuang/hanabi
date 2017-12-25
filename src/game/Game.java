@@ -11,6 +11,7 @@ import hanabi.Card;
 import hanabi.Color;
 import hanabi.Deck;
 import hanabi.Hand;
+import hanabi.PlayState;
 import javafx.util.Pair;
 import move.ColorHint;
 import move.Discard;
@@ -28,7 +29,7 @@ public class Game {
     private int hints;
     private final Deck deck; 
     private ImList<Move> history;
-    private final Map<Color, Integer> plays;
+    private final PlayState plays;
     private final Map<Color, Map<Integer, Integer> > discards;
     private final List<Hand> hands;
 
@@ -57,10 +58,9 @@ public class Game {
         this.hints = HINTS;
         this.deck = deck;
         this.history = ImList.<Move>empty();
-        this.plays = new TreeMap<>();
+        this.plays = new PlayState();
         this.discards = new TreeMap<>();
         for (Color color : Color.ALL_COLORS) {
-            plays.put(color, 0);
             discards.put(color, new TreeMap<>());
         }
         this.hands = new ArrayList<>();
@@ -164,10 +164,9 @@ public class Game {
             return new Pair<Boolean, String>(false, "Invalid Card Position.");
         } else {
             Card playedCard = playOrDiscardPosition(position);
-            int expectedRank = plays.get(playedCard.color()) + 1;
-            boolean playCorrect = (playedCard.number() == expectedRank);
+            boolean playCorrect = plays.isPlayable(playedCard.color(), playedCard.number());
             if (playCorrect) {
-                plays.put(playedCard.color(), (Integer) playedCard.number());
+                plays.playCard(playedCard.color(), playedCard.number());
             } else {
                 addDiscard(playedCard);
                 this.lives--;
@@ -185,12 +184,13 @@ public class Game {
             return new Pair<Boolean, String>(false, "Invalid Card Position.");
         } else {
             Card discardedCard = playOrDiscardPosition(position);
-            int safeRank = plays.get(discardedCard.color());
             addDiscard(discardedCard);
             if (hints < 8) {
                 hints++;
             }
-            boolean discardSafe = (discardedCard.number() <= safeRank);
+            boolean discardSafe = plays.hasBeenPlayed(
+                discardedCard.color(), discardedCard.number()
+            );
             this.history = history.extend(
                 new Discard(this.playerToMove, position, discardSafe)
             );
