@@ -60,20 +60,21 @@ public class Util {
     }
 
     private static final int PRINT_CARDS_PER_ROW = 10;
-    private static String parseDeckAux(
-        ImList<DeckCard> cards, int cardsLeftInThisRow
-    ) {
-        if (cards.length() == 0) {
-            return "";
-        }
-        if (cardsLeftInThisRow == 1) {
-            return cards.last().toString() + "\n" + parseDeckAux(cards.start(), PRINT_CARDS_PER_ROW);
-        } else {
-            return cards.last().toString() + " " + parseDeckAux(cards.start(), cardsLeftInThisRow-1);
-        }
-    }
     public static String parseDeck(ImList<DeckCard> cards){
-        return parseDeckAux(cards, PRINT_CARDS_PER_ROW);
+        ImList<DeckCard> deckPointer = cards;
+        String repr = "Deck:";
+        int cardsPrinted = 0;
+        while (deckPointer.length() > 0) {
+            if (cardsPrinted % PRINT_CARDS_PER_ROW == 0) {
+                repr += "\n  ";
+            } else {
+                repr += " ";
+            }
+            repr += deckPointer.last().toString();
+            cardsPrinted ++;
+            deckPointer = deckPointer.start();
+        }
+        return repr;
     }
 
 }

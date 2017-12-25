@@ -22,6 +22,7 @@ public class StateTest extends ViewTestFramework {
     public void testDeck() {
         Deck deck = new Deck(Arrays.asList(R5, G2));
         assertEquals(2, deck.size());
+        assertEquals("Deck:\n  G2 R5", deck.toString());
         ImList<DeckCard> view1 = deck.getView();
         assertEquals(
             makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER),
