@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import hanabi.Card;
 import hanabi.Color;
 import hanabi.Deck;
+import hanabi.DiscardState;
 import hanabi.Hand;
 import hanabi.PlayState;
 import javafx.util.Pair;
@@ -30,7 +31,7 @@ public class Game {
     private final Deck deck; 
     private ImList<Move> history;
     private final PlayState plays;
-    private final Map<Color, Map<Integer, Integer> > discards;
+    private final DiscardState discards;
     private final List<Hand> hands;
 
     private static final Map<Integer, Integer> HAND_SIZE_BY_NPLAYERS;
@@ -59,10 +60,7 @@ public class Game {
         this.deck = deck;
         this.history = ImList.<Move>empty();
         this.plays = new PlayState();
-        this.discards = new TreeMap<>();
-        for (Color color : Color.ALL_COLORS) {
-            discards.put(color, new TreeMap<>());
-        }
+        this.discards = new DiscardState();
         this.hands = new ArrayList<>();
         for (int i=0; i<this.nPlayers; i++) {
             LinkedList<Card> dealtCards = new LinkedList<>();
@@ -151,14 +149,6 @@ public class Game {
         }
     }
 
-    private void addDiscard(Card card) { 
-        if (!discards.get(card.color()).containsKey(card.number())){
-            discards.get(card.color()).put(card.number(), 0);
-        }
-        int currentDiscardCount = discards.get(card.color()).get(card.number());
-        discards.get(card.color()).put(card.number(), currentDiscardCount + 1);
-    }
-
     public Pair<Boolean, String> play(int position) {
         if (position < 0 || position >= handSize) {
             return new Pair<Boolean, String>(false, "Invalid Card Position.");
@@ -168,7 +158,7 @@ public class Game {
             if (playCorrect) {
                 plays.playCard(playedCard.color(), playedCard.number());
             } else {
-                addDiscard(playedCard);
+                discards.discardCard(playedCard.color(), playedCard.number());
                 this.lives--;
             }
             this.history = history.extend(
@@ -184,7 +174,7 @@ public class Game {
             return new Pair<Boolean, String>(false, "Invalid Card Position.");
         } else {
             Card discardedCard = playOrDiscardPosition(position);
-            addDiscard(discardedCard);
+            discards.discardCard(discardedCard.color(), discardedCard.number());
             if (hints < 8) {
                 hints++;
             }

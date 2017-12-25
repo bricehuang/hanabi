@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
+import javafx.util.Pair;
 import util.ImList;
 import views.ViewTestFramework;
 
@@ -90,6 +91,25 @@ public class StateTest extends ViewTestFramework {
             playState.toString()
         );
 
+        // views should be immutable snapshots
+        assertFalse(view1.equals(view2));
+    }
+
+    @Test
+    public void testDiscardState() {
+        DiscardState discardState = new DiscardState();
+        Map<Pair<Color, Integer>, Integer> view1 = discardState.getView();
+        Map<Pair<Color, Integer>, Integer> expectedView1 = new TreeMap<>(DiscardState.LEX_COMPARATOR);
+        assertEquals(view1, expectedView1);
+        assertEquals("Discards:\n", discardState.toString());
+        
+        discardState.discardCard(RED, 5); // GAAH-BOOH-MEEM
+        Map<Pair<Color, Integer>, Integer> view2 = discardState.getView();
+        Map<Pair<Color, Integer>, Integer> expectedView2 = new TreeMap<>(DiscardState.LEX_COMPARATOR);
+        expectedView2.put(new Pair<Color, Integer>(RED, 5), 1);
+        assertEquals(view2, expectedView2);
+        assertEquals("Discards:\n  R5: 1\n", discardState.toString());
+        
         // views should be immutable snapshots
         assertFalse(view1.equals(view2));
     }
