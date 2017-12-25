@@ -20,6 +20,7 @@ import move.Discard;
 import move.Move;
 import move.NumberHint;
 import move.Play;
+import move.Resignation;
 import util.ImList;
 import views.VisibleHandView;
 
@@ -234,6 +235,13 @@ public class Game {
         }
     }
 
+    /**
+     * Plays card from specified position
+     * @param position
+     * @return (success, error message).  Valid hints return (true, "").  
+     * invalid hints return (false, error message) and are guaranteed to 
+     * not mutate game state.  
+     */
     public Pair<Boolean, String> play(int position) {
         assert !isOver;
         if (position < 0 || position >= handSize) {
@@ -257,6 +265,13 @@ public class Game {
         }
     }
 
+    /**
+     * Discards card from specified position
+     * @param position
+     * @return (success, error message).  Valid hints return (true, "").  
+     * invalid hints return (false, error message) and are guaranteed to 
+     * not mutate game state.  
+     */
     public Pair<Boolean, String> discard(int position) {
         assert !isOver;
         if (position < 0 || position >= handSize) {
@@ -278,6 +293,23 @@ public class Game {
             refreshViews();
             return new Pair<Boolean, String>(true, "");
         }
+    }
+
+    /**
+     * Resigns and ends the game
+     * @return (success, error message).  Valid hints return (true, "").  
+     * invalid hints return (false, error message) and are guaranteed to 
+     * not mutate game state.  
+     */
+    public Pair<Boolean, String> resign() {
+        assert !isOver;
+        this.isOver = true;
+        this.history = history.extend(
+            new Resignation(this.playerToMove)
+        );
+        updatePlayerToMove();
+        refreshViews();
+        return new Pair<Boolean, String>(true, "");
     }
 
     /*
@@ -316,12 +348,13 @@ public class Game {
         System.out.println(game);
         while (! game.isOver) {
             String in = scanner.nextLine();
-            while (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])")){
+            while (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])|(resign)")){
                 System.out.println(
                     "Allowed inputs:\n" +
                     "hint [0-"+maxPlayerIndex+"] [12345BGRWY] to hint\n" +
                     "play [0-"+maxCardIndex+"] to play\n" +
-                    "discard [0-"+maxCardIndex+"] to discard\n"
+                    "discard [0-"+maxCardIndex+"] to discard\n" +
+                    "resign to resign\n"
                 );
                 in = scanner.nextLine();
             }
@@ -342,6 +375,8 @@ public class Game {
             } else if (tokens[0].equals("discard")) {
                 int position = Integer.parseInt(tokens[1]);
                 result = game.discard(position);
+            } else if (tokens[0].equals("resign")){
+                result = game.resign();
             } else {
                 scanner.close();
                 throw new RuntimeException("Should not get here.");
