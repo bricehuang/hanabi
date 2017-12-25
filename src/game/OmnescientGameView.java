@@ -72,7 +72,8 @@ public class OmnescientGameView {
             Util.playsRep(plays) +
             Util.discardsRep(discards) +
             Util.handsRep(hands) +
-            Util.deckRep(deck)
+            Util.deckRep(deck) + 
+            Util.lastMoveRep(history)
         );
     }
 

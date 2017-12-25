@@ -1,52 +1,70 @@
 package game;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import hanabi.Color;
+import javafx.util.Pair;
 import move.Move;
+import util.ImList;
+import views.HiddenHandView;
+import views.VisibleHandView;
 
 public class PlayerGameView {
-    public final int player;
+
+    public final int playerID;
     public final int nPlayers;
     public final int handSize;
     public final int playerToMove;
     public final int lives;
-    public final int hints;
-    public final List<Move> history;
+    public final int hints; 
+    public final ImList<Move> history;
     public final Map<Color, Integer> plays;
-    public final Map<Color, Map<Integer, Integer> > discards;
-    // TODO: store own and other players' views
+    public final Map<Pair<Color, Integer>, Integer> discards;
+    public final HiddenHandView myHand;
+    public final Map<Integer, VisibleHandView> otherHands;
+    public final int cardsLeft;
 
     public PlayerGameView(
-        int player,
+        int playerID,
         int nPlayers, 
         int handSize, 
         int playerToMove,
         int lives,
         int hints,
-        List<Move> history,
-        Map<Color, Integer> plays,
-        Map<Color, Map<Integer, Integer> > discards
+        ImList<Move> history,
+        Map<Color, Integer> plays, // expected immutable
+        Map<Pair<Color, Integer>, Integer> discards, // expected immutable
+        HiddenHandView myHand,
+        Map<Integer, VisibleHandView> otherHands,
+        int cardsLeft
     ){
-        this.player = player;
+        this.playerID = playerID;
         this.nPlayers = nPlayers;
         this.handSize = handSize;
         this.playerToMove = playerToMove;
         this.lives = lives;
         this.hints = hints;
-        this.history = Collections.unmodifiableList(history);
-        this.plays = Collections.unmodifiableMap(plays);
-        Map<Color, Map<Integer, Integer>> tmpDiscards = new TreeMap<>();
-        for (Color color : Color.ALL_COLORS) {
-            tmpDiscards.put(
-                color, 
-                Collections.unmodifiableMap(discards.get(color))
-            );
-        }
-        this.discards = Collections.unmodifiableMap(tmpDiscards);
+        this.history = history;
+        this.plays = plays;
+        this.discards = discards;
+        this.myHand = myHand;
+        this.otherHands = otherHands;
+        this.cardsLeft = cardsLeft;
+    }
+
+    public String toString() {
+        return (
+            Util.playerIDRep(playerID) + 
+            Util.toMoveRep(playerToMove) + 
+            Util.livesRep(lives) +
+            Util.hintsRep(hints) + 
+            Util.historyRep(history) + 
+            Util.playsRep(plays) +
+            Util.discardsRep(discards) +
+            Util.deckLengthRep(cardsLeft) +
+            Util.handsRep(playerID, otherHands, myHand) +
+            Util.lastMoveRep(history)
+        );
     }
 
 }

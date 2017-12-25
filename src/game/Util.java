@@ -8,10 +8,14 @@ import hanabi.DeckCard;
 import javafx.util.Pair;
 import move.Move;
 import util.ImList;
+import views.HiddenHandView;
 import views.VisibleHandView;
 
 public class Util {
 
+    public static String playerIDRep(int playerID) {
+        return "You are: Player " + playerID + ".\n";
+    }
     public static String toMoveRep(int playerToMove) {
         return "Player " + playerToMove + " to move.\n";
     }
@@ -48,6 +52,25 @@ public class Util {
         return handsRep;
     }
 
+    private static String parseHandRow(int player, VisibleHandView hand) {
+        return "  Player " + player + ": " + hand.toString() + "\n";
+    }
+    public static String handsRep(
+        int playerID, 
+        Map<Integer, VisibleHandView> otherHands, 
+        HiddenHandView myHand
+    ) {
+        String handsRep = "Hands:\n";
+        for (int i=0; i<playerID; i++) {
+            handsRep += parseHandRow(i, otherHands.get(i));
+        }
+        handsRep += "  Player " + playerID + ": " + myHand.toString() + "\n";
+        for (int i=playerID+1; i<otherHands.size()+1; i++) {
+            handsRep += parseHandRow(i, otherHands.get(i));
+        }
+        return handsRep;
+    }
+
     public static String lastMoveRep(ImList<Move> history) {
         return history.length() > 0 ? history.last().verboseRep()+"\n" : "";
     }
@@ -76,7 +99,12 @@ public class Util {
             cardsPrinted ++;
             deckPointer = deckPointer.start();
         }
+        repr += "\n";
         return repr;
+    }
+
+    public static String deckLengthRep(int length) {
+        return "There are " + length + " cards left in the deck.\n";
     }
 
 }

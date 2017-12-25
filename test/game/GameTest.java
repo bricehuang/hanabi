@@ -18,7 +18,8 @@ public class GameTest {
         game.play(0);
         System.err.println(game.toString());
         game.discard(0);
-        System.err.println(game.toString());        
+        System.err.println(game.toString());
+        System.out.println(game.getPlayerView(0).toString());
     }
 
 }

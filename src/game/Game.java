@@ -34,8 +34,9 @@ public class Game {
     private final PlayState plays;
     private final DiscardState discards;
     private final List<Hand> hands;
-    
+
     private OmnescientGameView omnescientView;
+    private List<PlayerGameView> playerViews;
 
     private static final Map<Integer, Integer> HAND_SIZE_BY_NPLAYERS;
     static{
@@ -92,6 +93,43 @@ public class Game {
             discards.getView(),
             Collections.unmodifiableList(handViews)
         );
+        List<PlayerGameView> playerViews = new ArrayList<>();
+        for (int i=0; i<nPlayers; i++) {
+            playerViews.add(constructPlayerView(i));
+        }
+        this.playerViews = Collections.unmodifiableList(playerViews);
+    }
+
+    private PlayerGameView constructPlayerView(int playerID) {
+        assert (0<= playerID && playerID < nPlayers);
+        Map<Integer, VisibleHandView> visibleHands = new TreeMap<>();
+        for (int i=0; i<nPlayers; i++) {
+            if (i != playerID) {
+                visibleHands.put(i, hands.get(i).visibleView());
+            }
+        }
+        return new PlayerGameView(
+            playerID,
+            nPlayers,
+            handSize,
+            playerToMove,
+            lives,
+            hints,
+            history,
+            plays.getView(),
+            discards.getView(),
+            hands.get(playerID).hiddenView(),
+            Collections.unmodifiableMap(visibleHands),
+            deck.size()
+        );
+    }
+
+    public OmnescientGameView getOmnescientView() {
+        return this.omnescientView;
+    }
+
+    public PlayerGameView getPlayerView(int player) {
+        return this.playerViews.get(player);
     }
 
     /*
