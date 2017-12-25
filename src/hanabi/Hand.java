@@ -103,8 +103,8 @@ public class Hand {
     public Card playOrDiscard(int position, Card newCard) {
         assert !this.isFinished;
         assert newCard.hiddenView().equals(HiddenCardView.NO_INFO);
-        cards.addLast(newCard);
         Card removedCard = cards.remove(position);
+        cards.addFirst(newCard);
         refreshViews();
         checkRep();
         return removedCard;
@@ -121,12 +121,7 @@ public class Hand {
 
     @Override
     public String toString() {
-        String rep = "[";
-        for (Card card: cards) {
-            rep += card.toString() + ", ";
-        }
-        rep += "]";
-        return rep;
+        return this.visibleView.toString();
     }
 
 }

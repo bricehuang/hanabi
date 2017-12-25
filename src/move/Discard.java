@@ -8,7 +8,6 @@ public class Discard implements Move {
     public final boolean isSafe;
 
     public Discard(int actor, int position, boolean isSafe) {
-        assert 1 <= actor && actor <= 5;
         this.actor = actor;
         this.position = position;
         this.isSafe = isSafe;
