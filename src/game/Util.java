@@ -106,5 +106,17 @@ public class Util {
     public static String deckLengthRep(int length) {
         return "There are " + length + " cards left in the deck.\n";
     }
+    
+    public static String isOverRep(boolean isOver, Map<Color, Integer> plays) {
+        if (isOver) {
+            int score = 0;
+            for (Color color : Color.ALL_COLORS) {
+                score += plays.get(color);
+            }
+            return "Game over.\nYour score: " + score+"\n";
+        } else{
+            return "";
+        }
+    }
 
 }

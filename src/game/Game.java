@@ -34,6 +34,7 @@ public class Game {
     private final PlayState plays;
     private final DiscardState discards;
     private final List<Hand> hands;
+    private boolean isOver;
 
     private OmnescientGameView omnescientView;
     private List<PlayerGameView> playerViews;
@@ -73,6 +74,7 @@ public class Game {
             }
             this.hands.add(new Hand(this.handSize, dealtCards));
         }
+        this.isOver = false;
         refreshViews();
     }
     
@@ -91,7 +93,8 @@ public class Game {
             history,
             plays.getView(),
             discards.getView(),
-            Collections.unmodifiableList(handViews)
+            Collections.unmodifiableList(handViews),
+            isOver
         );
         List<PlayerGameView> playerViews = new ArrayList<>();
         for (int i=0; i<nPlayers; i++) {
@@ -120,7 +123,8 @@ public class Game {
             discards.getView(),
             hands.get(playerID).hiddenView(),
             Collections.unmodifiableMap(visibleHands),
-            deck.size()
+            deck.size(),
+            isOver
         );
     }
 
@@ -136,7 +140,20 @@ public class Game {
      * Play functions.  These modify game state.  
      */
     private void updatePlayerToMove() {
-        this.playerToMove = (this.playerToMove + 1)%5;
+        this.playerToMove = (this.playerToMove + 1)%nPlayers;
+    }
+    
+    private void updateIsOver() {
+        boolean livesEmpty = (lives == 0); 
+        boolean allCardsPlayed = true;
+        for (Color color : Color.ALL_COLORS) {
+            allCardsPlayed = allCardsPlayed && plays.hasBeenPlayed(color, Card.NUMBER_MAX);
+        }
+        boolean timeRunOut = true;
+        for (Hand hand : hands) {
+            timeRunOut = timeRunOut && hand.isFinished();
+        }
+        this.isOver = (livesEmpty || allCardsPlayed || timeRunOut);
     }
 
     /**
@@ -148,6 +165,7 @@ public class Game {
      * not mutate game state.    
      */
     public Pair<Boolean, String> hint(int player, Color color) {
+        assert !isOver;
         if (player < 0 || player >= nPlayers) {
             return new Pair<Boolean, String>(false, "Invalid Player.");
         } else if (player == this.playerToMove) {
@@ -162,6 +180,7 @@ public class Game {
                 );
                 this.hints -= 1;
                 updatePlayerToMove();
+                updateIsOver();
                 refreshViews();
                 return new Pair<Boolean, String>(true, "");
             } else {
@@ -179,6 +198,7 @@ public class Game {
      * not mutate game state.    
      */
     public Pair<Boolean, String> hint(int player, int number) {
+        assert !isOver;
         if (player < 0 || player >= nPlayers) {
             return new Pair<Boolean, String>(false, "Invalid Player.");
         } else if (number < Card.NUMBER_MIN || number > Card.NUMBER_MAX){
@@ -195,6 +215,7 @@ public class Game {
                 );
                 this.hints -= 1;
                 updatePlayerToMove();
+                updateIsOver();
                 refreshViews();
                 return new Pair<Boolean, String>(true, "");
             } else {
@@ -213,6 +234,7 @@ public class Game {
     }
 
     public Pair<Boolean, String> play(int position) {
+        assert !isOver;
         if (position < 0 || position >= handSize) {
             return new Pair<Boolean, String>(false, "Invalid Card Position.");
         } else {
@@ -228,12 +250,14 @@ public class Game {
                 new Play(this.playerToMove, position, playCorrect)
             );
             updatePlayerToMove();
+            updateIsOver();
             refreshViews();
             return new Pair<Boolean, String>(true, "");
         }
     }
 
     public Pair<Boolean, String> discard(int position) {
+        assert !isOver;
         if (position < 0 || position >= handSize) {
             return new Pair<Boolean, String>(false, "Invalid Card Position.");
         } else {
@@ -249,6 +273,7 @@ public class Game {
                 new Discard(this.playerToMove, position, discardSafe)
             );
             updatePlayerToMove();
+            updateIsOver();
             refreshViews();
             return new Pair<Boolean, String>(true, "");
         }

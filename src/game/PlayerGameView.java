@@ -23,6 +23,7 @@ public class PlayerGameView {
     public final HiddenHandView myHand;
     public final Map<Integer, VisibleHandView> otherHands;
     public final int cardsLeft;
+    public final boolean isOver;
 
     public PlayerGameView(
         int playerID,
@@ -36,7 +37,8 @@ public class PlayerGameView {
         Map<Pair<Color, Integer>, Integer> discards, // expected immutable
         HiddenHandView myHand,
         Map<Integer, VisibleHandView> otherHands,
-        int cardsLeft
+        int cardsLeft,
+        boolean isOver
     ){
         this.playerID = playerID;
         this.nPlayers = nPlayers;
@@ -50,6 +52,7 @@ public class PlayerGameView {
         this.myHand = myHand;
         this.otherHands = otherHands;
         this.cardsLeft = cardsLeft;
+        this.isOver = isOver;
     }
 
     public String toString() {
@@ -63,7 +66,8 @@ public class PlayerGameView {
             Util.discardsRep(discards) +
             Util.deckLengthRep(cardsLeft) +
             Util.handsRep(playerID, otherHands, myHand) +
-            Util.lastMoveRep(history)
+            Util.lastMoveRep(history) + 
+            Util.isOverRep(isOver, plays)
         );
     }
 

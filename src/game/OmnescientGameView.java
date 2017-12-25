@@ -25,6 +25,7 @@ public class OmnescientGameView {
     public final Map<Color, Integer> plays;
     public final Map<Pair<Color, Integer>, Integer> discards;
     public final List<VisibleHandView> hands;
+    public final boolean isOver;
 
     /**
      * Constructor
@@ -38,6 +39,7 @@ public class OmnescientGameView {
      * @param plays expected immutable
      * @param discards expected immutable
      * @param hands expected immutable
+     * @param boolean isOver
      */
     public OmnescientGameView(
         int nPlayers,
@@ -49,7 +51,8 @@ public class OmnescientGameView {
         ImList<Move> history,
         Map<Color, Integer> plays,
         Map<Pair<Color, Integer>, Integer> discards,
-        List<VisibleHandView> hands
+        List<VisibleHandView> hands,
+        boolean isOver
     ) {
         this.nPlayers = nPlayers;
         this.handSize = handSize;
@@ -61,6 +64,7 @@ public class OmnescientGameView {
         this.plays = plays;
         this.discards = discards;
         this.hands = hands;
+        this.isOver = isOver;
     }
 
     public String toString() {
@@ -73,7 +77,8 @@ public class OmnescientGameView {
             Util.discardsRep(discards) +
             Util.handsRep(hands) +
             Util.deckRep(deck) + 
-            Util.lastMoveRep(history)
+            Util.lastMoveRep(history) +
+            Util.isOverRep(isOver, plays)
         );
     }
 
