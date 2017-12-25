@@ -44,8 +44,17 @@ public class HiddenCardView {
         return this.colors.hashCode() + this.numbers.hashCode();
     }
 
+    private static<T> T extractEltFromSingletonSet(Set<T> set) {
+        assert(set.size() == 1);
+        return (set.iterator().next());
+    }
+
     @Override
     public String toString() {
+        String colorStr = (colors.size() == 1) ? 
+            extractEltFromSingletonSet(colors).toString() : "?";
+        String numberStr = (numbers.size() == 1) ? 
+            extractEltFromSingletonSet(numbers).toString() : "?";
         String colorsStr = "";
         for (Color color : this.colors) {
             colorsStr += color;
@@ -60,7 +69,7 @@ public class HiddenCardView {
         for (int i=0; i< Card.NUMBER_MAX - this.numbers.size(); i++) {
             numbersStr += " ";
         }
-        return "?? ("+colorsStr+", "+numbersStr+")";
+        return colorStr+numberStr+" ("+colorsStr+", "+numbersStr+")";
     }
 
 }

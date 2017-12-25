@@ -34,8 +34,8 @@ public class HandViewTest extends ViewTestFramework {
         assertEquals(
             "[?? (BGWY , 1234 ), " +
              "?? (BGWY , 1234 ), " +
-             "?? (BGRWY, 1    ), " +
-             "?? (Y    , 12345), ]",
+             "?1 (BGRWY, 1    ), " +
+             "Y? (Y    , 12345), ]",
              HIDDEN_HAND.toString()
         );
     }
