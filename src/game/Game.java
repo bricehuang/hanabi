@@ -331,6 +331,42 @@ public class Game {
         COLOR_BY_SHORT_NAME = Collections.unmodifiableMap(tmp);
     }
     
+    public Pair<Boolean, String> makeMove(String in) {
+        int maxPlayerIndex = nPlayers-1;
+        int maxCardIndex = handSize-1;
+        if (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])|(resign)")){
+            return new Pair<Boolean, String> (
+                false, 
+                "Allowed inputs:\n" +
+                "hint [0-"+maxPlayerIndex+"] [12345BGRWY] to hint\n" +
+                "play [0-"+maxCardIndex+"] to play\n" +
+                "discard [0-"+maxCardIndex+"] to discard\n" +
+                "resign to resign\n"
+            );
+        }
+        String[] tokens = in.split(" ");
+        if (tokens[0].equals("hint")) {
+            int hintee = Integer.parseInt(tokens[1]);
+            if (tokens[2].matches("[1-5]")) {
+                int number = Integer.parseInt(tokens[2]);
+                return hint(hintee, number);
+            } else {
+                Color color = COLOR_BY_SHORT_NAME.get(tokens[2]);
+                return hint(hintee, color);
+            }
+        } else if (tokens[0].equals("play")) {
+            int position = Integer.parseInt(tokens[1]);
+            return play(position);
+        } else if (tokens[0].equals("discard")) {
+            int position = Integer.parseInt(tokens[1]);
+            return discard(position);
+        } else if (tokens[0].equals("resign")){
+            return resign();
+        } else {
+            throw new RuntimeException("Should not get here.");
+        }
+    }
+    
     /**
      * Simulate a game
      */
@@ -343,45 +379,11 @@ public class Game {
             nPlayers = Integer.parseInt(scanner.nextLine());
         }
         Game game = new Game(nPlayers);
-        int maxPlayerIndex = game.nPlayers-1;
-        int maxCardIndex = game.handSize-1;
         System.out.println(game);
         while (! game.isOver) {
             String in = scanner.nextLine();
-            while (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])|(resign)")){
-                System.out.println(
-                    "Allowed inputs:\n" +
-                    "hint [0-"+maxPlayerIndex+"] [12345BGRWY] to hint\n" +
-                    "play [0-"+maxCardIndex+"] to play\n" +
-                    "discard [0-"+maxCardIndex+"] to discard\n" +
-                    "resign to resign\n"
-                );
-                in = scanner.nextLine();
-            }
-            Pair<Boolean, String> result;
-            String[] tokens = in.split(" ");
-            if (tokens[0].equals("hint")) {
-                int hintee = Integer.parseInt(tokens[1]);
-                if (tokens[2].matches("[1-5]")) {
-                    int number = Integer.parseInt(tokens[2]);
-                    result = game.hint(hintee, number);
-                } else {
-                    Color color = COLOR_BY_SHORT_NAME.get(tokens[2]);
-                    result = game.hint(hintee, color);
-                }
-            } else if (tokens[0].equals("play")) {
-                int position = Integer.parseInt(tokens[1]);
-                result = game.play(position);
-            } else if (tokens[0].equals("discard")) {
-                int position = Integer.parseInt(tokens[1]);
-                result = game.discard(position);
-            } else if (tokens[0].equals("resign")){
-                result = game.resign();
-            } else {
-                scanner.close();
-                throw new RuntimeException("Should not get here.");
-            }
-            if (!result.getKey()) {
+            Pair<Boolean, String> result = game.makeMove(in);
+            if (! result.getKey()) {
                 System.out.println(result.getValue());
             } else {
                 System.out.println(game);
