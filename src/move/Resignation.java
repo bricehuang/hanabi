@@ -1,5 +1,10 @@
 package move;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import game.JsonUtil;
+
 public class Resignation implements Move {
 
     public final int actor;
@@ -17,5 +22,13 @@ public class Resignation implements Move {
     public String toString() {
         return "" + actor + " RESIGN";
     }
+
+	@Override
+	public JSONObject jsonify() throws JSONException {
+		JSONObject result = new JSONObject();
+		result.put(JsonUtil.MOVE_TYPE, JsonUtil.RESIGN);
+		result.put(JsonUtil.ACTOR, actor);
+		return result;
+	}
 
 }

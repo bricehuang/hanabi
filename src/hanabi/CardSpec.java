@@ -1,6 +1,12 @@
 package hanabi;
 
-public class CardSpec {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import game.JsonUtil;
+import util.JSONifiable;
+
+public class CardSpec implements JSONifiable {
 
     public final Color color;
     public final int number;
@@ -32,6 +38,13 @@ public class CardSpec {
     @Override
     public String toString() {
         return this.color.toString() + this.number;
+    }
+
+    public JSONObject jsonify() throws JSONException {
+		JSONObject result = new JSONObject();
+		result.put(JsonUtil.COLOR, color.toString());
+		result.put(JsonUtil.NUMBER, number);
+		return result;
     }
 
 }

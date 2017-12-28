@@ -1,6 +1,9 @@
 package util;
 
-public class EmptyImList<T> implements ImList<T> {
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class EmptyImList<T extends JSONifiable> implements ImList<T> {
 
     @Override
     public int length() {
@@ -36,4 +39,10 @@ public class EmptyImList<T> implements ImList<T> {
     public String toString() {
         return "";
     }
+
+	@Override
+	public JSONArray jsonArrayify() throws JSONException {
+		return new JSONArray();
+	}
+
 }

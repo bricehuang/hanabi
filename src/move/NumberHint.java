@@ -1,5 +1,10 @@
 package move;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import game.JsonUtil;
+
 public class NumberHint implements Move {
 
     public final int actor;
@@ -24,5 +29,15 @@ public class NumberHint implements Move {
     public String toString() {
         return "" + actor + " HINT " + hintee + " " + number;
     }
+
+	@Override
+	public JSONObject jsonify() throws JSONException {
+		JSONObject result = new JSONObject();
+		result.put(JsonUtil.MOVE_TYPE, JsonUtil.NUMBER_HINT);
+		result.put(JsonUtil.ACTOR, actor);
+		result.put(JsonUtil.HINTEE, hintee);
+		result.put(JsonUtil.NUMBER, number);
+		return result;
+	}
 
 }

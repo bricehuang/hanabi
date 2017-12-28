@@ -2,12 +2,17 @@ package util;
 
 import java.util.List;
 
-public interface ImList<T> {
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public interface ImList<T extends JSONifiable> {
 
     public int length();
     public ImList<T> start();
     public T last();
     public ImList<T> extend(T next);
+
+    public JSONArray jsonArrayify() throws JSONException;
 
     @Override
     public boolean equals(Object other);
@@ -16,11 +21,11 @@ public interface ImList<T> {
     @Override 
     public String toString();
 
-    public static <T> ImList<T> empty() {
+    public static <T extends JSONifiable> ImList<T> empty() {
         return new EmptyImList<T>();
     }
 
-    public static <T> ImList<T> convert(List<T> items) {
+    public static <T extends JSONifiable> ImList<T> convert(List<T> items) {
         int len = items.size();
         if (len == 0) {
             return new EmptyImList<T>();
@@ -28,5 +33,5 @@ public interface ImList<T> {
             return convert(items.subList(0, len-1)).extend(items.get(len-1));
         }
     }
-
+    
 }

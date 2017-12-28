@@ -1,6 +1,9 @@
 package util;
 
-public class ConsImList<T> implements ImList<T> {
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class ConsImList<T extends JSONifiable> implements ImList<T> {
 
     private final int length;
     private final ImList<T> start;
@@ -48,4 +51,10 @@ public class ConsImList<T> implements ImList<T> {
     public String toString(){
         return start.toString() + last.toString() + "\n"; 
     }
+
+	@Override
+	public JSONArray jsonArrayify() throws JSONException {
+		return start.jsonArrayify().put(last.jsonify());
+	}
+
 }

@@ -1,6 +1,8 @@
 package move;
 
-public interface Move {
+import util.JSONifiable;
+
+public interface Move extends JSONifiable {
     
     public String verboseRep();
     
