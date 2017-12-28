@@ -6,21 +6,20 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import game.Util;
-import javafx.util.Pair;
 
 public class DiscardState {
 
-    private final Map<Pair<Color, Integer>, Integer> discards;
-    private Map<Pair<Color, Integer>, Integer> immutableView;
+    private final Map<CardSpec, Integer> discards;
+    private Map<CardSpec, Integer> immutableView;
 
-    public static final Comparator<Pair<Color, Integer>> LEX_COMPARATOR = new Comparator<Pair<Color, Integer>>() {
+    public static final Comparator<CardSpec> LEX_COMPARATOR = new Comparator<CardSpec>() {
         @Override
-        public int compare(Pair<Color, Integer> o1, Pair<Color, Integer> o2) {
-            int colorComparison = o1.getKey().compareTo(o2.getKey());
+        public int compare(CardSpec o1, CardSpec o2) {
+            int colorComparison = o1.color.compareTo(o2.color);
             if (colorComparison != 0) {
                 return colorComparison;
             } else {
-                return o1.getValue().compareTo(o2.getValue());
+                return o1.number - o2.number;
             }
         }
     };
@@ -36,13 +35,13 @@ public class DiscardState {
     }
 
     private void refreshView() {
-        Map<Pair<Color, Integer>, Integer> newView = new TreeMap<Pair<Color, Integer>, Integer>(LEX_COMPARATOR);
+        Map<CardSpec, Integer> newView = new TreeMap<CardSpec, Integer>(LEX_COMPARATOR);
         newView.putAll(discards);
         this.immutableView = Collections.unmodifiableMap(newView);
     }
 
     public void discardCard(Color color, Integer number) {
-        Pair<Color, Integer> colorAndNumber = new Pair<Color, Integer>(color, number);
+    		CardSpec colorAndNumber = new CardSpec(color, number);
         if (!discards.keySet().contains(colorAndNumber)) {
             discards.put(colorAndNumber, 0);
         }
@@ -52,7 +51,7 @@ public class DiscardState {
         checkRep();
     }
 
-    public Map<Pair<Color, Integer>, Integer> getView() {
+    public Map<CardSpec, Integer> getView() {
         return immutableView;
     }
     

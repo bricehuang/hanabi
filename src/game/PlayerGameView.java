@@ -2,8 +2,8 @@ package game;
 
 import java.util.Map;
 
+import hanabi.CardSpec;
 import hanabi.Color;
-import javafx.util.Pair;
 import move.Move;
 import util.ImList;
 import views.HiddenHandView;
@@ -19,7 +19,7 @@ public class PlayerGameView {
     public final int hints; 
     public final ImList<Move> history;
     public final Map<Color, Integer> plays;
-    public final Map<Pair<Color, Integer>, Integer> discards;
+    public final Map<CardSpec, Integer> discards;
     public final HiddenHandView myHand;
     public final Map<Integer, VisibleHandView> otherHands;
     public final int cardsLeft;
@@ -34,7 +34,7 @@ public class PlayerGameView {
         int hints,
         ImList<Move> history,
         Map<Color, Integer> plays, // expected immutable
-        Map<Pair<Color, Integer>, Integer> discards, // expected immutable
+        Map<CardSpec, Integer> discards, // expected immutable
         HiddenHandView myHand,
         Map<Integer, VisibleHandView> otherHands,
         int cardsLeft,

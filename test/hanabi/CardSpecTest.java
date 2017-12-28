@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import views.ViewTestFramework;
 
-public class DeckCardTest extends ViewTestFramework {
+public class CardSpecTest extends ViewTestFramework {
 
-    private static final DeckCard R5 = new DeckCard(RED, 5);
+    private static final CardSpec R5 = new CardSpec(RED, 5);
     
     @Test
     public void testCreateCard() {

@@ -10,38 +10,37 @@ import java.util.TreeMap;
 
 import org.junit.Test;
 
-import javafx.util.Pair;
 import util.ImList;
 import views.ViewTestFramework;
 
 public class StateTest extends ViewTestFramework {
 
-    private static final DeckCard R5 = new DeckCard(RED, 5);
-    private static final DeckCard G2 = new DeckCard(GREEN, 2);
+    private static final CardSpec R5 = new CardSpec(RED, 5);
+    private static final CardSpec G2 = new CardSpec(GREEN, 2);
 
     @Test
     public void testDeck() {
         Deck deck = new Deck(Arrays.asList(R5, G2));
         assertEquals(2, deck.size());
         assertEquals("Deck:\n  G2 R5\n", deck.toString());
-        ImList<DeckCard> view1 = deck.getView();
+        ImList<CardSpec> view1 = deck.getView();
         assertEquals(
             makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER),
             deck.draw().visibleView()
         );
         assertEquals(1, deck.size());
-        ImList<DeckCard> view2 = deck.getView();
+        ImList<CardSpec> view2 = deck.getView();
         assertEquals(
             makeVisibleCard(RED, 5, ANY_COLOR, ANY_NUMBER),
             deck.draw().visibleView()
         );
         assertEquals(0, deck.size());
-        ImList<DeckCard> view3 = deck.getView();
+        ImList<CardSpec> view3 = deck.getView();
         assertEquals(G2, view1.last());
         assertEquals(view2, view1.start());
         assertEquals(R5, view2.last());
         assertEquals(view3, view2.start());
-        assertEquals(ImList.<DeckCard>empty(), view3);
+        assertEquals(ImList.<CardSpec>empty(), view3);
     }
 
     @Test
@@ -98,15 +97,15 @@ public class StateTest extends ViewTestFramework {
     @Test
     public void testDiscardState() {
         DiscardState discardState = new DiscardState();
-        Map<Pair<Color, Integer>, Integer> view1 = discardState.getView();
-        Map<Pair<Color, Integer>, Integer> expectedView1 = new TreeMap<>(DiscardState.LEX_COMPARATOR);
+        Map<CardSpec, Integer> view1 = discardState.getView();
+        Map<CardSpec, Integer> expectedView1 = new TreeMap<>(DiscardState.LEX_COMPARATOR);
         assertEquals(view1, expectedView1);
         assertEquals("Discards:\n", discardState.toString());
         
         discardState.discardCard(RED, 5); // GAAH-BOOH-MEEM
-        Map<Pair<Color, Integer>, Integer> view2 = discardState.getView();
-        Map<Pair<Color, Integer>, Integer> expectedView2 = new TreeMap<>(DiscardState.LEX_COMPARATOR);
-        expectedView2.put(new Pair<Color, Integer>(RED, 5), 1);
+        Map<CardSpec, Integer> view2 = discardState.getView();
+        Map<CardSpec, Integer> expectedView2 = new TreeMap<>(DiscardState.LEX_COMPARATOR);
+        expectedView2.put(new CardSpec(RED, 5), 1);
         assertEquals(view2, expectedView2);
         assertEquals("Discards:\n  R5: 1\n", discardState.toString());
         

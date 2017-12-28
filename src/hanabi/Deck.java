@@ -11,15 +11,15 @@ import util.ImList;
 public class Deck {
 
     // cards stored such that cards are drawn from the back
-    private ImList<DeckCard> cards;
+    private ImList<CardSpec> cards;
 
     private static final List<Integer> NUMBER_DIST = Arrays.asList(1,1,1,2,2,3,3,4,4,5);
 
-    private static List<DeckCard> generateRandomCardOrder() {
-        List<DeckCard> deck = new LinkedList<>();
+    private static List<CardSpec> generateRandomCardOrder() {
+        List<CardSpec> deck = new LinkedList<>();
         for (Color color : Color.ALL_COLORS) {
             for (Integer number : NUMBER_DIST) {
-                deck.add(new DeckCard(color, number));
+                deck.add(new CardSpec(color, number));
             }
         }
         Collections.shuffle(deck);
@@ -38,8 +38,8 @@ public class Deck {
      * @param cards list of DeckCards specifying the card 
      * order.  Cards are drawn from the back of the list  
      */
-    public Deck(List<DeckCard> cards) {
-        this.cards = ImList.<DeckCard>convert(cards);
+    public Deck(List<CardSpec> cards) {
+        this.cards = ImList.<CardSpec>convert(cards);
     }
 
     public int size() {
@@ -52,7 +52,7 @@ public class Deck {
         return drawnCard;
     }
 
-    public ImList<DeckCard> getView() {
+    public ImList<CardSpec> getView() {
         return cards;
     }
 

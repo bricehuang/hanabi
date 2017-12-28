@@ -3,9 +3,8 @@ package game;
 import java.util.List;
 import java.util.Map;
 
+import hanabi.CardSpec;
 import hanabi.Color;
-import hanabi.DeckCard;
-import javafx.util.Pair;
 import move.Move;
 import util.ImList;
 import views.VisibleHandView;
@@ -20,10 +19,10 @@ public class OmnescientGameView {
     public final int playerToMove;
     public final int lives;
     public final int hints;
-    public final ImList<DeckCard> deck; 
+    public final ImList<CardSpec> deck; 
     public final ImList<Move> history;
     public final Map<Color, Integer> plays;
-    public final Map<Pair<Color, Integer>, Integer> discards;
+    public final Map<CardSpec, Integer> discards;
     public final List<VisibleHandView> hands;
     public final boolean isOver;
 
@@ -47,10 +46,10 @@ public class OmnescientGameView {
         int playerToMove,
         int lives,
         int hints,
-        ImList<DeckCard> deck,
+        ImList<CardSpec> deck,
         ImList<Move> history,
         Map<Color, Integer> plays,
-        Map<Pair<Color, Integer>, Integer> discards,
+        Map<CardSpec, Integer> discards,
         List<VisibleHandView> hands,
         boolean isOver
     ) {

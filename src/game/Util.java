@@ -3,9 +3,8 @@ package game;
 import java.util.List;
 import java.util.Map;
 
+import hanabi.CardSpec;
 import hanabi.Color;
-import hanabi.DeckCard;
-import javafx.util.Pair;
 import move.Move;
 import util.ImList;
 import views.HiddenHandView;
@@ -34,11 +33,11 @@ public class Util {
         return playsRep;
     }
 
-    public static String discardsRep(Map<Pair<Color, Integer>, Integer> discards) {
+    public static String discardsRep(Map<CardSpec, Integer> discards) {
         String discardsRep = "Discards:\n";
-        for (Pair<Color, Integer> colorAndNumber : discards.keySet()) {
-            Color color = colorAndNumber.getKey();
-            int number = colorAndNumber.getValue();
+        for (CardSpec colorAndNumber : discards.keySet()) {
+            Color color = colorAndNumber.color;
+            int number = colorAndNumber.number;
             discardsRep += "  " + color + number + ": " + discards.get(colorAndNumber) + "\n";                 
         }
         return discardsRep;
@@ -85,8 +84,8 @@ public class Util {
     }
 
     private static final int PRINT_CARDS_PER_ROW = 10;
-    public static String deckRep(ImList<DeckCard> cards){
-        ImList<DeckCard> deckPointer = cards;
+    public static String deckRep(ImList<CardSpec> cards){
+        ImList<CardSpec> deckPointer = cards;
         String repr = "Deck:";
         int cardsPrinted = 0;
         while (deckPointer.length() > 0) {

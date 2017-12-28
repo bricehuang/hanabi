@@ -1,11 +1,11 @@
 package hanabi;
 
-public class DeckCard {
+public class CardSpec {
 
     public final Color color;
     public final int number;
 
-    public DeckCard(Color color, int number) {
+    public CardSpec(Color color, int number) {
         this.color = color;
         this.number = number;
     }
@@ -16,8 +16,8 @@ public class DeckCard {
 
     @Override
     public boolean equals (Object other) {
-        if (!(other instanceof DeckCard)) { return false; }
-        DeckCard that = (DeckCard) other;
+        if (!(other instanceof CardSpec)) { return false; }
+        CardSpec that = (CardSpec) other;
         return (
             this.color.equals(that.color) && 
             this.number == that.number
