@@ -301,13 +301,12 @@ public class Game {
      * invalid hints return (false, error message) and are guaranteed to 
      * not mutate game state.  
      */
-    public Pair<Boolean, String> resign() {
+    public Pair<Boolean, String> resign(int actor) {
         assert !isOver;
         this.isOver = true;
         this.history = history.extend(
-            new Resignation(this.playerToMove)
+            new Resignation(actor)
         );
-        updatePlayerToMove();
         refreshViews();
         return new Pair<Boolean, String>(true, "");
     }
@@ -334,14 +333,14 @@ public class Game {
     public Pair<Boolean, String> makeMove(String in) {
         int maxPlayerIndex = nPlayers-1;
         int maxCardIndex = handSize-1;
-        if (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])|(resign)")){
+        if (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])|(resign [0-"+maxPlayerIndex+"])")){
             return new Pair<Boolean, String> (
                 false, 
                 "Allowed inputs:\n" +
                 "hint [0-"+maxPlayerIndex+"] [12345BGRWY] to hint\n" +
                 "play [0-"+maxCardIndex+"] to play\n" +
                 "discard [0-"+maxCardIndex+"] to discard\n" +
-                "resign to resign\n"
+                "resign [0-"+maxPlayerIndex+"] to resign\n"
             );
         }
         String[] tokens = in.split(" ");
@@ -361,7 +360,8 @@ public class Game {
             int position = Integer.parseInt(tokens[1]);
             return discard(position);
         } else if (tokens[0].equals("resign")){
-            return resign();
+        		int actor = Integer.parseInt(tokens[1]);
+            return resign(actor);
         } else {
             throw new RuntimeException("Should not get here.");
         }
