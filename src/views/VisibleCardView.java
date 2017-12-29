@@ -2,9 +2,14 @@ package views;
 
 import java.util.Set;
 
-import hanabi.Color;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public class VisibleCardView {
+import game.JsonUtil;
+import hanabi.Color;
+import util.JSONifiable;
+
+public class VisibleCardView implements JSONifiable {
 
     private final Color color;
     private final Integer number;
@@ -64,5 +69,15 @@ public class VisibleCardView {
             this.hiddenView.toString().substring(2)
         );
     }
+
+	@Override
+	public JSONObject jsonify() throws JSONException {
+		JSONObject result = new JSONObject();
+		result.put(JsonUtil.COLOR, color.toString());
+		result.put(JsonUtil.NUMBER, number);
+		result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
+		result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
+		return result;
+	}
 
 }

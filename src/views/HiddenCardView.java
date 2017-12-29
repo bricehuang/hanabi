@@ -4,10 +4,15 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import game.JsonUtil;
 import hanabi.Card;
 import hanabi.Color;
+import util.JSONifiable;
 
-public class HiddenCardView {
+public class HiddenCardView implements JSONifiable {
 
     public static final HiddenCardView NO_INFO = new HiddenCardView(
         Color.ALL_COLORS, Card.ALL_NUMBERS
@@ -71,5 +76,23 @@ public class HiddenCardView {
         }
         return colorStr+numberStr+" ("+colorsStr+", "+numbersStr+")";
     }
+
+	@Override
+	public JSONObject jsonify() throws JSONException {
+		JSONObject result = new JSONObject();
+		if (colors.size() == 1) {
+			result.put(JsonUtil.COLOR, extractEltFromSingletonSet(colors).toString());			
+		} else {
+			result.put(JsonUtil.COLOR, JsonUtil.UNKNOWN);
+		}
+		if (numbers.size() == 1) {
+			result.put(JsonUtil.NUMBER, extractEltFromSingletonSet(numbers).toString());			
+		} else {
+			result.put(JsonUtil.NUMBER, JsonUtil.UNKNOWN);
+		}
+		result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
+		result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
+		return result;
+	}
 
 }

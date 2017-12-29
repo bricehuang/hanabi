@@ -2,8 +2,6 @@ package game;
 
 import org.junit.Test;
 
-import game.Game;
-
 public class GameTest {
 
     @Test(expected=AssertionError.class)

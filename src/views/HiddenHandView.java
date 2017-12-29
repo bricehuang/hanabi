@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 public class HiddenHandView {
     
     public final List<HiddenCardView> cardViews;
@@ -35,4 +38,13 @@ public class HiddenHandView {
         rep += "]";
         return rep;
     }
+
+    public JSONArray jsonArrayify() throws JSONException {
+    		JSONArray result = new JSONArray();
+    		for (HiddenCardView cardView : cardViews) {
+    			result.put(cardView.jsonify());
+    		}
+    		return result;
+    }
+
 }

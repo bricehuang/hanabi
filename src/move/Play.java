@@ -34,7 +34,7 @@ public class Play implements Move {
 	@Override
 	public JSONObject jsonify() throws JSONException {
 		JSONObject result = new JSONObject();
-		result.put(JsonUtil.MOVE_TYPE, JsonUtil.DISCARD);
+		result.put(JsonUtil.MOVE_TYPE, JsonUtil.PLAY);
 		result.put(JsonUtil.ACTOR, actor);
 		result.put(JsonUtil.POSITION, position);
 		result.put(JsonUtil.CORRECT, isCorrect);
