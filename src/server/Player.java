@@ -30,8 +30,15 @@ public class Player {
 		messages.put(message);
 	}
 
-	public JSONObject getMessageToSend() throws InterruptedException, JSONException {
-		JSONObject message = messages.poll(60, TimeUnit.SECONDS);
+	public JSONObject getMessageToSend() throws JSONException {
+		JSONObject message;
+		try {
+			message = messages.poll(60, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			// return a null message; client will retry
+			message = null;
+		}
+
 		if (message != null) {
 			return message.put("is_null", false);
 		} else {
@@ -49,7 +56,9 @@ public class Player {
 		this.room.removePlayer(this);
 		synchronized(context) {
 			this.sendMessage(
-				new JSONObject().put("type", "logout-ack")
+				new JSONObject()
+				    .put("type", "logout-ack")
+				    .put("content", new JSONObject())
 			);
 			Config.getAllUsernames(context).remove(this.name);
 			Config.getPlayersBySessionID(context).remove(this.sessionID);

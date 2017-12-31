@@ -21,23 +21,19 @@
                 }
             )
             .done(function(response){
-                if (response.success){
-                    if (response.is_null) {
-                        pollLoop();
-                    } else if (response.type === "logout-ack") {
-                	    	    window.location = 'index.html';
-                	    } else if (response.type === "server_to_chat"){
-                        $('#messages').append($('<li>').html(response.content.italics()));
-                        pollLoop();
-                	    } else if (response.type === "user_to_chat"){
-                        $('#messages').append($('<li>').html(response.from.bold() + ": " + response.content));
-                        pollLoop();
-                    }
-        	        } else {
+                if (!response.authorized){
                     alert(response.error_msg);
-                    if (response.error_type === "unauthorized") {
-                    	    window.location = 'index.html';
-                    } else {                    	
+                    window.location = 'index.html';
+        	        } else if (response.is_null){
+        	        	    pollLoop();
+        	        } else {
+                    if (response.type === "logout-ack") {
+                        window.location = 'index.html';
+                    } else if (response.type === "server_to_chat"){
+                        $('#messages').append($('<li>').html(response.content.message.italics()));
+                        pollLoop();
+                    } else if (response.type === "user_to_chat"){
+                        $('#messages').append($('<li>').html(response.content.from.bold() + ": " + response.content.message));
                         pollLoop();
                     }
         	        }
@@ -48,14 +44,24 @@
         }
         $(document).on("click", "#logout", function() {
             $.post(
-            	    "server/play",
-           	    {cmd: "logout"}
+            	    "server/play", {
+                	    data: JSON.stringify({
+            	    	        cmd: "logout",
+            	    	        content: {}
+                	    })            	    
+            	    }
             )
         }); 
         $(document).on("click", "#chat-send", function() {
             $.post(
-            	    "server/play",
-           	    {cmd: "chat", content: $('#chat').val()}
+            	    "server/play",{
+            	        	data: JSON.stringify({
+            	    	        cmd: "chat", 
+            	    	        content: {
+            	    	    	        message: $('#chat').val()
+            	    	        }
+            	        })
+            	    }
             )
     	        $('#chat').val('');
         }); 
