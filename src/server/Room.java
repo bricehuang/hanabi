@@ -20,7 +20,7 @@ public class Room {
 			broadcast(
 				new JSONObject()
 					.put("type", "server_to_chat")
-					.put("chat", player.name+" has entered the room.")
+					.put("content", player.name+" entered the room.")
 			);
 		} catch (InterruptedException | JSONException e) {
 			e.printStackTrace();
@@ -32,7 +32,7 @@ public class Room {
 			broadcast(
 				new JSONObject()
 					.put("type", "server_to_chat")
-					.put("chat", player.name+" has left the room.")
+					.put("content", player.name+" left the room.")
 			);
 		} catch (InterruptedException | JSONException e) {
 			e.printStackTrace();
@@ -41,9 +41,10 @@ public class Room {
 	public void chat(Player player, String message) {
 		try {
 			broadcast(
-				new JSONObject()
-					.put("type", "user_to_chat")
-					.put("chat", message)
+                new JSONObject()
+                    .put("from", player.name)
+                    .put("type", "user_to_chat")
+                    .put("content", message)
 			);
 		} catch (InterruptedException | JSONException e) {
 			e.printStackTrace();

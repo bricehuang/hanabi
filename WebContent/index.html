@@ -6,23 +6,18 @@
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <script>
         $(document).on("click", "#login", function() {
-            $.post("server/login",
-           	{
-            		name: document.getElementById("name").value
-           	},
-          	function(jsonResponse) {
-           		if (!(jsonResponse.success)) {
-           			alert(jsonResponse.error_msg);
-           		} else {
-           			alert("You have been logged in!");
-           		}
-            });
+            $.post(
+            	    "server/login",
+           	    {name: document.getElementById("name").value},
+          	    function(jsonResponse) {
+           		    if (jsonResponse.success) {
+               			window.location = 'main.html';
+           		    } else {
+           			    alert(jsonResponse.error_msg);
+           		    }
+                }
+            );
         });
-        function alert_if_fail(success, error_msg) {
-        		if (!success) {
-        			alert(error_msg);
-        		}
-        }
     </script>
 </head>
 <body>

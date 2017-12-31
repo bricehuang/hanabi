@@ -41,7 +41,12 @@ public class LoginServlet extends HttpServlet {
 		Map<String, Player> playersBySessionID = Config.getPlayersBySessionID(context);
 		if (playersBySessionID.containsKey(oldSessionID)) {
 			Player player = playersBySessionID.get(oldSessionID);
-			player.logout();
+			try {
+				player.logout();
+			} catch (InterruptedException | JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
     }
 

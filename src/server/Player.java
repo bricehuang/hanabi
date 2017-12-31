@@ -2,9 +2,11 @@ package server;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Player {
@@ -27,19 +29,35 @@ public class Player {
 	public void sendMessage(JSONObject message) throws InterruptedException {
 		messages.put(message);
 	}
-	
+
+	public JSONObject getMessageToSend() throws InterruptedException, JSONException {
+		JSONObject message = messages.poll(60, TimeUnit.SECONDS);
+		if (message != null) {
+			return message.put("is_null", false);
+		} else {
+			return new JSONObject().put("is_null", true);
+		}
+	}
+
 	public void moveRoom(Room newRoom) {
 		this.room.removePlayer(this);
 		this.room = newRoom;
 		this.room.addPlayer(this);
 	}
 	
-	public void logout() {
+	public void logout() throws InterruptedException, JSONException {
 		this.room.removePlayer(this);
 		synchronized(context) {
+			this.sendMessage(
+				new JSONObject().put("type", "logout-ack")
+			);
 			Config.getAllUsernames(context).remove(this.name);
 			Config.getPlayersBySessionID(context).remove(this.sessionID);
 		}
+	}
+	
+	public void chat(String content) {
+		this.room.chat(this, content);
 	}
 
 }
