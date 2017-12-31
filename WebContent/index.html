@@ -1,28 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Rudimentary Login Page</title>
+    <meta charset="UTF-8">
+    <title>Rudimentary Login Page</title>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script>
-        $(document).on("click", "#login", function() {
-            $.post(
-            	    "server/login",
-           	    {name: document.getElementById("name").value},
-          	    function(jsonResponse) {
-           		    if (jsonResponse.success) {
-               			window.location = 'main.html';
-           		    } else {
-           			    alert(jsonResponse.error_msg);
-           		    }
-                }
-            );
-        });
-    </script>
 </head>
 <body>
-    Your name: 
-    <input type="text" id="name" /> 
+    Your name:
+    <input type="text" id="name" />
     <button id="login">Play!</button>
+
+    <script src="login.js"></script>
 </body>
 </html>

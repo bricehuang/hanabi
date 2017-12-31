@@ -1,83 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Main Main Something Main</title>
+    <meta charset="UTF-8">
+    <title>Main Main Something Main</title>
     <script src="http://code.jquery.com/jquery-latest.min.js"></script>
     <style>
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages li { padding: 5px 10px; }
     </style>
-    <script>
-        var pollLoop = function() {
-            $.ajax(
-                'server/play', {
-                cache: false,
-                type: 'GET',
-                processData: false,
-                contentType: 'application/json',
-                data: '',
-                timeout: 90000
-                }
-            )
-            .done(function(response){
-                if (!response.authorized){
-                    alert(response.error_msg);
-                    window.location = 'index.html';
-        	        } else if (response.is_null){
-        	        	    pollLoop();
-        	        } else {
-                    if (response.type === "logout-ack") {
-                        window.location = 'index.html';
-                    } else if (response.type === "server_to_chat"){
-                        $('#messages').append($('<li>').html(response.content.message.italics()));
-                        pollLoop();
-                    } else if (response.type === "user_to_chat"){
-                        $('#messages').append($('<li>').html(response.content.from.bold() + ": " + response.content.message));
-                        pollLoop();
-                    }
-        	        }
-            }).fail(function(xmlHttpRequest, code, error){
-        		    $('#output').text('timeout!');
-        		    pollLoop();
-            });
-        }
-        $(document).on("click", "#logout", function() {
-            $.post(
-            	    "server/play", {
-                	    data: JSON.stringify({
-            	    	        cmd: "logout",
-            	    	        content: {}
-                	    })            	    
-            	    }
-            )
-        }); 
-        $(document).on("click", "#chat-send", function() {
-            $.post(
-            	    "server/play",{
-            	        	data: JSON.stringify({
-            	    	        cmd: "chat", 
-            	    	        content: {
-            	    	    	        message: $('#chat').val()
-            	    	        }
-            	        })
-            	    }
-            )
-    	        $('#chat').val('');
-        }); 
-
-        $(function() {
-            pollLoop();
-        });
-    </script>
 </head>
 <body>
     Say something:
     <input type="text" id="chat" />
-    <button id="chat-send">Send</button> 
+    <button id="chat-send">Send</button>
     <button id="logout">Logout</button>
     <ul id="messages"></ul>
 
+    <script src="main.js"> </script>
+    <script src="main-post.js"> </script>
 </body>
 </html>
 
