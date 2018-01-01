@@ -9,6 +9,12 @@ import game.Game;
 
 public class GameRoom extends Room {
 
+    @Override
+    protected void setAbstractFields() {
+        this.serverChatType = "server_to_game";
+        this.serverChatType = "user_to_game";        
+    }    
+    
     private final int nPlayers;
     private final Game game;
     private final List<String> playerIDs;
@@ -20,7 +26,8 @@ public class GameRoom extends Room {
     public GameRoom(int nPlayers) {
         super();
         this.nPlayers = nPlayers;
-        this.game = new Game(nPlayers);this.hasStarted = false;
+        this.game = new Game(nPlayers);
+        this.hasStarted = false;
         this.playerIDs = new ArrayList<>();
         this.usernamesByID = new HashMap<>();
 
@@ -31,4 +38,5 @@ public class GameRoom extends Room {
     private void refreshAllPlayersViews() {
         throw new RuntimeException("Unimplemented");
     }
+
 }

@@ -6,25 +6,35 @@ import java.util.List;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Room {
+public abstract class Room {
 
     List<Player> players;
 
     public Room() {
         this.players = new ArrayList<>();
+        setAbstractFields();
     }
+    
+    public JSONObject makeMessageForPlayerQueue(String type, JSONObject content) throws JSONException {
+        return new JSONObject()
+            .put("type", type)
+            .put("content", content);
+    }
+    
+    // abstract fields.  setAbstractFields() is a somewhat hacky way
+    // to get around Java not having static fields.
+    protected String serverChatType = "";
+    protected String userChatType = "";
+    protected abstract void setAbstractFields();
 
     public void addPlayer(Player player) {
         players.add(player);
         try {
-            broadcast(
+            broadcast(makeMessageForPlayerQueue(
+                serverChatType,
                 new JSONObject()
-                    .put("type", "server_to_lobby")
-                    .put("content",
-                        new JSONObject()
-                            .put("message", player.name+" entered the room.")
-                    )
-            );
+                    .put("message", player.name+" entered the room.")
+            ));
         } catch (InterruptedException | JSONException e) {
             e.printStackTrace();
         }
@@ -32,29 +42,24 @@ public class Room {
     public void removePlayer(Player player) {
         players.remove(player);
         try {
-            broadcast(
+            broadcast(makeMessageForPlayerQueue(
+                serverChatType,
                 new JSONObject()
-                    .put("type", "server_to_lobby")
-                    .put("content",
-                        new JSONObject()
-                            .put("message", player.name+" left the room.")
-                    )
-            );
+                    .put("message", player.name+" left the room.")
+            ));
         } catch (InterruptedException | JSONException e) {
             e.printStackTrace();
         }
     }
     public void chat(Player player, String message) {
         try {
-            broadcast(
+            broadcast(makeMessageForPlayerQueue(
+                userChatType,
                 new JSONObject()
-                    .put("type", "user_to_lobby")
-                    .put("content",
-                        new JSONObject()
-                            .put("from", player.name)
-                            .put("message", message)
-                    )
-            );
+                    .put("from", player.name)
+                    .put("message", message)
+                
+            ));
         } catch (InterruptedException | JSONException e) {
             e.printStackTrace();
         }
