@@ -3,6 +3,8 @@ package server;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,9 +16,11 @@ public abstract class Room {
     protected String userChatType = "";
     protected abstract void setAbstractFields();
 
-    List<Player> players;
+    protected final ServletContext context;
+    protected List<Player> players;
 
-    public Room() {
+    public Room(ServletContext context) {
+        this.context = context;
         this.players = new ArrayList<>();
         setAbstractFields();
     }

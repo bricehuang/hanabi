@@ -33,7 +33,7 @@ public class Config implements ServletContextListener {
         ServletContext context = arg0.getServletContext();
         context.setAttribute("players_by_sessionID", new HashMap<String, Player>());
         context.setAttribute("all_usernames", new HashSet<String>());
-        context.setAttribute("lobby", new Lobby());
+        context.setAttribute("lobby", new Lobby(context));
         context.setAttribute("active_games", new TreeMap<Integer, GameRoom>());
     }
 
@@ -86,4 +86,11 @@ public class Config implements ServletContextListener {
         return key;
     }
 
+    public static int genGameID(ServletContext context) {
+        int gameID;
+        do {
+            gameID = (int) (Math.random() * 1000000);
+        } while (getActiveGames(context).keySet().contains(gameID));
+        return gameID;
+    }
 }

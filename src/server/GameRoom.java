@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
+
 import game.Game;
 
 public class GameRoom extends Room {
@@ -15,6 +17,7 @@ public class GameRoom extends Room {
         this.serverChatType = "user_to_game";        
     }    
     
+    private final int gameID;
     private final int nPlayers;
     private final Game game;
     private final List<String> playerIDs;
@@ -23,8 +26,9 @@ public class GameRoom extends Room {
     private boolean hasStarted;
     public int playersPresent;
 
-    public GameRoom(int nPlayers) {
-        super();
+    public GameRoom(ServletContext context, int gameID, int nPlayers) {
+        super(context);
+        this.gameID = gameID;
         this.nPlayers = nPlayers;
         this.game = new Game(nPlayers);
         this.hasStarted = false;
