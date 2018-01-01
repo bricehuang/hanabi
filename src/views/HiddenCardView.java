@@ -39,7 +39,7 @@ public class HiddenCardView implements JSONifiable {
         if (!(other instanceof HiddenCardView)) { return false; }
         HiddenCardView that = (HiddenCardView) other;
         return (
-            this.colors.equals(that.colors) && 
+            this.colors.equals(that.colors) &&
             this.numbers.equals(that.numbers)
         );
     }
@@ -56,9 +56,9 @@ public class HiddenCardView implements JSONifiable {
 
     @Override
     public String toString() {
-        String colorStr = (colors.size() == 1) ? 
+        String colorStr = (colors.size() == 1) ?
             extractEltFromSingletonSet(colors).toString() : "?";
-        String numberStr = (numbers.size() == 1) ? 
+        String numberStr = (numbers.size() == 1) ?
             extractEltFromSingletonSet(numbers).toString() : "?";
         String colorsStr = "";
         for (Color color : this.colors) {
@@ -77,22 +77,22 @@ public class HiddenCardView implements JSONifiable {
         return colorStr+numberStr+" ("+colorsStr+", "+numbersStr+")";
     }
 
-	@Override
-	public JSONObject jsonify() throws JSONException {
-		JSONObject result = new JSONObject();
-		if (colors.size() == 1) {
-			result.put(JsonUtil.COLOR, extractEltFromSingletonSet(colors).toString());			
-		} else {
-			result.put(JsonUtil.COLOR, JsonUtil.UNKNOWN);
-		}
-		if (numbers.size() == 1) {
-			result.put(JsonUtil.NUMBER, extractEltFromSingletonSet(numbers).toString());			
-		} else {
-			result.put(JsonUtil.NUMBER, JsonUtil.UNKNOWN);
-		}
-		result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
-		result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
-		return result;
-	}
+    @Override
+    public JSONObject jsonify() throws JSONException {
+        JSONObject result = new JSONObject();
+        if (colors.size() == 1) {
+            result.put(JsonUtil.COLOR, extractEltFromSingletonSet(colors).toString());
+        } else {
+            result.put(JsonUtil.COLOR, JsonUtil.UNKNOWN);
+        }
+        if (numbers.size() == 1) {
+            result.put(JsonUtil.NUMBER, extractEltFromSingletonSet(numbers).toString());
+        } else {
+            result.put(JsonUtil.NUMBER, JsonUtil.UNKNOWN);
+        }
+        result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
+        result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
+        return result;
+    }
 
 }

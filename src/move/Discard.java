@@ -21,7 +21,7 @@ public class Discard implements Move {
     @Override
     public String verboseRep() {
         String safety = this.isSafe ? "safe" : "unsafe";
-        return "Player " + actor + " discarded his card from position " + position +  
+        return "Player " + actor + " discarded his card from position " + position +
             ". It was " + safety + ".";
     }
 
@@ -31,14 +31,14 @@ public class Discard implements Move {
         return "" + actor + " DISCARD " + position + " " + safety;
     }
 
-	@Override
-	public JSONObject jsonify() throws JSONException {
-		JSONObject result = new JSONObject();
-		result.put(JsonUtil.MOVE_TYPE, JsonUtil.DISCARD);
-		result.put(JsonUtil.ACTOR, actor);
-		result.put(JsonUtil.POSITION, position);
-		result.put(JsonUtil.SAFE, isSafe);
-		return result;
-	}
+    @Override
+    public JSONObject jsonify() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put(JsonUtil.MOVE_TYPE, JsonUtil.DISCARD);
+        result.put(JsonUtil.ACTOR, actor);
+        result.put(JsonUtil.POSITION, position);
+        result.put(JsonUtil.SAFE, isSafe);
+        return result;
+    }
 
 }

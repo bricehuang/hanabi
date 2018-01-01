@@ -8,7 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 public class HiddenHandView {
-    
+
     public final List<HiddenCardView> cardViews;
 
     public HiddenHandView(List<HiddenCardView> cardViews){
@@ -40,11 +40,11 @@ public class HiddenHandView {
     }
 
     public JSONArray jsonArrayify() throws JSONException {
-    		JSONArray result = new JSONArray();
-    		for (HiddenCardView cardView : cardViews) {
-    			result.put(cardView.jsonify());
-    		}
-    		return result;
+        JSONArray result = new JSONArray();
+        for (HiddenCardView cardView : cardViews) {
+            result.put(cardView.jsonify());
+        }
+        return result;
     }
 
 }

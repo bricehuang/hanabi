@@ -13,11 +13,11 @@ public class VisibleCardView implements JSONifiable {
 
     private final Color color;
     private final Integer number;
-    private final HiddenCardView hiddenView; 
-    
+    private final HiddenCardView hiddenView;
+
     public VisibleCardView(
-        Color color, 
-        Integer number, 
+        Color color,
+        Integer number,
         HiddenCardView hiddenView
     ) {
         this.color = color;
@@ -46,8 +46,8 @@ public class VisibleCardView implements JSONifiable {
         if (!(other instanceof VisibleCardView)) { return false; }
         VisibleCardView that = (VisibleCardView) other;
         return (
-            this.color.equals(that.color) && 
-            this.number == that.number && 
+            this.color.equals(that.color) &&
+            this.number == that.number &&
             this.hiddenView.equals(that.hiddenView)
         );
     }
@@ -55,8 +55,8 @@ public class VisibleCardView implements JSONifiable {
     @Override
     public int hashCode() {
         return (
-            this.color.hashCode() + 
-            this.number.hashCode() + 
+            this.color.hashCode() +
+            this.number.hashCode() +
             this.hiddenView.hashCode()
         );
     }
@@ -64,20 +64,20 @@ public class VisibleCardView implements JSONifiable {
     @Override
     public String toString() {
         return (
-            this.color.toString() + 
-            this.number + 
+            this.color.toString() +
+            this.number +
             this.hiddenView.toString().substring(2)
         );
     }
 
-	@Override
-	public JSONObject jsonify() throws JSONException {
-		JSONObject result = new JSONObject();
-		result.put(JsonUtil.COLOR, color.toString());
-		result.put(JsonUtil.NUMBER, number);
-		result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
-		result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
-		return result;
-	}
+    @Override
+    public JSONObject jsonify() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put(JsonUtil.COLOR, color.toString());
+        result.put(JsonUtil.NUMBER, number);
+        result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
+        result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
+        return result;
+    }
 
 }

@@ -25,7 +25,7 @@ public class CardSpec implements JSONifiable {
         if (!(other instanceof CardSpec)) { return false; }
         CardSpec that = (CardSpec) other;
         return (
-            this.color.equals(that.color) && 
+            this.color.equals(that.color) &&
             this.number == that.number
         );
     }
@@ -41,10 +41,10 @@ public class CardSpec implements JSONifiable {
     }
 
     public JSONObject jsonify() throws JSONException {
-		JSONObject result = new JSONObject();
-		result.put(JsonUtil.COLOR, color.toString());
-		result.put(JsonUtil.NUMBER, number);
-		return result;
+        JSONObject result = new JSONObject();
+        result.put(JsonUtil.COLOR, color.toString());
+        result.put(JsonUtil.NUMBER, number);
+        return result;
     }
 
 }

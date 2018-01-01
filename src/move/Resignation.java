@@ -23,12 +23,12 @@ public class Resignation implements Move {
         return "" + actor + " RESIGN";
     }
 
-	@Override
-	public JSONObject jsonify() throws JSONException {
-		JSONObject result = new JSONObject();
-		result.put(JsonUtil.MOVE_TYPE, JsonUtil.RESIGN);
-		result.put(JsonUtil.ACTOR, actor);
-		return result;
-	}
+    @Override
+    public JSONObject jsonify() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put(JsonUtil.MOVE_TYPE, JsonUtil.RESIGN);
+        result.put(JsonUtil.ACTOR, actor);
+        return result;
+    }
 
 }

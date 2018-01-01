@@ -31,7 +31,7 @@ public class Game {
     private int playerToMove;
     private int lives;
     private int hints;
-    private final Deck deck; 
+    private final Deck deck;
     private ImList<Move> history;
     private final PlayState plays;
     private final DiscardState discards;
@@ -79,7 +79,7 @@ public class Game {
         this.isOver = false;
         refreshViews();
     }
-    
+
     private void refreshViews() {
         List<VisibleHandView> handViews = new ArrayList<>();
         for (Hand hand : hands) {
@@ -139,14 +139,14 @@ public class Game {
     }
 
     /*
-     * Play functions.  These modify game state.  
+     * Play functions.  These modify game state.
      */
     private void updatePlayerToMove() {
         this.playerToMove = (this.playerToMove + 1)%nPlayers;
     }
-    
+
     private void updateIsOver() {
-        boolean livesEmpty = (lives == 0); 
+        boolean livesEmpty = (lives == 0);
         boolean allCardsPlayed = true;
         for (Color color : Color.ALL_COLORS) {
             allCardsPlayed = allCardsPlayed && plays.hasBeenPlayed(color, Card.NUMBER_MAX);
@@ -159,12 +159,12 @@ public class Game {
     }
 
     /**
-     * Gives a color hint.  Mutates game state.  
+     * Gives a color hint.  Mutates game state.
      * @param player player to hint
      * @param color color of hint given
-     * @return (success, error message).  Valid hints return (true, "").  
-     * invalid hints return (false, error message) and are guaranteed to 
-     * not mutate game state.    
+     * @return (success, error message).  Valid hints return (true, "").
+     * invalid hints return (false, error message) and are guaranteed to
+     * not mutate game state.
      */
     public Pair<Boolean, String> hint(int player, Color color) {
         assert !isOver;
@@ -186,18 +186,18 @@ public class Game {
                 refreshViews();
                 return new Pair<Boolean, String>(true, "");
             } else {
-                return new Pair<Boolean, String>(false, "That color doesn't exist in that player's hand");                
+                return new Pair<Boolean, String>(false, "That color doesn't exist in that player's hand");
             }
         }
     }
 
     /**
-     * Gives a number hint.  Mutates game state.  
+     * Gives a number hint.  Mutates game state.
      * @param player player to hint
      * @param number number of hint given
-     * @return (success, error message).  Valid hints return (true, "").  
-     * invalid hints return (false, error message) and are guaranteed to 
-     * not mutate game state.    
+     * @return (success, error message).  Valid hints return (true, "").
+     * invalid hints return (false, error message) and are guaranteed to
+     * not mutate game state.
      */
     public Pair<Boolean, String> hint(int player, int number) {
         assert !isOver;
@@ -221,12 +221,12 @@ public class Game {
                 refreshViews();
                 return new Pair<Boolean, String>(true, "");
             } else {
-                return new Pair<Boolean, String>(false, "That number doesn't exist in that player's hand");                
+                return new Pair<Boolean, String>(false, "That number doesn't exist in that player's hand");
             }
         }
     }
 
-    private Card playOrDiscardPosition(int position) { 
+    private Card playOrDiscardPosition(int position) {
         if (deck.size() > 0) {
             Card newCard = deck.draw();
             return hands.get(playerToMove).playOrDiscard(position, newCard);
@@ -238,9 +238,9 @@ public class Game {
     /**
      * Plays card from specified position
      * @param position
-     * @return (success, error message).  Valid hints return (true, "").  
-     * invalid hints return (false, error message) and are guaranteed to 
-     * not mutate game state.  
+     * @return (success, error message).  Valid hints return (true, "").
+     * invalid hints return (false, error message) and are guaranteed to
+     * not mutate game state.
      */
     public Pair<Boolean, String> play(int position) {
         assert !isOver;
@@ -268,9 +268,9 @@ public class Game {
     /**
      * Discards card from specified position
      * @param position
-     * @return (success, error message).  Valid hints return (true, "").  
-     * invalid hints return (false, error message) and are guaranteed to 
-     * not mutate game state.  
+     * @return (success, error message).  Valid hints return (true, "").
+     * invalid hints return (false, error message) and are guaranteed to
+     * not mutate game state.
      */
     public Pair<Boolean, String> discard(int position) {
         assert !isOver;
@@ -297,9 +297,9 @@ public class Game {
 
     /**
      * Resigns and ends the game
-     * @return (success, error message).  Valid hints return (true, "").  
-     * invalid hints return (false, error message) and are guaranteed to 
-     * not mutate game state.  
+     * @return (success, error message).  Valid hints return (true, "").
+     * invalid hints return (false, error message) and are guaranteed to
+     * not mutate game state.
      */
     public Pair<Boolean, String> resign(int actor) {
         assert !isOver;
@@ -329,13 +329,13 @@ public class Game {
         tmp.put("Y", Color.YELLOW);
         COLOR_BY_SHORT_NAME = Collections.unmodifiableMap(tmp);
     }
-    
+
     public Pair<Boolean, String> makeMove(String in) {
         int maxPlayerIndex = nPlayers-1;
         int maxCardIndex = handSize-1;
         if (! in.matches("(hint [0-"+maxPlayerIndex+"] (B|G|R|W|Y|1|2|3|4|5))|(play [0-"+maxCardIndex+"])|(discard [0-"+maxCardIndex+"])|(resign [0-"+maxPlayerIndex+"])")){
             return new Pair<Boolean, String> (
-                false, 
+                false,
                 "Allowed inputs:\n" +
                 "hint [0-"+maxPlayerIndex+"] [12345BGRWY] to hint\n" +
                 "play [0-"+maxCardIndex+"] to play\n" +
@@ -366,7 +366,7 @@ public class Game {
             throw new RuntimeException("Should not get here.");
         }
     }
-    
+
     /**
      * Simulate a game
      */
