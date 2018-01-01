@@ -41,7 +41,7 @@ public class DiscardState {
     }
 
     public void discardCard(Color color, Integer number) {
-    		CardSpec colorAndNumber = new CardSpec(color, number);
+            CardSpec colorAndNumber = new CardSpec(color, number);
         if (!discards.keySet().contains(colorAndNumber)) {
             discards.put(colorAndNumber, 0);
         }
@@ -54,7 +54,7 @@ public class DiscardState {
     public Map<CardSpec, Integer> getView() {
         return immutableView;
     }
-    
+
     @Override
     public String toString() {
         return Util.discardsRep(discards);

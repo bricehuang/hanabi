@@ -40,9 +40,9 @@ public class EmptyImList<T extends JSONifiable> implements ImList<T> {
         return "";
     }
 
-	@Override
-	public JSONArray jsonArrayify() throws JSONException {
-		return new JSONArray();
-	}
+    @Override
+    public JSONArray jsonArrayify() throws JSONException {
+        return new JSONArray();
+    }
 
 }

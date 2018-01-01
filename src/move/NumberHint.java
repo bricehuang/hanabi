@@ -21,8 +21,8 @@ public class NumberHint implements Move {
 
     @Override
     public String verboseRep() {
-        return "Player " + actor + " hinted Player " + hintee + 
-                "'s " + number + "s.";
+        return "Player " + actor + " hinted Player " + hintee +
+            "'s " + number + "s.";
     }
 
     @Override
@@ -30,14 +30,14 @@ public class NumberHint implements Move {
         return "" + actor + " HINT " + hintee + " " + number;
     }
 
-	@Override
-	public JSONObject jsonify() throws JSONException {
-		JSONObject result = new JSONObject();
-		result.put(JsonUtil.MOVE_TYPE, JsonUtil.NUMBER_HINT);
-		result.put(JsonUtil.ACTOR, actor);
-		result.put(JsonUtil.HINTEE, hintee);
-		result.put(JsonUtil.NUMBER, number);
-		return result;
-	}
+    @Override
+    public JSONObject jsonify() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put(JsonUtil.MOVE_TYPE, JsonUtil.NUMBER_HINT);
+        result.put(JsonUtil.ACTOR, actor);
+        result.put(JsonUtil.HINTEE, hintee);
+        result.put(JsonUtil.NUMBER, number);
+        return result;
+    }
 
 }

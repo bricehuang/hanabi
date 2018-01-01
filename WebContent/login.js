@@ -5,9 +5,9 @@ var submit = function() {
     )
     .done(function (jsonResponse) {
         if (jsonResponse.success) {
-                window.location = 'main.html';
+            window.location = 'main.html';
         } else {
-                window.alert(jsonResponse.error_msg);
+            window.alert(jsonResponse.error_msg);
         }
     })
     .fail(function (xmlHttpRequest, code, error) {

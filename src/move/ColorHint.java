@@ -22,8 +22,8 @@ public class ColorHint implements Move {
 
     @Override
     public String verboseRep() {
-        return "Player " + actor + " hinted Player " + hintee + 
-                "'s " + color.verboseRep() + "s.";
+        return "Player " + actor + " hinted Player " + hintee +
+            "'s " + color.verboseRep() + "s.";
     }
 
     @Override
@@ -31,14 +31,14 @@ public class ColorHint implements Move {
         return "" + actor + " HINT " + hintee + " " + color.toString();
     }
 
-	@Override
-	public JSONObject jsonify() throws JSONException {
-		JSONObject result = new JSONObject();
-		result.put(JsonUtil.MOVE_TYPE, JsonUtil.COLOR_HINT);
-		result.put(JsonUtil.ACTOR, actor);
-		result.put(JsonUtil.HINTEE, hintee);
-		result.put(JsonUtil.COLOR, color.toString());
-		return result;
-	}
+    @Override
+    public JSONObject jsonify() throws JSONException {
+        JSONObject result = new JSONObject();
+        result.put(JsonUtil.MOVE_TYPE, JsonUtil.COLOR_HINT);
+        result.put(JsonUtil.ACTOR, actor);
+        result.put(JsonUtil.HINTEE, hintee);
+        result.put(JsonUtil.COLOR, color.toString());
+        return result;
+    }
 
 }
