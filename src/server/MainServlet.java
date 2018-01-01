@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -95,6 +96,16 @@ public class MainServlet extends HttpServlet {
 			try {
 				JSONObject message = player.getMessageToSend().put("authorized", true);
 				System.out.println(message);
+				if (
+					!message.getBoolean("is_null") && 
+					message.getString("type").equals("logout-ack")
+				) {
+					// session key is useless once logged out anyway.  But delete it just 
+					// for good measure.  
+					Cookie cookie = new Cookie("session_id", "");
+					cookie.setMaxAge(0);
+					response.addCookie(cookie);
+				}
 				response.getWriter().println(message);
 			} catch (JSONException e) {
 				e.printStackTrace();
