@@ -15,6 +15,7 @@ public abstract class Room {
     protected String serverChatType = "";
     protected String userChatType = "";
     protected abstract void setAbstractFields();
+    protected abstract boolean isLobby();
 
     protected final ServletContext context;
     protected List<Player> players;
@@ -36,43 +37,30 @@ public abstract class Room {
         }
     }
 
-    public void addPlayer(Player player) {
+    public void addPlayer(Player player) throws InterruptedException, JSONException {
         players.add(player);
-        try {
-            broadcast(
-                serverChatType,
-                new JSONObject()
-                    .put("message", player.name+" entered the room.")
-            );
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
+        broadcast(
+            serverChatType,
+            new JSONObject()
+                .put("message", player.name+" entered the room.")
+        );
     }
-    public void removePlayer(Player player) {
+    public void removePlayer(Player player) throws InterruptedException, JSONException {
         players.remove(player);
-        try {
-            broadcast(
-                serverChatType,
-                new JSONObject()
-                    .put("message", player.name+" left the room.")
-            );
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
+        broadcast(
+            serverChatType,
+            new JSONObject()
+                .put("message", player.name+" left the room.")
+        );
     }
-    public void chat(Player player, String message) {
-        try {
-            broadcast(
-                userChatType,
-                new JSONObject()
-                    .put("from", player.name)
-                    .put("message", message)
-                
-            );
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
-
+    public void chat(Player player, String message) throws InterruptedException, JSONException {
+        broadcast(
+            userChatType,
+            new JSONObject()
+                .put("from", player.name)
+                .put("message", message)
+            
+        );
     }
 
 }

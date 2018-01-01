@@ -40,6 +40,8 @@ var getHandler = function(responseType) {
             return serverLobbyChatHandler;
         case "user_to_lobby":
             return userLobbyChatHandler;
+        case "game_list": 
+            return gameListHandler;
         default:
             return doNothingHandler;
     }
@@ -57,5 +59,16 @@ var serverLobbyChatHandler = function(content) {
 }
 var userLobbyChatHandler = function(content) {
     $('#messages').append($('<li>').html(content.from.bold() + ": " + content.message));
+    pollLoop();
+}
+var gameListHandler = function(content) {
+    $('#games').empty();
+    var game_list = content.games;
+    for (var i=0; i<game_list.length; i++) {
+        game = game_list[i]
+        $('#games').append($('<li>').html(
+            "" + game.id + " " + game.capacity + " " + game.players + " " + game.state
+        ));
+    }
     pollLoop();
 }

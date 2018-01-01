@@ -2,6 +2,7 @@ package server;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -69,6 +70,18 @@ public class MainServlet extends HttpServlet {
          *          }
          *    - logout_ack
          *          content: {}
+         *    - game_list
+         *          content: {
+         *              games: [
+         *                  {
+         *                      id: int
+         *                      players: int
+         *                      capacity: int
+         *                      state: string
+         *                  }
+         *              ]
+         *          }
+         *          
          */
 
         /*
@@ -139,6 +152,7 @@ public class MainServlet extends HttpServlet {
          *  Currently accepted cmd strings:
          *    - logout
          *    - chat
+         *    - make_room
          */
 
         /*
@@ -163,14 +177,16 @@ public class MainServlet extends HttpServlet {
 
         switch (cmd) {
             case "logout":
-                    logoutHandler(player);
+                logoutHandler(player);
                 break;
             case "chat":
-                    chatHandler(player, content);
-                    break;
-                default:
-                    // invalid cmd, do nothing
-                    break;
+                chatHandler(player, content);
+                break;
+            case "make_room":
+                makeRoomHandler(player, content);
+            default:
+                // invalid cmd, do nothing
+                break;
         }
     }
 
@@ -185,7 +201,18 @@ public class MainServlet extends HttpServlet {
     private void chatHandler(Player player, JSONObject content) {
         try {
             player.chat(content.getString("message"));
-        } catch (JSONException e) {
+        } catch (JSONException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void makeRoomHandler(Player player, JSONObject content) {
+        if (! player.isInLobby()) { return; }
+        ServletContext context = this.getServletContext();
+        Lobby lobby = Config.getLobby(context);
+        try {
+            lobby.makeNewRoom(content.getInt("n_players"));
+        } catch (InterruptedException | JSONException e) {
             e.printStackTrace();
         }
     }

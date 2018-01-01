@@ -17,13 +17,17 @@ public class Player {
     private final BlockingQueue<JSONObject> messages;
     private final ServletContext context;
 
-    public Player(String sessionID, String name, Room room, ServletContext context) {
+    public Player(String sessionID, String name, Room room, ServletContext context) throws InterruptedException, JSONException {
         this.sessionID = sessionID;
         this.name = name;
         this.room = room;
         this.messages = new LinkedBlockingQueue<>();
         this.context = context;
         room.addPlayer(this);
+    }
+    
+    public boolean isInLobby() {
+        return this.room.isLobby();
     }
 
     public void sendMessage(JSONObject message) throws InterruptedException {
@@ -46,7 +50,7 @@ public class Player {
         }
     }
 
-    public void moveRoom(Room newRoom) {
+    public void moveRoom(Room newRoom) throws InterruptedException, JSONException {
         this.room.removePlayer(this);
         this.room = newRoom;
         this.room.addPlayer(this);
@@ -65,7 +69,7 @@ public class Player {
         }
     }
 
-    public void chat(String content) {
+    public void chat(String content) throws InterruptedException, JSONException {
         this.room.chat(this, content);
     }
 

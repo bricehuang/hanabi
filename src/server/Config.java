@@ -56,12 +56,12 @@ public class Config implements ServletContextListener {
         return (Set<String>) context.getAttribute("all_usernames");
     }
 
-    public static Room getLobby (ServletContext context) {
-        return (Room) context.getAttribute("lobby");
+    public static Lobby getLobby (ServletContext context) {
+        return (Lobby) context.getAttribute("lobby");
     }
 
-    public static Map<Integer, Room> getActiveGames (ServletContext context) {
-        return (Map<Integer, Room>) context.getAttribute("active_games");
+    public static Map<Integer, GameRoom> getActiveGames (ServletContext context) {
+        return (Map<Integer, GameRoom>) context.getAttribute("active_games");
     }
 
     private static final int SESSION_KEY_LENGTH = 16;

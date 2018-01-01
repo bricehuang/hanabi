@@ -32,3 +32,18 @@ $('#chat').keypress(function(event) {
 });
 
 $('#chat_send').click(chat);
+
+var make_room = function() {
+    $.post(
+        "server/play",{
+            data: JSON.stringify({
+                cmd: "make_room",
+                content: {
+                    n_players: 5
+                }
+            })
+        }
+    )
+}
+
+$('#make_room').click(make_room);

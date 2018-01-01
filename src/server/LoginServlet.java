@@ -97,7 +97,7 @@ public class LoginServlet extends HttpServlet {
                     // return to browser
                     response.getWriter().println(result);
                     response.addCookie(cookie);
-                } catch(JSONException e) {
+                } catch(JSONException | InterruptedException e) {
                     e.printStackTrace();
                 }
             }
