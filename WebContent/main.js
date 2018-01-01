@@ -34,12 +34,12 @@ var pollLoop = function() {
 
 var getHandler = function(responseType) {
     switch (responseType) {
-        case "logout-ack":
+        case "logout_ack":
             return logoutHandler;
-        case "server_to_chat":
-            return serverChatHandler;
-        case "user_to_chat":
-            return userChatHandler;
+        case "server_to_lobby":
+            return serverLobbyChatHandler;
+        case "user_to_lobby":
+            return userLobbyChatHandler;
         default:
             return doNothingHandler;
     }
@@ -51,11 +51,11 @@ var doNothingHandler = function(content) {
 var logoutHandler = function(content) {
     window.location = 'index.html';
 }
-var serverChatHandler = function(content) {
+var serverLobbyChatHandler = function(content) {
     $('#messages').append($('<li>').html(content.message.italics()));
     pollLoop();
 }
-var userChatHandler = function(content) {
+var userLobbyChatHandler = function(content) {
     $('#messages').append($('<li>').html(content.from.bold() + ": " + content.message));
     pollLoop();
 }

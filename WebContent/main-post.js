@@ -31,4 +31,4 @@ $('#chat').keypress(function(event) {
     }
 });
 
-$('#chat-send').click(chat);
+$('#chat_send').click(chat);

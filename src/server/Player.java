@@ -57,7 +57,7 @@ public class Player {
         synchronized(context) {
             this.sendMessage(
                 new JSONObject()
-                    .put("type", "logout-ack")
+                    .put("type", "logout_ack")
                     .put("content", new JSONObject())
             );
             Config.getAllUsernames(context).remove(this.name);

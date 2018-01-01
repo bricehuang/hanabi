@@ -24,7 +24,6 @@ public class MainServlet extends HttpServlet {
      */
     public MainServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -59,16 +58,16 @@ public class MainServlet extends HttpServlet {
          *    be {} when no content necessary, e.g. logout-ack)
          *
          *  Currently possible types:
-         *    - server-to-chat
+         *    - server_to_lobby
          *          content: {
          *              message: string
          *          }
-         *    - user-to-chat
+         *    - user_to_lobby
          *          content: {
          *              from: string
          *              message: string
          *          }
-         *    - logout-ack
+         *    - logout_ack
          *          content: {}
          */
 
@@ -98,7 +97,7 @@ public class MainServlet extends HttpServlet {
                 System.out.println(message);
                 if (
                     !message.getBoolean("is_null") &&
-                    message.getString("type").equals("logout-ack")
+                    message.getString("type").equals("logout_ack")
                 ) {
                     // session key is useless once logged out anyway.  But delete it just
                     // for good measure.
