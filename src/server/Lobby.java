@@ -52,8 +52,6 @@ public class Lobby extends Room {
             .put("games", gameList);
     }
 
-    // TODO: make this method private.  When a player creates a new room he should move 
-    // to it immediately.  
     /**
      * Constructs a new room and adds it to the global context.  Should
      * be called with locks on the global context.
@@ -61,12 +59,21 @@ public class Lobby extends Room {
      * @throws JSONException 
      * @throws InterruptedException 
      */
-    public void makeNewRoom(int nPlayers) throws InterruptedException, JSONException {
+    private GameRoom makeNewRoom(int nPlayers) throws InterruptedException, JSONException {
         synchronized(context) {
             int gameID = Config.genGameID(context);
             GameRoom newRoom = new GameRoom(context, gameID, nPlayers);
-            Config.getActiveGames(context).put(gameID, newRoom);            
+            Config.getActiveGames(context).put(gameID, newRoom);
+            return newRoom;
         }
+    }
+    
+    public void createGameRoom(Player player, int nPlayers) throws InterruptedException, JSONException {
+        GameRoom newRoom = makeNewRoom(nPlayers);
+        synchronized(context) {
+            player.moveRoom(newRoom);                        
+        }
+        broadcastServerMsg(player.name + " started game " + newRoom.gameID());
         broadcast("game_list", gameListAnnouncement());
     }
 

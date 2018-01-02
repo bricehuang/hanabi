@@ -39,18 +39,16 @@ public abstract class Room {
 
     public void addPlayer(Player player) throws InterruptedException, JSONException {
         players.add(player);
-        broadcast(
-            serverChatType,
-            new JSONObject()
-                .put("message", player.name+" entered the room.")
-        );
+        broadcastServerMsg(player.name + " entered the room.");
     }
     public void removePlayer(Player player) throws InterruptedException, JSONException {
         players.remove(player);
+    }
+    protected void broadcastServerMsg(String message) throws InterruptedException, JSONException {
         broadcast(
             serverChatType,
             new JSONObject()
-                .put("message", player.name+" left the room.")
+                .put("message", message)
         );
     }
     public void chat(Player player, String message) throws InterruptedException, JSONException {
@@ -59,7 +57,6 @@ public abstract class Room {
             new JSONObject()
                 .put("from", player.name)
                 .put("message", message)
-            
         );
     }
 
