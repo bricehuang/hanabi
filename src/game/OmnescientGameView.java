@@ -81,8 +81,12 @@ public class OmnescientGameView implements JSONifiable {
             Util.handsRep(hands) +
             Util.deckRep(deck) +
             Util.lastMoveRep(history) +
-            Util.isOverRep(isOver, plays)
+            Util.isOverRep(isOver)
         );
+    }
+
+    public int score() {
+        return Util.score(plays);
     }
 
     @Override

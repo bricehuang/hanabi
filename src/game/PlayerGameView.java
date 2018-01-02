@@ -59,6 +59,11 @@ public class PlayerGameView implements JSONifiable {
         this.isOver = isOver;
     }
 
+    public int score() {
+        return Util.score(plays);
+    }
+
+    @Override
     public String toString() {
         return (
             Util.playerIDRep(playerID) +
@@ -71,7 +76,7 @@ public class PlayerGameView implements JSONifiable {
             Util.deckLengthRep(cardsLeft) +
             Util.handsRep(playerID, otherHands, myHand) +
             Util.lastMoveRep(history) +
-            Util.isOverRep(isOver, plays)
+            Util.isOverRep(isOver)
         );
     }
 

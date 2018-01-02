@@ -106,13 +106,17 @@ public class Util {
         return "There are " + length + " cards left in the deck.\n";
     }
     
-    public static String isOverRep(boolean isOver, Map<Color, Integer> plays) {
+    public static int score(Map<Color, Integer> plays) {
+        int score = 0;
+        for (Color color : Color.ALL_COLORS) {
+            score += plays.get(color);
+        }
+        return score;
+    }
+    
+    public static String isOverRep(boolean isOver) {
         if (isOver) {
-            int score = 0;
-            for (Color color : Color.ALL_COLORS) {
-                score += plays.get(color);
-            }
-            return "Game over.\nYour score: " + score+"\n";
+            return "Game over.";
         } else{
             return "";
         }

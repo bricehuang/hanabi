@@ -25,7 +25,7 @@ public class Player {
         this.context = context;
         room.addPlayer(this);
     }
-    
+
     public boolean isInLobby() {
         return this.room.isLobby();
     }

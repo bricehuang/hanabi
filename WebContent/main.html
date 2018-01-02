@@ -10,14 +10,50 @@
     </style>
 </head>
 <body>
-    Say something:
-    <input type="text" id="chat" />
-    <button id="chat_send">Send</button>
     <button id="logout">Logout</button>
-    <button id="make_room">Make Room</button>
-    <ul id="messages"></ul>
+        
+    <div id="lobby">
+        <h3>Lobby</h3>
+        <div id="lobby_visibility">hidden</div>
+
+        Chat:
+        <input type="text" id="lobby_chat_field" />
+        <button id="lobby_chat">Send</button>
+
+		Game Size: 
+		<input type="text" id="game_size" />
+        <button id="make_game">Make Game</button>
+
+		Game ID: 
+		<input type="text" id="game_id" />
+        <button id="join_game">Join Game</button>
+
+        <ul id="lobby_messages"></ul>
+        <ul id="lobby_users"></ul>
+        <ul id="games_list"></ul>
+    </div>
     
-    <ul id="games"></ul>
+    <div id="game">
+        <h3>Game</h3>
+        <div id="game_visibility">hidden</div>
+        <div id="game_status"></div>
+        <div id="game_state"></div>
+
+        Chat:
+        <input type="text" id="game_chat_field" />
+        <button id="game_chat">Send</button>
+
+        <button id="start_game">Start Game</button>
+
+        Game Action:
+        <input type="text" id="game_action_field" />
+        <button id="game_action">Make Move</button>
+
+        <button id="exit_game">Exit Game</button>
+        
+        <ul id="game_messages"></ul>
+        <ul id="game_users"></ul>
+    </div>
 
     <script src="main.js"> </script>
     <script src="main-post.js"> </script>
