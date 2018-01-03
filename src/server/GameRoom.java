@@ -88,4 +88,19 @@ public class GameRoom extends Room {
         return result;
     }
 
+    // response methods    
+    @Override
+    public void onJoin(Player player) throws InterruptedException, JSONException {
+        player.sendMessage(joinAck());
+        broadcast(playersInRoom());
+        broadcast(serverMessage(player.name + " entered the room."));
+    }
+    @Override
+    public void onLeave(Player player) throws InterruptedException, JSONException {
+        player.sendMessage(leaveAck());
+        broadcast(playersInRoom());
+        broadcast(serverMessage(player.name + " left the room."));
+    }
+
+
 }

@@ -39,12 +39,27 @@ public abstract class Room {
     }
 
     // generators for message types
+    /**
+     * Join ack message.  
+     * @return
+     * @throws JSONException
+     */
     public JSONObject joinAck() throws JSONException {
         return makePlayerMessage(joinAckType, new JSONObject());
     }
+    /**
+     * Leave ack message.  
+     * @return
+     * @throws JSONException
+     */
     public JSONObject leaveAck() throws JSONException {
         return makePlayerMessage(leaveAckType, new JSONObject());
     }
+    /**
+     * JSONArray of all usernames.  
+     * Locks on room.  
+     * @return
+     */
     protected JSONArray allUsernames() {
         JSONArray allUsernames = new JSONArray();
         synchronized(this) {
@@ -54,25 +69,91 @@ public abstract class Room {
         }
         return allUsernames;
     }
+    /**
+     * All usernames in room message.  
+     * Locks on room.  
+     * @return
+     * @throws JSONException
+     */
     public JSONObject playersInRoom() throws JSONException {
         return makePlayerMessage(userListType, new JSONObject().put("users", allUsernames()));
     }
+    /**
+     * Chat message from player.  
+     * @param player
+     * @param message
+     * @return
+     * @throws JSONException
+     */
     public JSONObject userMessage(Player player, String message) throws JSONException {
         return makePlayerMessage(userChatType, new JSONObject().put("from", player.name).put("message", message));
     }
+    /**
+     * Chat message from server.  
+     * @param message
+     * @return
+     * @throws JSONException
+     */
     public JSONObject serverMessage(String message) throws JSONException {
         return makePlayerMessage(serverChatType, new JSONObject().put("message", message));
     }
+    /**
+     * Logout ack message.  
+     * @return
+     * @throws JSONException
+     */
     public JSONObject logoutAck() throws JSONException {
         return makePlayerMessage(logoutAckType, new JSONObject());
     }
     
-    // TODO
-    public void broadcast(JSONObject message) throws InterruptedException, JSONException {
+    // response methods
+    /**
+     * Adds a player to the room.  
+     * Locks on room and context.  
+     * @param player
+     * @throws InterruptedException
+     * @throws JSONException
+     */
+    public synchronized void addPlayer(Player player) throws InterruptedException, JSONException {
+        players.add(player);
+        onJoin(player);            
+    }
+    /**
+     * Fires when player joins room.  
+     * Locks on room and context.  
+     * @param player
+     * @throws InterruptedException
+     * @throws JSONException
+     */
+    public abstract void onJoin(Player player) throws InterruptedException, JSONException;
+
+    /**
+     * Removes a player from the room.  
+     * Locks on room.  
+     * @param player
+     * @throws InterruptedException
+     * @throws JSONException
+     */
+    public synchronized void removePlayer(Player player) throws InterruptedException, JSONException {
+        players.remove(player);
+        onLeave(player);
+    }
+    /**
+     * Fires when player leaves room.  
+     * Locks on room.  
+     * @param player
+     * @throws InterruptedException
+     * @throws JSONException
+     */
+    public abstract void onLeave(Player player) throws InterruptedException, JSONException;
+
+    public synchronized void broadcast(JSONObject message) throws InterruptedException, JSONException {
         for (Player player : players) {
             player.sendMessage(message);
-        }
+        }            
     }
+    
+    // TODO
     public void chat(Player player, String message) throws InterruptedException, JSONException {
         broadcast(userMessage(player, message));
     }
@@ -80,12 +161,5 @@ public abstract class Room {
         broadcast(serverMessage(message));
     }
 
-    public void addPlayer(Player player) throws InterruptedException, JSONException {
-        players.add(player);
-        broadcastServerMsg(player.name + " entered the room.");
-    }
-    public void removePlayer(Player player) throws InterruptedException, JSONException {
-        players.remove(player);
-    }
 
 }

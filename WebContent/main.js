@@ -28,7 +28,7 @@ var pollLoop = function() {
     }).fail(function(xmlHttpRequest, code, error){
         // TODO
         alert('something went wrong!');
-        pollLoop();
+//        pollLoop();
     });
 }
 

@@ -27,6 +27,12 @@ public class Lobby extends Room {
     }
     
     // generators for message types
+    /**
+     * Open games message.  
+     * locks on context.   
+     * @return
+     * @throws JSONException
+     */
     public JSONObject openGames() throws JSONException {
         JSONArray games = new JSONArray();
         synchronized(context) {
@@ -42,14 +48,21 @@ public class Lobby extends Room {
                 );
             }
         }
-        return makePlayerMessage("game_list", new JSONObject().put("games", games));
+        return makePlayerMessage("open_games", new JSONObject().put("games", games));
     }
 
-    // TODO
+    // response methods
     @Override
-    public void addPlayer(Player player) throws InterruptedException, JSONException {
-        super.addPlayer(player);
+    public void onJoin(Player player) throws InterruptedException, JSONException {
+        player.sendMessage(joinAck());
         player.sendMessage(openGames());
+        broadcast(playersInRoom());
+        broadcast(serverMessage(player.name + " entered the room."));
+    }
+    @Override
+    public void onLeave(Player player) throws InterruptedException, JSONException {
+        player.sendMessage(leaveAck());
+        broadcast(playersInRoom());
     }
 
     /**

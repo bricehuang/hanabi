@@ -24,7 +24,7 @@ var make_game = function() {
             data: JSON.stringify({
                 cmd: "make_game",
                 content: {
-                    n_players: $('#game_size').val()
+                    n_players: parseInt($('#game_size').val())
                 }
             })
         }
