@@ -30,12 +30,17 @@ public abstract class Room {
         this.players = new ArrayList<>();
         setAbstractFields();
     }
-
+    
     // util for player-queue messages
     public static JSONObject makePlayerMessage(String type, JSONObject content) throws JSONException {
         return new JSONObject()
             .put("type", type)
             .put("content", content);
+    }
+    protected void broadcast(JSONObject message) throws InterruptedException, JSONException {
+        for (Player player : players) {
+            player.sendMessage(message);
+        }            
     }
 
     // generators for message types
@@ -102,6 +107,52 @@ public abstract class Room {
         return makePlayerMessage(logoutAckType, new JSONObject());
     }
     
+    // command
+    public abstract void handleCommand(String cmd, Player player, JSONObject content);
+    
+    /**
+     * Sends chat from player to his room.  Routed to either lobby or game room.
+     * Sends:
+     *   - user_to_lobby or user_to_game, whichever relevant, to room
+     * @param player
+     * @param content {message: chat string}
+     */
+    protected void chatHandler(Player player, JSONObject content) {
+        try {
+            String message = content.getString("message");
+            broadcast(userMessage(player, message));
+        } catch (InterruptedException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // TODO not functional
+    /**
+     * Logs out a player. Removes player's credentials from the global context.
+     * If player is in game room, notifies room that player left.  If game is in
+     * progress, resigns the game.
+     * Sends:
+     *   - leave_game_ack or leave_lobby_ack, whichever relevant, to player
+     *   - logout_ack to player
+     *   If user in lobby:
+     *     - present_lobby_users
+     *   If user in game room:
+     *     If game in progress:
+     *       - game_content to game room
+     *       - game_end to game room
+     *     - server_to_game
+     *     - present_game_users
+     *
+     * @param player
+     */
+    protected void logoutHandler(Player player) {
+        try {
+            logout(player);
+        } catch (InterruptedException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    
     // response methods
     /**
      * Adds a player to the room.    
@@ -109,7 +160,7 @@ public abstract class Room {
      * @throws InterruptedException
      * @throws JSONException
      */
-    public void addPlayer(Player player) throws InterruptedException, JSONException {
+    protected void addPlayer(Player player) throws InterruptedException, JSONException {
         players.add(player);
         onJoin(player);            
     }
@@ -119,7 +170,7 @@ public abstract class Room {
      * @throws InterruptedException
      * @throws JSONException
      */
-    public abstract void onJoin(Player player) throws InterruptedException, JSONException;
+    protected abstract void onJoin(Player player) throws InterruptedException, JSONException;
 
     /**
      * Removes a player from the room.    
@@ -127,7 +178,7 @@ public abstract class Room {
      * @throws InterruptedException
      * @throws JSONException
      */
-    public void removePlayer(Player player) throws InterruptedException, JSONException {
+    protected void removePlayer(Player player) throws InterruptedException, JSONException {
         players.remove(player);
         onLeave(player);
     }
@@ -137,21 +188,13 @@ public abstract class Room {
      * @throws InterruptedException
      * @throws JSONException
      */
-    public abstract void onLeave(Player player) throws InterruptedException, JSONException;
+    protected abstract void onLeave(Player player) throws InterruptedException, JSONException;
 
-    public void broadcast(JSONObject message) throws InterruptedException, JSONException {
-        for (Player player : players) {
-            player.sendMessage(message);
-        }            
+    public void logout(Player player) throws InterruptedException, JSONException {
+        player.setBeingLoggedOut();
+        removePlayer(player);
+        player.sendMessage(logoutAck());
+        Config.getAllUsernames(context).remove(player.name);
+        Config.getPlayersBySessionID(context).remove(player.sessionID);
     }
-    
-    // TODO
-    public void chat(Player player, String message) throws InterruptedException, JSONException {
-        broadcast(userMessage(player, message));
-    }
-    public void broadcastServerMsg(String message) throws InterruptedException, JSONException {
-        broadcast(serverMessage(message));
-    }
-
-
 }

@@ -163,13 +163,13 @@ public class MainServlet extends HttpServlet {
     }
 
     // allowed commands
-    private static final String CHAT = "chat";
-    private static final String LOGOUT = "logout";
-    private static final String MAKE_GAME = "make_game";
-    private static final String JOIN_GAME = "join_game";
-    private static final String START_GAME = "start_game";
-    private static final String GAME_ACTION = "game_action";
-    private static final String EXIT_GAME = "exit_game";
+    public static final String CHAT = "chat";
+    public static final String LOGOUT = "logout";
+    public static final String MAKE_GAME = "make_game";
+    public static final String JOIN_GAME = "join_game";
+    public static final String START_GAME = "start_game";
+    public static final String GAME_ACTION = "game_action";
+    public static final String EXIT_GAME = "exit_game";
 
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -232,194 +232,7 @@ public class MainServlet extends HttpServlet {
         System.out.println(content);
         System.out.println();
 
-        switch (cmd) {
-            case CHAT:
-                chatHandler(player, content);
-                break;
-            case LOGOUT:
-                logoutHandler(player);
-                break;
-            case MAKE_GAME:
-                makeGameHandler(player, content);
-                break;
-            case JOIN_GAME:
-                joinGameHandler(player, content);
-                break;
-            case START_GAME:
-                startGameHandler(player);
-                break;
-            case GAME_ACTION:
-                gameActionHandler(player, content);
-                break;
-            case EXIT_GAME:
-                exitGameHandler(player);
-                break;
-            default:
-                // invalid cmd, do nothing
-                break;
-        }
+        player.routeCommand(cmd, content);
     }
 
-    /**
-     * Sends chat from player to his room.  Routed to either lobby or game room.
-     * Sends:
-     *   - user_to_lobby or user_to_game, whichever relevant, to room
-     * @param player
-     * @param content {message: chat string}
-     */
-    private void chatHandler(Player player, JSONObject content) {
-        try {
-            player.chat(content.getString("message"));
-        } catch (JSONException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // TODO not functional
-    /**
-     * Logs out a player. Removes player's credentials from the global context.
-     * If player is in game room, notifies room that player left.  If game is in
-     * progress, resigns the game.
-     * Sends:
-     *   - leave_game_ack or leave_lobby_ack, whichever relevant, to player
-     *   - logout_ack to player
-     *   If user in lobby:
-     *     - present_lobby_users
-     *   If user in game room:
-     *     If game in progress:
-     *       - game_content to game room
-     *       - game_end to game room
-     *     - server_to_game
-     *     - present_game_users
-     *
-     * @param player
-     */
-    private void logoutHandler(Player player) {
-        try {
-            player.logout();
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // TODO not functional yet
-    /**
-     * Creates a new game room and moves player to that room.  Only valid when
-     * player currently in lobby.  Notifies lobby that new game created.
-     * Sends:
-     *   - leave_lobby_ack, to player
-     *   - server_to_lobby, to lobby
-     *   - present_lobby_users, to lobby
-     *   - open_games, to lobby
-     *   - join_game_ack, to player
-     *   - server_to_game, to game room
-     *   - present_game_users, new game room
-     * @param player
-     * @param content {n_players: game size int}
-     */
-    private void makeGameHandler(Player player, JSONObject content) {
-        if (! player.isInLobby()) { return; }
-        int nPlayers;
-        try {
-            nPlayers = content.getInt("n_players");
-        } catch (JSONException e1) {
-            // invalid nPlayers, do nothing
-            return;
-        }
-        // invalid nPlayers, do nothing
-        if (nPlayers < 2 || nPlayers > 5) { return; } 
-
-        try {
-            player.makeAndJoinNewGame(nPlayers);
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Joins an existing game room.  Only valid when player currently
-     * in lobby, and joined game is waiting and under capacity.
-     * Notifies room that player joined.
-     * Sends:
-     *   - leave_lobby_ack, to player
-     *   - present_lobby_users, to lobby
-     *   - open_games, to lobby
-     *   - join_game_ack, to player
-     *   - server_to_game, to game room
-     *   - present_game_users, to game room
-     * @param player
-     * @param content {game_id: game id int}
-     */
-    private void joinGameHandler(Player player, JSONObject content) {
-        if (! player.isInLobby()) { return; }
-        int gameID;
-        try {
-            gameID = content.getInt("game_id");
-        } catch (JSONException e1) {
-            // invalid game ID, do nothing
-            return;
-        }
-
-        try {
-            player.joinGameRoom(gameID);
-        } catch (JSONException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Starts a game.  Only valid when player is in game, and game is
-     * at capacity and not started.
-     * Sends:
-     *   - game_start, to game room
-     *   - game_state, to game room
-     *   - open_games, to lobby
-     * @param player
-     */
-    private void startGameHandler(Player player) {
-        throw new RuntimeException("Unimplemented");
-    }
-
-    /**
-     * Takes a game action.  Only valid when player is in game.  Valid
-     * only on player's turn, except for resignations which are always
-     * valid any time.
-     * Sends:
-     *   - game_state, to game room
-     *   If game over:
-     *     - game_end, to game room
-     *     - open games, to lobby
-     * @param player
-     * @param content TODO
-     */
-    private void gameActionHandler(Player player, JSONObject content) {
-        throw new RuntimeException("Unimplemented");
-    }
-
-    /**
-     * Leaves a game room to return to lobby.  Only valid when player is
-     * in game.  Notifies game and lobby that player left and joined.  If
-     * game is in progress, resigns game.
-     * Sends:
-     *   - leave_game_ack, to player
-     *   If game in progress:
-     *     - game_content to game room
-     *     - game_end to game room
-     *   - server_to_game
-     *   - present_game_users
-     *
-     *   - join_lobby_ack, to player
-     *   - present_lobby_users, to lobby
-     *   - open_games, to lobby
-     *
-     * @param player
-     */
-    private void exitGameHandler(Player player) {
-        if (player.isInLobby()) { return; }
-        try {
-            player.returnToLobby();
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
-    }
 }

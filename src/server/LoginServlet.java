@@ -84,7 +84,7 @@ public class LoginServlet extends HttpServlet {
                 try {
                     String sessionID = Config.genSessionKey(context);
                     Room lobby = Config.getLobby(context);
-                    Player player = new Player(sessionID, name, lobby, context);
+                    Player player = new Player(sessionID, name, lobby);
                     Cookie cookie = new Cookie("session_id", sessionID);
 
                     // modify internal state

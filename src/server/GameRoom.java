@@ -84,26 +84,116 @@ public class GameRoom extends Room {
         }
         return result;
     }
+    
+    // command
+    @Override
+    public void handleCommand(String cmd, Player player, JSONObject content) {
+        switch (cmd) {
+            case MainServlet.CHAT: 
+                chatHandler(player, content);
+                break;
+            case MainServlet.START_GAME: 
+                startGameHandler(player);
+                break;
+            case MainServlet.GAME_ACTION: 
+                gameActionHandler(player, content);
+                break;
+            case MainServlet.EXIT_GAME: 
+                exitGameHandler(player);
+                break;
+            case MainServlet.LOGOUT: 
+                logoutHandler(player);
+                break;
+            default:
+                // invalid cmd, do nothing
+                break;
+        }
+    }
+
+    /**
+     * Starts a game.  Only valid when player is in game, and game is
+     * at capacity and not started.
+     * Sends:
+     *   - game_start, to game room
+     *   - game_state, to game room
+     *   - open_games, to lobby
+     * @param player
+     */
+    private void startGameHandler(Player player) {
+        throw new RuntimeException("Unimplemented");
+    }
+
+    /**
+     * Takes a game action.  Only valid when player is in game.  Valid
+     * only on player's turn, except for resignations which are always
+     * valid any time.
+     * Sends:
+     *   - game_state, to game room
+     *   If game over:
+     *     - game_end, to game room
+     *     - open games, to lobby
+     * @param player
+     * @param content TODO
+     */
+    private void gameActionHandler(Player player, JSONObject content) {
+        throw new RuntimeException("Unimplemented");
+    }
+
+    /**
+     * Leaves a game room to return to lobby.  Only valid when player is
+     * in game.  Notifies game and lobby that player left and joined.  If
+     * game is in progress, resigns game.
+     * Sends:
+     *   - leave_game_ack, to player
+     *   If game in progress:
+     *     - game_content to game room
+     *     - game_end to game room
+     *   - server_to_game
+     *   - present_game_users
+     *
+     *   - join_lobby_ack, to player
+     *   - present_lobby_users, to lobby
+     *   - open_games, to lobby
+     *
+     * @param player
+     */
+    private void exitGameHandler(Player player) {
+        try {
+            returnToLobby(player);
+        } catch (InterruptedException | JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     // response methods    
     @Override
-    public void onJoin(Player player) throws InterruptedException, JSONException {
+    protected void onJoin(Player player) throws InterruptedException, JSONException {
         player.sendMessage(joinAck());
         broadcast(playersInRoom());
         broadcast(serverMessage(player.name + " entered the room."));
     }
     @Override
-    public void onLeave(Player player) throws InterruptedException, JSONException {
+    protected void onLeave(Player player) throws InterruptedException, JSONException {
         player.sendMessage(leaveAck());
         broadcast(playersInRoom());
         broadcast(serverMessage(player.name + " left the room."));
     }
     
     
+    private void returnToLobby(Player player) throws InterruptedException, JSONException {
+        // TODO if game is in progress, player should resign
+        if (this.playersPresent() == 1) {
+            this.kill();
+        }
+
+        Lobby lobby = Config.getLobby(context);
+        player.moveRoom(lobby);
+        lobby.broadcast(lobby.openGames());
+    }
     /**
      * Removes game from global registry
      */
-    public void kill() {
+    private void kill() {
         Map<Integer, GameRoom> gamesByID = Config.getActiveGames(context);
         System.out.println("here");
         gamesByID.remove(gameID);
