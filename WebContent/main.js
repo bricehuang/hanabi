@@ -107,7 +107,7 @@ var serverLobbyChatHandler = function(content) {
 var leaveLobbyHandler = function(content) {
     $('#lobby_messages').empty();
     $('#lobby_users').empty();
-    $('#games').empty();
+    $('#games_list').empty();
     $('#lobby_visibility').text("hidden");
     pollLoop();
 }

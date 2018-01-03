@@ -68,22 +68,18 @@ public class GameRoom extends Room {
     }
     public JSONObject endNotification() throws JSONException {
         int score;
-        synchronized(this) {
-            score = game.getOmnescientView().score();            
-        }
+        score = game.getOmnescientView().score();            
         return makePlayerMessage("game_end", new JSONObject().put("score", score));
     }
     public List<JSONObject> allPlayerViews() throws JSONException {
         JSONArray usernames = allUsernames();
         List<JSONObject> result = new ArrayList<>();
-        synchronized(this) {
-            for (int i=0; i<players.size(); i++) {
-                result.add(
-                    new JSONObject()
-                        .put("users", usernames)
-                        .put("state", game.getPlayerView(i).jsonify())
-                );
-            }            
+        for (int i=0; i<players.size(); i++) {
+            result.add(
+                new JSONObject()
+                    .put("users", usernames)
+                    .put("state", game.getPlayerView(i).jsonify())
+            );
         }
         return result;
     }
@@ -101,6 +97,4 @@ public class GameRoom extends Room {
         broadcast(playersInRoom());
         broadcast(serverMessage(player.name + " left the room."));
     }
-
-
 }

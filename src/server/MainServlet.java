@@ -275,6 +275,7 @@ public class MainServlet extends HttpServlet {
         }
     }
 
+    // TODO not functional
     /**
      * Logs out a player. Removes player's credentials from the global context.
      * If player is in game room, notifies room that player left.  If game is in
@@ -320,8 +321,18 @@ public class MainServlet extends HttpServlet {
         if (! player.isInLobby()) { return; }
         ServletContext context = this.getServletContext();
         Lobby lobby = Config.getLobby(context);
+        int nPlayers;
         try {
-            lobby.createGameRoom(player, content.getInt("n_players"));
+            nPlayers = content.getInt("n_players");
+        } catch (JSONException e1) {
+            // invalid nPlayers, do nothing
+            return;
+        }
+        // invalid nPlayers, do nothing
+        if (nPlayers < 2 || nPlayers > 5) { return; } 
+
+        try {
+            lobby.makeAndJoinNewGame(player, nPlayers);
         } catch (InterruptedException | JSONException e) {
             e.printStackTrace();
         }
@@ -342,7 +353,22 @@ public class MainServlet extends HttpServlet {
      * @param content {game_id: game id int}
      */
     private void joinGameHandler(Player player, JSONObject content) {
-        throw new RuntimeException("Unimplemented");
+        if (! player.isInLobby()) { return; }
+        ServletContext context = this.getServletContext();
+        Lobby lobby = Config.getLobby(context);
+        int gameID;
+        try {
+            gameID = content.getInt("game_id");
+        } catch (JSONException e1) {
+            // invalid game ID, do nothing
+            return;
+        }
+
+        try {
+            lobby.joinGameRoom(player, gameID);
+        } catch (JSONException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

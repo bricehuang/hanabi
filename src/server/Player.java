@@ -50,6 +50,10 @@ public class Player {
         }
     }
 
+    public void chat(String message) throws InterruptedException, JSONException {
+        room.broadcast(room.userMessage(this, message));
+    }
+
     public void moveRoom(Room newRoom) throws InterruptedException, JSONException {
         this.room.removePlayer(this);
         this.room = newRoom;
@@ -58,19 +62,14 @@ public class Player {
 
     public void logout() throws InterruptedException, JSONException {
         this.room.removePlayer(this);
-        synchronized(context) {
-            this.sendMessage(
-                new JSONObject()
-                    .put("type", "logout_ack")
-                    .put("content", new JSONObject())
-            );
-            Config.getAllUsernames(context).remove(this.name);
-            Config.getPlayersBySessionID(context).remove(this.sessionID);
-        }
+        this.sendMessage(
+            new JSONObject()
+                .put("type", "logout_ack")
+                .put("content", new JSONObject())
+        );
+        Config.getAllUsernames(context).remove(this.name);
+        Config.getPlayersBySessionID(context).remove(this.sessionID);
     }
 
-    public void chat(String content) throws InterruptedException, JSONException {
-        this.room.chat(this, content);
-    }
 
 }
