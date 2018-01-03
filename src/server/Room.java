@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 public abstract class Room {
 
-    protected String logoutAckType = "logout_ack";
+    protected static String logoutAckType = "logout_ack";
     // abstract fields.  setAbstractFields() is a somewhat hacky way
     // to get around Java not having static fields.
     protected String joinAckType = "";
@@ -32,7 +32,7 @@ public abstract class Room {
     }
 
     // util for player-queue messages
-    public JSONObject makePlayerMessage(String type, JSONObject content) throws JSONException {
+    public static JSONObject makePlayerMessage(String type, JSONObject content) throws JSONException {
         return new JSONObject()
             .put("type", type)
             .put("content", content);
@@ -98,7 +98,7 @@ public abstract class Room {
      * @return
      * @throws JSONException
      */
-    public JSONObject logoutAck() throws JSONException {
+    public static JSONObject logoutAck() throws JSONException {
         return makePlayerMessage(logoutAckType, new JSONObject());
     }
     

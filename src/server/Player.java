@@ -1,5 +1,6 @@
 package server;
 
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +17,7 @@ public class Player {
     private Room room;
     private final BlockingQueue<JSONObject> messages;
     private final ServletContext context;
+    private boolean beingLoggedOut = false; // when set to true, outbound queue ignores all messages except logout ack
 
     public Player(String sessionID, String name, Room room, ServletContext context) throws InterruptedException, JSONException {
         this.sessionID = sessionID;
@@ -23,6 +25,7 @@ public class Player {
         this.room = room;
         this.messages = new LinkedBlockingQueue<>();
         this.context = context;
+        this.beingLoggedOut = false;
         room.addPlayer(this);
     }
 
@@ -30,8 +33,10 @@ public class Player {
         return this.room.isLobby();
     }
 
-    public void sendMessage(JSONObject message) throws InterruptedException {
-        messages.put(message);
+    public void sendMessage(JSONObject message) throws InterruptedException, JSONException {
+        if (!beingLoggedOut || message.getString("type").equals("logout_ack")) {
+            messages.put(message);            
+        }
     }
 
     public JSONObject getMessageToSend() throws JSONException {
@@ -61,15 +66,53 @@ public class Player {
     }
 
     public void logout() throws InterruptedException, JSONException {
+        this.beingLoggedOut = true;
         this.room.removePlayer(this);
-        this.sendMessage(
-            new JSONObject()
-                .put("type", "logout_ack")
-                .put("content", new JSONObject())
-        );
+        this.sendMessage(Room.logoutAck());
         Config.getAllUsernames(context).remove(this.name);
         Config.getPlayersBySessionID(context).remove(this.sessionID);
     }
+    
+    /**
+     * Constructs a new room and adds it to the global context.  
+     * @param nPlayers
+     * @throws JSONException
+     * @throws InterruptedException
+     */
+    public void makeAndJoinNewGame(int nPlayers) throws InterruptedException, JSONException {
+        assert this.isInLobby();
+        int gameID = Config.genGameID(context);
+        GameRoom newRoom = new GameRoom(context, gameID, nPlayers);
+        Config.getActiveGames(context).put(gameID, newRoom);
+        
+        // this will not fail because gameID was just added to the global registry
+        this.joinGameRoom(gameID);
+        Lobby lobby = Config.getLobby(context);
+        lobby.broadcast(lobby.serverMessage(this.name + " started game " + gameID));
+    }
 
+    public void joinGameRoom(int gameID) throws InterruptedException, JSONException {
+        assert this.isInLobby();
+        Map<Integer, GameRoom> gamesByID = Config.getActiveGames(context);
+        if (!gamesByID.containsKey(gameID)) { return; }
+
+        GameRoom room = gamesByID.get(gameID);
+        moveRoom(room);
+        Lobby lobby = Config.getLobby(context);
+        lobby.broadcast(lobby.openGames());
+    }
+
+    public void returnToLobby() throws InterruptedException, JSONException {
+        assert !this.isInLobby();
+        GameRoom room = (GameRoom) this.room; // TODO this is hacky
+        // TODO: if player is in middle of game he should resign
+        if (room.playersPresent() == 1) {
+            room.kill();
+        }
+
+        Lobby lobby = Config.getLobby(context);
+        this.moveRoom(lobby);
+        lobby.broadcast(lobby.openGames());
+    }
 
 }

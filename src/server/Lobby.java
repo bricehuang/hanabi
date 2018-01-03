@@ -62,29 +62,4 @@ public class Lobby extends Room {
         broadcast(playersInRoom());
     }
 
-    /**
-     * Constructs a new room and adds it to the global context.  
-     * @param nPlayers
-     * @throws JSONException
-     * @throws InterruptedException
-     */
-    public void makeAndJoinNewGame(Player player, int nPlayers) throws InterruptedException, JSONException {
-        int gameID = Config.genGameID(context);
-        GameRoom newRoom = new GameRoom(context, gameID, nPlayers);
-        Config.getActiveGames(context).put(gameID, newRoom);
-        
-        // this will not fail because gameID was just added to the global registry
-        joinGameRoom(player, gameID);
-        broadcast(serverMessage(player.name + " started game " + gameID));
-    }
-
-    public void joinGameRoom(Player player, int gameID) throws InterruptedException, JSONException {
-        Map<Integer, GameRoom> gamesByID = Config.getActiveGames(context);
-        if (!gamesByID.containsKey(gameID)) { return; }
-
-        GameRoom room = gamesByID.get(gameID);
-        player.moveRoom(room);
-        broadcast(openGames());
-    }
-
 }

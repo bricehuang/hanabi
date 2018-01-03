@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -97,4 +98,15 @@ public class GameRoom extends Room {
         broadcast(playersInRoom());
         broadcast(serverMessage(player.name + " left the room."));
     }
+    
+    
+    /**
+     * Removes game from global registry
+     */
+    public void kill() {
+        Map<Integer, GameRoom> gamesByID = Config.getActiveGames(context);
+        System.out.println("here");
+        gamesByID.remove(gameID);
+    }
+
 }

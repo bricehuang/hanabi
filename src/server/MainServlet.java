@@ -2,7 +2,6 @@ package server;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -143,7 +142,8 @@ public class MainServlet extends HttpServlet {
             try {
                 JSONObject message = player.getMessageToSend().put("authorized", true);
                 System.out.println("Outgoing message");
-                System.out.println(message);
+                System.out.println(message.getString("type"));
+                System.out.println(message.getJSONObject("content"));
                 System.out.println();
                 if (
                     !message.getBoolean("is_null") &&
@@ -319,8 +319,6 @@ public class MainServlet extends HttpServlet {
      */
     private void makeGameHandler(Player player, JSONObject content) {
         if (! player.isInLobby()) { return; }
-        ServletContext context = this.getServletContext();
-        Lobby lobby = Config.getLobby(context);
         int nPlayers;
         try {
             nPlayers = content.getInt("n_players");
@@ -332,7 +330,7 @@ public class MainServlet extends HttpServlet {
         if (nPlayers < 2 || nPlayers > 5) { return; } 
 
         try {
-            lobby.makeAndJoinNewGame(player, nPlayers);
+            player.makeAndJoinNewGame(nPlayers);
         } catch (InterruptedException | JSONException e) {
             e.printStackTrace();
         }
@@ -354,8 +352,6 @@ public class MainServlet extends HttpServlet {
      */
     private void joinGameHandler(Player player, JSONObject content) {
         if (! player.isInLobby()) { return; }
-        ServletContext context = this.getServletContext();
-        Lobby lobby = Config.getLobby(context);
         int gameID;
         try {
             gameID = content.getInt("game_id");
@@ -365,7 +361,7 @@ public class MainServlet extends HttpServlet {
         }
 
         try {
-            lobby.joinGameRoom(player, gameID);
+            player.joinGameRoom(gameID);
         } catch (JSONException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -419,6 +415,11 @@ public class MainServlet extends HttpServlet {
      * @param player
      */
     private void exitGameHandler(Player player) {
-        throw new RuntimeException("Unimplemented");
+        if (player.isInLobby()) { return; }
+        try {
+            player.returnToLobby();
+        } catch (InterruptedException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
