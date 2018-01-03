@@ -108,7 +108,7 @@ public abstract class Room {
     }
     
     // command
-    public abstract void handleCommand(String cmd, Player player, JSONObject content);
+    public abstract void handleCommand(String cmd, Player player, JSONObject content) throws InterruptedException, JSONException;
     
     /**
      * Sends chat from player to his room.  Routed to either lobby or game room.
@@ -116,14 +116,12 @@ public abstract class Room {
      *   - user_to_lobby or user_to_game, whichever relevant, to room
      * @param player
      * @param content {message: chat string}
+     * @throws InterruptedException 
+     * @throws JSONException 
      */
-    protected void chatHandler(Player player, JSONObject content) {
-        try {
-            String message = content.getString("message");
-            broadcast(userMessage(player, message));
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
+    protected void chatHandler(Player player, JSONObject content) throws InterruptedException, JSONException {
+        String message = content.getString("message");
+        broadcast(userMessage(player, message));
     }
 
     /**
@@ -143,13 +141,11 @@ public abstract class Room {
      *     - present_game_users
      *
      * @param player
+     * @throws JSONException 
+     * @throws InterruptedException 
      */
-    protected void logoutHandler(Player player) {
-        try {
-            logout(player);
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
+    protected void logoutHandler(Player player) throws InterruptedException, JSONException {
+        logout(player);
     }
     
     // response methods

@@ -54,7 +54,7 @@ public class Player {
     }
     
     // command
-    public void routeCommand(String cmd, JSONObject content) {
+    public void routeCommand(String cmd, JSONObject content) throws InterruptedException, JSONException {
         this.room.handleCommand(cmd, this, content);
     }
 

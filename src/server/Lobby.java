@@ -50,7 +50,7 @@ public class Lobby extends Room {
     
     // command
     @Override
-    public void handleCommand(String cmd, Player player, JSONObject content) {
+    public void handleCommand(String cmd, Player player, JSONObject content) throws InterruptedException, JSONException {
         switch (cmd) {
             case MainServlet.CHAT:
                 chatHandler(player, content);
@@ -83,8 +83,10 @@ public class Lobby extends Room {
      *   - present_game_users, new game room
      * @param player
      * @param content {n_players: game size int}
+     * @throws JSONException 
+     * @throws InterruptedException 
      */
-    private void makeGameHandler(Player player, JSONObject content) {
+    private void makeGameHandler(Player player, JSONObject content) throws InterruptedException, JSONException {
         int nPlayers;
         try {
             nPlayers = content.getInt("n_players");
@@ -95,11 +97,7 @@ public class Lobby extends Room {
         // invalid nPlayers, do nothing
         if (nPlayers < 2 || nPlayers > 5) { return; } 
 
-        try {
-            makeAndJoinNewGame(player, nPlayers);
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
+        makeAndJoinNewGame(player, nPlayers);
     }
 
     /**
@@ -115,8 +113,10 @@ public class Lobby extends Room {
      *   - present_game_users, to game room
      * @param player
      * @param content {game_id: game id int}
+     * @throws JSONException 
+     * @throws InterruptedException 
      */
-    private void joinGameHandler(Player player, JSONObject content) {
+    private void joinGameHandler(Player player, JSONObject content) throws InterruptedException, JSONException {
         int gameID;
         try {
             gameID = content.getInt("game_id");
@@ -125,11 +125,7 @@ public class Lobby extends Room {
             return;
         }
 
-        try {
-            joinGameRoom(player, gameID);
-        } catch (JSONException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        joinGameRoom(player, gameID);
     }
 
     // response methods

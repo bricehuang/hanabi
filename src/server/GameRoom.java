@@ -90,7 +90,7 @@ public class GameRoom extends Room {
     
     // command
     @Override
-    public void handleCommand(String cmd, Player player, JSONObject content) {
+    public void handleCommand(String cmd, Player player, JSONObject content) throws InterruptedException, JSONException {
         switch (cmd) {
             case MainServlet.CHAT: 
                 chatHandler(player, content);
@@ -124,22 +124,17 @@ public class GameRoom extends Room {
      * @throws JSONException 
      * @throws InterruptedException 
      */
-    private void startGameHandler(Player player) {
+    private void startGameHandler(Player player) throws InterruptedException, JSONException {
         // only start if not yet started, and room is full
         if (started || ! isFull()) { return; }
 
-        try {
-            broadcast(startNotification());
-            List<JSONObject> playerViews = allPlayerViews();
-            for (int i=0; i<players.size(); i++) {
-                player.sendMessage(playerViews.get(i));
-            }
-            Lobby lobby = Config.getLobby(context);
-            lobby.broadcast(lobby.openGames());
-        } catch (InterruptedException | JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        broadcast(startNotification());
+        List<JSONObject> playerViews = allPlayerViews();
+        for (int i=0; i<players.size(); i++) {
+            player.sendMessage(playerViews.get(i));
         }
+        Lobby lobby = Config.getLobby(context);
+        lobby.broadcast(lobby.openGames());
     }
 
     /**
@@ -175,13 +170,11 @@ public class GameRoom extends Room {
      *   - open_games, to lobby
      *
      * @param player
+     * @throws JSONException 
+     * @throws InterruptedException 
      */
-    private void exitGameHandler(Player player) {
-        try {
-            returnToLobby(player);
-        } catch (InterruptedException | JSONException e) {
-            e.printStackTrace();
-        }
+    private void exitGameHandler(Player player) throws InterruptedException, JSONException {
+        returnToLobby(player);
     }
 
     // response methods    

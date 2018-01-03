@@ -232,7 +232,11 @@ public class MainServlet extends HttpServlet {
         System.out.println(content);
         System.out.println();
 
-        player.routeCommand(cmd, content);
+        try {
+            player.routeCommand(cmd, content);
+        } catch (InterruptedException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
