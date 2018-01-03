@@ -117,7 +117,6 @@ public class Lobby extends Room {
      * @param content {game_id: game id int}
      */
     private void joinGameHandler(Player player, JSONObject content) {
-        if (! player.isInLobby()) { return; }
         int gameID;
         try {
             gameID = content.getInt("game_id");
@@ -164,6 +163,10 @@ public class Lobby extends Room {
         if (!gamesByID.containsKey(gameID)) { return; }
 
         GameRoom room = gamesByID.get(gameID);
+        if (!room.state().equals("Waiting") || room.isFull()) {
+            // can't join room
+            return;
+        }
         player.moveRoom(room);
     }
 

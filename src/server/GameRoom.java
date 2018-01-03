@@ -62,6 +62,9 @@ public class GameRoom extends Room {
             return "Finished";
         }
     }
+    protected boolean isFull() {
+        return nPlayers == players.size();
+    }
 
     // generators for message types
     public JSONObject startNotification() throws JSONException {
@@ -118,9 +121,25 @@ public class GameRoom extends Room {
      *   - game_state, to game room
      *   - open_games, to lobby
      * @param player
+     * @throws JSONException 
+     * @throws InterruptedException 
      */
     private void startGameHandler(Player player) {
-        throw new RuntimeException("Unimplemented");
+        // only start if not yet started, and room is full
+        if (started || ! isFull()) { return; }
+
+        try {
+            broadcast(startNotification());
+            List<JSONObject> playerViews = allPlayerViews();
+            for (int i=0; i<players.size(); i++) {
+                player.sendMessage(playerViews.get(i));
+            }
+            Lobby lobby = Config.getLobby(context);
+            lobby.broadcast(lobby.openGames());
+        } catch (InterruptedException | JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
