@@ -80,9 +80,12 @@ public class GameRoom extends Room {
         List<JSONObject> result = new ArrayList<>();
         for (int i=0; i<players.size(); i++) {
             result.add(
-                new JSONObject()
-                    .put("users", usernames)
-                    .put("state", game.getPlayerView(i).jsonify())
+                makePlayerMessage(
+                    "game_state", 
+                    new JSONObject()
+                        .put("users", usernames)
+                        .put("state", game.getPlayerView(i).jsonify())
+                )
             );
         }
         return result;

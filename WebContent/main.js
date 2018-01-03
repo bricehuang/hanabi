@@ -142,7 +142,7 @@ var gameStateHandler = function(content) {
     $('#game_state').text(JSON.stringify(content.state));
     pollLoop();
 }
-var gameStateHandler = function(content) {
+var gameEndHandler = function(content) {
     $('#game_status').text("Finished.  Score: " + content.score);
     pollLoop();
 }
