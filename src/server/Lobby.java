@@ -165,7 +165,6 @@ public class Lobby extends Room {
 
         GameRoom room = gamesByID.get(gameID);
         player.moveRoom(room);
-        broadcast(openGames());
     }
 
 }

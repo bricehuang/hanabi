@@ -125,8 +125,7 @@ public abstract class Room {
             e.printStackTrace();
         }
     }
-    
-    // TODO not functional
+
     /**
      * Logs out a player. Removes player's credentials from the global context.
      * If player is in game room, notifies room that player left.  If game is in

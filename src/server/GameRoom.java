@@ -171,24 +171,26 @@ public class GameRoom extends Room {
         player.sendMessage(joinAck());
         broadcast(playersInRoom());
         broadcast(serverMessage(player.name + " entered the room."));
+        Lobby lobby = Config.getLobby(context);
+        lobby.broadcast(lobby.openGames());
     }
     @Override
     protected void onLeave(Player player) throws InterruptedException, JSONException {
+        // TODO if game is in progress, player should resign
+        if (this.playersPresent() == 0) {
+            this.kill();
+        }
         player.sendMessage(leaveAck());
         broadcast(playersInRoom());
         broadcast(serverMessage(player.name + " left the room."));
+        Lobby lobby = Config.getLobby(context);
+        lobby.broadcast(lobby.openGames());
     }
     
     
     private void returnToLobby(Player player) throws InterruptedException, JSONException {
-        // TODO if game is in progress, player should resign
-        if (this.playersPresent() == 1) {
-            this.kill();
-        }
-
         Lobby lobby = Config.getLobby(context);
         player.moveRoom(lobby);
-        lobby.broadcast(lobby.openGames());
     }
     /**
      * Removes game from global registry
