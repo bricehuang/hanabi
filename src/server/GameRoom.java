@@ -174,7 +174,8 @@ public class GameRoom extends Room {
      * @throws InterruptedException 
      */
     private void exitGameHandler(Player player) throws InterruptedException, JSONException {
-        returnToLobby(player);
+        Lobby lobby = Config.getLobby(context);
+        player.moveRoom(lobby);
     }
 
     // response methods    
@@ -199,11 +200,7 @@ public class GameRoom extends Room {
         lobby.broadcast(lobby.openGames());
     }
     
-    
-    private void returnToLobby(Player player) throws InterruptedException, JSONException {
-        Lobby lobby = Config.getLobby(context);
-        player.moveRoom(lobby);
-    }
+
     /**
      * Removes game from global registry
      */

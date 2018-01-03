@@ -151,7 +151,6 @@ public class Lobby extends Room {
         joinGameRoom(player, gameID);
         broadcast(serverMessage(player.name + " started game " + gameID));
     }
-
     private void joinGameRoom(Player player, int gameID) throws InterruptedException, JSONException {
         Map<Integer, GameRoom> gamesByID = Config.getActiveGames(context);
 
