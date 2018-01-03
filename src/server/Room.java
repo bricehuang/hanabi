@@ -160,7 +160,7 @@ public abstract class Room {
         onJoin(player);            
     }
     /**
-     * Fires when player joins room.    
+     * Fires after when player joins room.    
      * @param player
      * @throws InterruptedException
      * @throws JSONException
@@ -178,7 +178,7 @@ public abstract class Room {
         onLeave(player);
     }
     /**
-     * Fires when player leaves room.    
+     * Fires after when player leaves room.    
      * @param player
      * @throws InterruptedException
      * @throws JSONException

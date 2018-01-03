@@ -1,6 +1,7 @@
 package server;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -11,8 +12,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import game.Game;
+import javafx.util.Pair;
 
 public class GameRoom extends Room {
+    
+    // initialized on game start
+    private List<Player> permanentPlayerListing = null;
 
     @Override
     protected void setAbstractFields() {
@@ -65,6 +70,14 @@ public class GameRoom extends Room {
     protected boolean isFull() {
         return nPlayers == players.size();
     }
+    private int getPlayerIndex(Player player) {
+        for (int i=0; i<permanentPlayerListing.size(); i++) {
+            if (permanentPlayerListing.get(i).equals(player)) {
+                return i;
+            }
+        }
+        throw new RuntimeException("Should not get here");
+    }
 
     // generators for message types
     public JSONObject startNotification() throws JSONException {
@@ -78,7 +91,7 @@ public class GameRoom extends Room {
     public List<JSONObject> allPlayerViews() throws JSONException {
         JSONArray usernames = allUsernames();
         List<JSONObject> result = new ArrayList<>();
-        for (int i=0; i<players.size(); i++) {
+        for (int i=0; i<permanentPlayerListing.size(); i++) {
             result.add(
                 makePlayerMessage(
                     "game_state", 
@@ -130,12 +143,11 @@ public class GameRoom extends Room {
     private void startGameHandler(Player player) throws InterruptedException, JSONException {
         // only start if not yet started, and room is full
         if (started || ! isFull()) { return; }
+        started = true;
+        permanentPlayerListing = Collections.unmodifiableList(new ArrayList<>(players));
 
         broadcast(startNotification());
-        List<JSONObject> playerViews = allPlayerViews();
-        for (int i=0; i<players.size(); i++) {
-            player.sendMessage(playerViews.get(i));
-        }
+        broadcastPlayerViews();
         Lobby lobby = Config.getLobby(context);
         lobby.broadcast(lobby.openGames());
     }
@@ -150,10 +162,30 @@ public class GameRoom extends Room {
      *     - game_end, to game room
      *     - open games, to lobby
      * @param player
-     * @param content TODO
+     * @param content {action: string} TODO make this better
+     * @throws JSONException 
      */
-    private void gameActionHandler(Player player, JSONObject content) {
-        throw new RuntimeException("Unimplemented");
+    private void gameActionHandler(Player player, JSONObject content) throws InterruptedException, JSONException {
+        if (!started || finished) { return; }
+        int playerIndex = getPlayerIndex(player);
+        String action = content.getString("action");
+        if (playerIndex != game.getOmnescientView().playerToMove && !action.equals("resign")) { return;}
+        Pair<Boolean, String> gameResponse = 
+            action.equals("resign") ? 
+            game.makeMove(action + " " + playerIndex) : 
+            game.makeMove(action);
+        if (gameResponse.getKey()) {
+            broadcastPlayerViews();
+            if (game.getOmnescientView().isOver) {
+                finished = true;
+                broadcast(endNotification());
+                Lobby lobby = Config.getLobby(context);
+                lobby.broadcast(lobby.openGames());
+            }            
+        } else {
+            String errorMsg = gameResponse.getValue();
+            player.sendMessage(serverMessage(errorMsg));
+        }
     }
 
     /**
@@ -192,7 +224,10 @@ public class GameRoom extends Room {
     }
     @Override
     protected void onLeave(Player player) throws InterruptedException, JSONException {
-        // TODO if game is in progress, player should resign
+        // if game is in progress, resign
+        if (started && !finished) {
+            gameActionHandler(player, new JSONObject().put("action","resign"));
+        }
         if (this.playersPresent() == 0) {
             this.kill();
         }
@@ -213,4 +248,13 @@ public class GameRoom extends Room {
         gamesByID.remove(gameID);
     }
 
+    private void broadcastPlayerViews() throws InterruptedException, JSONException {
+        List<JSONObject> playerViews = allPlayerViews();
+        for (int i=0; i<permanentPlayerListing.size(); i++) {
+            Player player = permanentPlayerListing.get(i);
+            if (players.contains(player)) {
+                player.sendMessage(playerViews.get(i));                
+            }
+        }
+    }
 }

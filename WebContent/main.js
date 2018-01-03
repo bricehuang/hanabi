@@ -139,7 +139,7 @@ var gameStartHandler = function(content) {
     pollLoop();
 }
 var gameStateHandler = function(content) {
-    $('#game_state').text(JSON.stringify(content.state));
+    $('#game_state').text(JSON.stringify(content.state) + JSON.stringify(content.users));
     pollLoop();
 }
 var gameEndHandler = function(content) {

@@ -100,7 +100,7 @@ var game_action = function() {
             data: JSON.stringify({
                 cmd: "game_action",
                 content: {
-                    message: $('#game_action_field').val()
+                    action: $('#game_action_field').val()
                 }
             })
         }
