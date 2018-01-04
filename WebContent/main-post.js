@@ -23,19 +23,11 @@ var make_game = function() {
         "server/play",{
             data: JSON.stringify({
                 cmd: "make_game",
-                content: {
-                    n_players: parseInt($('#game_size').val())
-                }
+                content: {}
             })
         }
     )
-    $('#game_size').val('')
 }
-$('#game_size').keypress(function(event) {
-    if (event.keyCode === 13) {
-        make_game();
-    }
-});
 $('#make_game').click(make_game);
 
 var join_game = function() {

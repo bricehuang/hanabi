@@ -41,7 +41,6 @@ public class Lobby extends Room {
                 new JSONObject()
                     .put("id", gameID)
                     .put("players", room.playersPresent())
-                    .put("capacity", room.nPlayers())
                     .put("state", room.state())
             );
         }
@@ -56,7 +55,7 @@ public class Lobby extends Room {
                 chatHandler(player, content);
                 break;
             case MainServlet.MAKE_GAME:
-                makeGameHandler(player, content);
+                makeGameHandler(player);
                 break;
             case MainServlet.JOIN_GAME:
                 joinGameHandler(player, content);
@@ -82,22 +81,11 @@ public class Lobby extends Room {
      *   - server_to_game, to game room
      *   - present_game_users, new game room
      * @param player
-     * @param content {n_players: game size int}
      * @throws JSONException 
      * @throws InterruptedException 
      */
-    private void makeGameHandler(Player player, JSONObject content) throws InterruptedException, JSONException {
-        int nPlayers;
-        try {
-            nPlayers = content.getInt("n_players");
-        } catch (JSONException e1) {
-            // invalid nPlayers, do nothing
-            return;
-        }
-        // invalid nPlayers, do nothing
-        if (nPlayers < 2 || nPlayers > 5) { return; } 
-
-        makeAndJoinNewGame(player, nPlayers);
+    private void makeGameHandler(Player player) throws InterruptedException, JSONException {
+        makeAndJoinNewGame(player);
     }
 
     /**
@@ -142,9 +130,9 @@ public class Lobby extends Room {
         broadcast(playersInRoom());
     }
     
-    private void makeAndJoinNewGame(Player player, int nPlayers) throws InterruptedException, JSONException {
+    private void makeAndJoinNewGame(Player player) throws InterruptedException, JSONException {
         int gameID = Config.genGameID(context);
-        GameRoom newRoom = new GameRoom(context, gameID, nPlayers);
+        GameRoom newRoom = new GameRoom(context, gameID);
         Config.getActiveGames(context).put(gameID, newRoom);
         
         // this will not fail because gameID was just added to the global registry

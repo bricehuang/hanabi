@@ -33,16 +33,16 @@ public class GameRoom extends Room {
     }
 
     private final int gameID;
-    private final int nPlayers;
-    private final Game game;
+    private Game game;
     private boolean started;
     private boolean finished;
+    
+    public static final int ROOM_CAPACITY = 5;
 
-    public GameRoom(ServletContext context, int gameID, int nPlayers) {
+    public GameRoom(ServletContext context, int gameID) {
         super(context);
         this.gameID = gameID;
-        this.nPlayers = nPlayers;
-        this.game = new Game(nPlayers);
+        this.game = null; // set on start
         this.started = false;
         this.finished = false;
     }
@@ -50,9 +50,6 @@ public class GameRoom extends Room {
     // getters
     public int gameID() {
         return gameID;
-    }
-    public int nPlayers() {
-        return nPlayers;
     }
     public int playersPresent() {
         return players.size();
@@ -67,8 +64,11 @@ public class GameRoom extends Room {
             return "Finished";
         }
     }
-    protected boolean isFull() {
-        return nPlayers == players.size();
+    public boolean isFull() {
+        return (players.size() == ROOM_CAPACITY);
+    }
+    protected boolean readyToStart() {
+        return (players.size()>= 2 && players.size() <= 5);
     }
     private int getPlayerIndex(Player player) {
         for (int i=0; i<permanentPlayerListing.size(); i++) {
@@ -141,10 +141,12 @@ public class GameRoom extends Room {
      * @throws InterruptedException 
      */
     private void startGameHandler(Player player) throws InterruptedException, JSONException {
-        // only start if not yet started, and room is full
-        if (started || ! isFull()) { return; }
+        // only start if not yet started, and room is full, and game is ready to start
+        if (started || !readyToStart() ) { return; }
         started = true;
         permanentPlayerListing = Collections.unmodifiableList(new ArrayList<>(players));
+        int nPlayers = permanentPlayerListing.size();
+        game = new Game(nPlayers);
 
         broadcast(startNotification());
         broadcastPlayerViews();

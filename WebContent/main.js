@@ -73,15 +73,15 @@ var getHandler = function(responseType) {
 }
 
 var joinLobbyHandler = function(content) {
-    $('#lobby_visibility').text("visible");
+    $("#lobby-container").removeClass("hidden");
     pollLoop();
 }
 var lobbyUsersHandler = function(content) {
-    $('#lobby_users').empty();
+    $('#lobby_players').empty();
     var users = content.users;
     for (var i=0; i<users.length; i++) {
         var user = users[i];
-        $('#lobby_users').append($('<li>').text(user));
+        $('#lobby_players').append('<tr><td>' + user + '</td></tr>');
     }
     pollLoop();
 }
@@ -91,7 +91,7 @@ var openGamesHandler = function(content) {
     for (var i=0; i<game_list.length; i++) {
         game = game_list[i]
         $('#games_list').append($('<li>').html(
-            "" + game.id + " " + game.capacity + " " + game.players + " " + game.state
+            "" + game.id + " " + game.players + " " + game.state
         ));
     }
     pollLoop();
@@ -108,12 +108,12 @@ var leaveLobbyHandler = function(content) {
     $('#lobby_messages').empty();
     $('#lobby_users').empty();
     $('#games_list').empty();
-    $('#lobby_visibility').text("hidden");
+    $("#lobby-container").addClass("hidden");
     pollLoop();
 }
 
 var joinGameHandler = function(content) {
-    $('#game_visibility').text("visible");
+    $("#game-container").removeClass("hidden");
     $('#game_status').text("Waiting");
     pollLoop();
 }
@@ -151,7 +151,7 @@ var leaveGameHandler = function(content) {
     $('#game_users').empty();
     $('#game_status').text("");
     $('#game_state').text("");
-    $('#game_visibility').text("hidden");
+    $("#game-container").addClass("hidden");
     pollLoop();
 }
 
