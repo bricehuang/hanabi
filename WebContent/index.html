@@ -2,14 +2,49 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Rudimentary Login Page</title>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <title>Hanabi Online!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+        body {
+            height: 100%;
+        }
+        .title-page {
+            background-image: url("fireworks.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            padding-bottom: 40%;
+        }
+    </style>
 </head>
-<body>
-    Your name:
-    <input type="text" id="name" />
-    <button id="login">Play!</button>
+<body class="title-page">
+    <nav class="navbar navbar-default">
+        <div class=navbar-inner>
+            <div class="container">
+                <a class=brand href='index.html'>Hanabi</a>
+                <ul class=nav>
+                    <li>
+                        <div class='navbar-form'>
+                            <input id=username type=text placeholder=username class=span3>
+                            <button id=login class="btn btn-primary" type="button">Play!</button>
+                        </div>
+                    </li>
+                    <li><a href='rules.html'>Rules</a></li>
+                    <li><a href='about.html'>About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container" style='padding-top:40px'>
+        <div class='hero-unit'>
+            <p> This is a server for the popular card game <a href="https://www.amazon.com/R-Games-RR-869-Hanabi/dp/B00CYQ9Q76"><em>Hanabi</em></a>.  In this game, players, with knowledge of others' cards but not their own, must play cards in the right order to create a perfect fireworks show. </p>
+        </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="login.js"></script>
 </body>
 </html>

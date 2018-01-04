@@ -2,16 +2,32 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Main Main Something Main</title>
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <title>Hanabi Online!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <style>
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages li { padding: 5px 10px; }
     </style>
 </head>
-<body>
-    <button id="logout">Logout</button>
-        
+<body class="main-page">
+    <nav class="navbar navbar-default">
+        <div class=navbar-inner>
+            <div class="container">
+                <a class=brand href='index.html'>Hanabi</a>
+                <ul class=nav>
+                    <li><a href='rules.html'>Rules</a></li>
+                    <li><a href='about.html'>About</a></li>
+                </ul>
+                <ul class='nav pull-right'>
+                    <div class='navbar-form'>
+                        <button id=logout class="btn btn-primary" type="button">Logout</button>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div id="lobby">
         <h3>Lobby</h3>
         <div id="lobby_visibility">hidden</div>
@@ -20,11 +36,11 @@
         <input type="text" id="lobby_chat_field" />
         <button id="lobby_chat">Send</button>
 
-		Game Size: 
+		Game Size:
 		<input type="text" id="game_size" />
         <button id="make_game">Make Game</button>
 
-		Game ID: 
+		Game ID:
 		<input type="text" id="game_id" />
         <button id="join_game">Join Game</button>
 
@@ -32,7 +48,7 @@
         <ul id="lobby_users"></ul>
         <ul id="games_list"></ul>
     </div>
-    
+
     <div id="game">
         <h3>Game</h3>
         <div id="game_visibility">hidden</div>
@@ -50,11 +66,13 @@
         <button id="game_action">Make Move</button>
 
         <button id="exit_game">Exit Game</button>
-        
+
         <ul id="game_messages"></ul>
         <ul id="game_users"></ul>
     </div>
 
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="main.js"> </script>
     <script src="main-post.js"> </script>
 </body>

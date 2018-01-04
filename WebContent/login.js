@@ -1,7 +1,7 @@
 var submit = function() {
     $.post(
         "server/login",
-        {name: $('#name').val()}
+        {name: $('#username').val()}
     )
     .done(function (jsonResponse) {
         if (jsonResponse.success) {
@@ -15,7 +15,7 @@ var submit = function() {
     });
 }
 
-$('#name').keypress(function(event) {
+$('#username').keypress(function(event) {
     if (event.keyCode === 13) {
         submit();
     }
