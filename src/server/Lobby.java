@@ -41,7 +41,7 @@ public class Lobby extends Room {
                 new JSONObject()
                     .put("id", gameID)
                     .put("players", room.playersPresent())
-                    .put("state", room.state())
+                    .put("status", room.status())
             );
         }
         return makePlayerMessage("open_games", new JSONObject().put("games", games));
@@ -146,7 +146,7 @@ public class Lobby extends Room {
         if (!gamesByID.containsKey(gameID)) { return; }
 
         GameRoom room = gamesByID.get(gameID);
-        if (!room.state().equals("Waiting") || room.isFull()) {
+        if (!room.status().equals("Waiting") || room.isFull()) {
             // can't join room
             return;
         }

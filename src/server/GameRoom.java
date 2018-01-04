@@ -55,7 +55,7 @@ public class GameRoom extends Room {
         return players.size();
     }
 
-    public String state() {
+    public String status() {
         if (!started) {
             return "Waiting";
         } else if (!finished) {

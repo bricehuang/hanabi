@@ -30,29 +30,18 @@ var make_game = function() {
 }
 $('#make_game').click(make_game);
 
-var join_game = function() {
+var join_game = function(game_id) {
     $.post(
         "server/play",{
             data: JSON.stringify({
                 cmd: "join_game",
                 content: {
-                    game_id: $('#game_id').val()
+                    game_id: game_id
                 }
             })
         }
     )
-    $('#game_id').val('')
 }
-$('#game_id').keypress(function(event) {
-    if (event.keyCode === 13) {
-        join_game();
-    }
-});
-$('#join_game').click(join_game);
-
-
-
-
 
 var game_chat = function() {
     $.post(

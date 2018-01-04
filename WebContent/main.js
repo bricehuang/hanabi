@@ -90,19 +90,31 @@ var openGamesHandler = function(content) {
     var game_list = content.games;
     for (var i=0; i<game_list.length; i++) {
         game = game_list[i]
-        $('#games_list').append($('<li>').html(
-            "" + game.id + " " + game.players + " " + game.state
-        ));
+        $('#games_list').append(
+            '<tr onclick="join_game(' + game.id + ')">' +
+                '<td>' + game.id + '</td>' +
+                '<td>' + game.status + '</td>' +
+                '<td>' + game.players + '</td>' +
+            '</tr>'
+        );
     }
     pollLoop();
 }
 var userLobbyChatHandler = function(content) {
     $('#lobby_messages').append($('<li>').html(content.from.bold() + ": " + content.message));
+    scrollLobby();
     pollLoop();
 }
 var serverLobbyChatHandler = function(content) {
     $('#lobby_messages').append($('<li>').html(content.message.italics()));
+    scrollLobby();
     pollLoop();
+}
+var scrollLobby = function() {
+    var chat_window = $('#lobby-chat-text');
+    if (chat_window.scrollTop() + chat_window.height() + 20 >= chat_window[0].scrollHeight) {
+        chat_window.scrollTop(chat_window[0].scrollHeight);
+    }
 }
 var leaveLobbyHandler = function(content) {
     $('#lobby_messages').empty();

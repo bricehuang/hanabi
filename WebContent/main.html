@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <style>
-        #messages { list-style-type: none; margin: 0; padding: 0; }
-        #messages li { padding: 5px 10px; }
+        #lobby_messages { list-style-type: none; margin: 0; padding: 0; }
+        #lobby_messages li { padding: 0px 5px; }
     </style>
 </head>
 <body class="main-page">
@@ -32,37 +32,33 @@
         <div style='float:right; width:350px'>
             <div id=lobby-games-players-tab class='tab-pane lobby-tab-pane active text-center'>
                 <table class='table table-hover table-striped'>
-                    <thead><tr><th>Game</th><th>Status</th><th>Type</th><th></th></tr></thead>
+                    <thead><tr><th>Game</th><th>Status</th><th>Players (5 max)</th><th></th></tr></thead>
                     <tbody id=games_list></tbody>
                 </table>
 
-                <a class="btn btn-standard" href="#"> Create New Game </a>
+                <button id=make_game class="btn btn-standard"> Create New Game </button>
 
                 <p></p>
 
-                <table class='table table-striped'>
-                    <thead><tr><th>Players Online</th></tr></thead>
+                <table class='table table-hover table-striped'>
+                    <thead><tr><th>Players In Lobby</th></tr></thead>
                     <tbody id=lobby_players class='players'></tbody>
                 </table>
             </div>
         </div>
+        <div style='margin-right:320px'>
+            <div id=lobby-chat-text class="pre-scrollable" style='height: 500px'>
+                <ul id="lobby_messages"></ul>
+            </div>
+        </div>
+        <p>
+        <div class='row-fluid'>
+            <div class='well'>
+                <input id=lobby_chat_field type=text class='span12' placeholder='Type a message'>
+            </div>
+        </div>
 
 
-        <h3>Lobby</h3>
-
-        Chat:
-        <input type="text" id="lobby_chat_field" />
-        <button id="lobby_chat">Send</button>
-
-        <button id="make_game">Make Game</button>
-
-		Game ID:
-		<input type="text" id="game_id" />
-        <button id="join_game">Join Game</button>
-
-        <ul id="lobby_messages"></ul>
-        <ul id="lobby_users"></ul>
-        <ul id="games_list"></ul>
     </div>
 
     <div id=game-container class='content-container hidden'>
