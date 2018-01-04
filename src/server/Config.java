@@ -1,15 +1,21 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.TreeMap;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+
+import org.json.JSONException;
 
 /**
  * Application Lifecycle Listener implementation class Config
@@ -25,6 +31,36 @@ public class Config implements ServletContextListener {
      *   - active_games: map of currently active (not yet started, in progress,
      *   and finished-with-people-still-in-the-room) games, indexed by game ID
      */
+    
+    private static final long IDLE_LOGOUT_TIME_MILLIS = 5*60*1000; // 5 minutes 
+    private static final long IDLE_LOGOUT_CHECK_INTERVAL = 2*60*1000; // 2 minutes 
+    
+    private class LogoutWorker extends TimerTask {
+        private final ServletContext context;
+        LogoutWorker(ServletContext context) {
+            this.context = context;
+        }
+        @Override
+        public void run() {                        
+            Map<String, Player> playersBySessionID = Config.getPlayersBySessionID(context);
+            List<Player> playersToLogOut = new ArrayList<>();
+            long timeNow = System.currentTimeMillis();
+            for (String sessionID : playersBySessionID.keySet()) {
+                Player player = playersBySessionID.get(sessionID);
+                long interval = timeNow - player.lastRequestTime();
+                if (interval > IDLE_LOGOUT_TIME_MILLIS) {
+                    playersToLogOut.add(player);
+                }
+            }
+            for (Player player : playersToLogOut) {
+                try {
+                    player.logout();
+                } catch (InterruptedException | JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
     /**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
@@ -35,6 +71,9 @@ public class Config implements ServletContextListener {
         context.setAttribute("all_usernames", new HashSet<String>());
         context.setAttribute("lobby", new Lobby(context));
         context.setAttribute("active_games", new TreeMap<Integer, GameRoom>());
+        Timer logoutWorkerTimer = new Timer();
+        logoutWorkerTimer.scheduleAtFixedRate(new LogoutWorker(context), IDLE_LOGOUT_TIME_MILLIS, IDLE_LOGOUT_CHECK_INTERVAL);
+        context.setAttribute("logout_worker_timer", logoutWorkerTimer);
     }
 
     /**
@@ -42,10 +81,13 @@ public class Config implements ServletContextListener {
      */
     public void contextDestroyed(ServletContextEvent arg0)  {
         ServletContext context = arg0.getServletContext();
+        Timer logoutWorkerTimer = (Timer) context.getAttribute("logout_worker_timer");
+        logoutWorkerTimer.cancel();
         context.removeAttribute("players_by_sessionID");
         context.removeAttribute("all_usernames");
         context.removeAttribute("lobby");
         context.removeAttribute("active_games");
+        context.removeAttribute("logout_worker_timer");
     }
 
     public static Map<String, Player> getPlayersBySessionID(ServletContext context) {

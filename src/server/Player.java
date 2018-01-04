@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 public class Player {
 
+    private long lastRequestTime;
     public final String sessionID;
     public final String name;
     private Room room;
@@ -22,10 +23,14 @@ public class Player {
         this.messages = new LinkedBlockingQueue<>();
         this.beingLoggedOut = false;
         room.addPlayer(this);
+        updateLastRequestTime();
     }
-
-    public boolean isInLobby() {
-        return this.room.isLobby();
+    
+    public void updateLastRequestTime() {
+        lastRequestTime = System.currentTimeMillis();
+    }
+    public long lastRequestTime() {
+        return lastRequestTime;
     }
 
     // message sending mechanics

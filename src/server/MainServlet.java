@@ -139,12 +139,17 @@ public class MainServlet extends HttpServlet {
             }
             return;
         } else {
+            // valid player
+            player.updateLastRequestTime();
             try {
                 JSONObject message = player.getMessageToSend().put("authorized", true);
-                System.out.println("Outgoing message");
-                System.out.println(message.getString("type"));
-                System.out.println(message.getJSONObject("content"));
-                System.out.println();
+                // debug output
+                if (message.has("type")) {
+                    System.out.println("Outgoing message");
+                    System.out.println(message.getString("type"));
+                    System.out.println(message.getJSONObject("content"));
+                    System.out.println();                    
+                }
                 if (
                     !message.getBoolean("is_null") &&
                     message.getString("type").equals("logout_ack")
