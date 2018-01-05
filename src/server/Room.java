@@ -115,12 +115,13 @@ public abstract class Room {
      * Sends:
      *   - user_to_lobby or user_to_game, whichever relevant, to room
      * @param player
-     * @param content {message: chat string}
+     * @param content {message: chat string}.  Message should not be empty.  
      * @throws InterruptedException 
      * @throws JSONException 
      */
     protected void chatHandler(Player player, JSONObject content) throws InterruptedException, JSONException {
         String message = content.getString("message");
+        if (message.length() == 0) { return; }
         broadcast(userMessage(player, message));
     }
 

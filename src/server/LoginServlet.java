@@ -50,6 +50,10 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
+    private boolean isValidUsername(String username) {
+        return (username.matches("[a-zA-Z0-9_]*") && username.length() >= 4 && username.length() <= 16); 
+    }
+    
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
@@ -71,9 +75,20 @@ public class LoginServlet extends HttpServlet {
 
             // check if name is taken
             Set<String> allUsernames = Config.getAllUsernames(context);
-            if (allUsernames.contains(name)) {
+            if (!isValidUsername(name)) {
                 try {
-                    // fail.  Don't modify internal state and return to browser.
+                    result.put("success", false);
+                    result.put("error_msg", 
+                        "Invalid username.  A username should consist of alphanumeric " + 
+                        "characters and/or underscores, and must have between 4 and 16 " + 
+                        "characters."
+                    );
+                    response.getWriter().println(result);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }                
+            } else if (allUsernames.contains(name)) {
+                try {
                     result.put("success", false);
                     result.put("error_msg", "That username already exists.");
                     response.getWriter().println(result);
@@ -81,6 +96,7 @@ public class LoginServlet extends HttpServlet {
                     e.printStackTrace();
                 }
             } else {
+                // successful login
                 try {
                     String sessionID = Config.genSessionKey(context);
                     Room lobby = Config.getLobby(context);
