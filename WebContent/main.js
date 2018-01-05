@@ -129,11 +129,11 @@ var joinGameHandler = function(content) {
     pollLoop();
 }
 var gameUsersHandler = function(content) {
-    $('#game_users').empty();
+    $('#game_players').empty();
     var users = content.users;
     for (var i=0; i<users.length; i++) {
         var user = users[i];
-        $('#game_users').append($('<li>').text(user));
+        $('#game_players').append('<tr><td>' + user + '</td></tr>');
     }
     pollLoop();
 }
@@ -161,7 +161,7 @@ var gameEndHandler = function(content) {
 }
 var leaveGameHandler = function(content) {
     $('#game_messages').empty();
-    $('#game_users').empty();
+    $('#game_players').empty();
     $('#game_status').text("");
     $('#game_state').text("");
     $("#game-container").addClass("hidden");

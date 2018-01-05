@@ -15,23 +15,38 @@ import util.JSONifiable;
 public class HiddenCardView implements JSONifiable {
 
     public static final HiddenCardView NO_INFO = new HiddenCardView(
-        Color.ALL_COLORS, Card.ALL_NUMBERS
+        Color.ALL_COLORS, Card.ALL_NUMBERS, false, false
     );
 
     private final Set<Color> colors;
     private final Set<Integer> numbers;
+    private final boolean colorHinted;
+    private final boolean numberHinted;
 
-    public HiddenCardView(Set<Color> colors, Set<Integer> numbers) {
+    public HiddenCardView(Set<Color> colors, Set<Integer> numbers, boolean colorHinted, boolean numberHinted) {
         this.colors = new TreeSet<>(colors);
         this.numbers = new TreeSet<>(numbers);
+        this.colorHinted = colorHinted;
+        this.numberHinted = numberHinted;
+        checkRep();
+    }
+    
+    private void checkRep() {
+        if (colorHinted) { assert colors.size() == 1; }
+        if (numberHinted) { assert numbers.size() == 1; }
     }
 
     public Set<Color> colors() {
         return Collections.unmodifiableSet(colors);
     }
-
     public Set<Integer> numbers() {
         return Collections.unmodifiableSet(numbers);
+    }
+    public boolean colorHinted() {
+        return colorHinted;
+    }
+    public boolean numberHinted() {
+        return numberHinted;
     }
 
     @Override
@@ -40,7 +55,9 @@ public class HiddenCardView implements JSONifiable {
         HiddenCardView that = (HiddenCardView) other;
         return (
             this.colors.equals(that.colors) &&
-            this.numbers.equals(that.numbers)
+            this.numbers.equals(that.numbers) && 
+            this.colorHinted == that.colorHinted &&
+            this.numberHinted == that.numberHinted
         );
     }
 
@@ -80,18 +97,15 @@ public class HiddenCardView implements JSONifiable {
     @Override
     public JSONObject jsonify() throws JSONException {
         JSONObject result = new JSONObject();
-        if (colors.size() == 1) {
-            result.put(JsonUtil.COLOR, extractEltFromSingletonSet(colors).toString());
-        } else {
-            result.put(JsonUtil.COLOR, JsonUtil.UNKNOWN);
-        }
-        if (numbers.size() == 1) {
-            result.put(JsonUtil.NUMBER, extractEltFromSingletonSet(numbers).toString());
-        } else {
-            result.put(JsonUtil.NUMBER, JsonUtil.UNKNOWN);
-        }
-        result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
-        result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
+        result.put(
+            JsonUtil.COLOR, 
+            colorHinted ? extractEltFromSingletonSet(colors).toString() : JsonUtil.UNKNOWN
+        );
+        result.put(
+            JsonUtil.NUMBER, 
+            numberHinted ? extractEltFromSingletonSet(numbers).toString() : JsonUtil.UNKNOWN
+        );
+        result.put(JsonUtil.HINTED, colorHinted || numberHinted);
         return result;
     }
 

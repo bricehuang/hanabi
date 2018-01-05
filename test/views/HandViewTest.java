@@ -8,14 +8,14 @@ import org.junit.Test;
 
 public class HandViewTest extends ViewTestFramework {
     
-    private static final HiddenCardView NOT_RED_NOT_5 = makeHiddenCard(NOT_RED, NOT_5);
-    private static final HiddenCardView ANY_COLOR_ONLY_1 = makeHiddenCard(ANY_COLOR, ONLY_1);
-    private static final HiddenCardView ONLY_YELLOW_ANY_NUMBER = makeHiddenCard(ONLY_YELLOW, ANY_NUMBER);
+    private static final HiddenCardView NOT_RED_NOT_5 = makeHiddenCard(NOT_RED, NOT_5, false, false);
+    private static final HiddenCardView ANY_COLOR_ONLY_1 = makeHiddenCard(ANY_COLOR, ONLY_1, false, true);
+    private static final HiddenCardView ONLY_YELLOW_ANY_NUMBER = makeHiddenCard(ONLY_YELLOW, ANY_NUMBER, true, false);
 
-    private static final VisibleCardView G2_NOT_RED_NOT_5 = makeVisibleCard(GREEN, 2, NOT_RED, NOT_5);
-    private static final VisibleCardView W3_NOT_RED_NOT_5 = makeVisibleCard(WHITE, 3, NOT_RED, NOT_5);
-    private static final VisibleCardView G1_ANY_COLOR_ONLY_1 = makeVisibleCard(GREEN, 1, ANY_COLOR, ONLY_1);
-    private static final VisibleCardView Y2_ONLY_YELLOW_ANY_NUMBER = makeVisibleCard(YELLOW, 2, ONLY_YELLOW, ANY_NUMBER);
+    private static final VisibleCardView G2_NOT_RED_NOT_5 = makeVisibleCard(GREEN, 2, NOT_RED, NOT_5, false, false);
+    private static final VisibleCardView W3_NOT_RED_NOT_5 = makeVisibleCard(WHITE, 3, NOT_RED, NOT_5, false, false);
+    private static final VisibleCardView G1_ANY_COLOR_ONLY_1 = makeVisibleCard(GREEN, 1, ANY_COLOR, ONLY_1, false, true);
+    private static final VisibleCardView Y2_ONLY_YELLOW_ANY_NUMBER = makeVisibleCard(YELLOW, 2, ONLY_YELLOW, ANY_NUMBER, true, false);
     
     private static final HiddenHandView HIDDEN_HAND = new HiddenHandView(
         Arrays.asList(NOT_RED_NOT_5, NOT_RED_NOT_5, ANY_COLOR_ONLY_1, ONLY_YELLOW_ANY_NUMBER)

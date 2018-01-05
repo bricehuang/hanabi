@@ -30,12 +30,16 @@ public class Card {
     private final Set<Integer> possibleNumbers;
     private HiddenCardView hiddenView;
     private VisibleCardView visibleView;
+    private boolean colorHinted;
+    private boolean numberHinted;
 
     public Card(Color color, Integer number){
         this.color = color;
         this.number = number;
         this.possibleColors = new TreeSet<>(Color.ALL_COLORS);
         this.possibleNumbers = new TreeSet<>(ALL_NUMBERS);
+        this.colorHinted = false;
+        this.numberHinted = false;
         refreshViews();
         checkRep();
     }
@@ -55,7 +59,7 @@ public class Card {
     }
 
     private void refreshViews(){
-        this.hiddenView = new HiddenCardView(possibleColors, possibleNumbers);
+        this.hiddenView = new HiddenCardView(possibleColors, possibleNumbers, colorHinted, numberHinted);
         this.visibleView = new VisibleCardView(color, number, hiddenView);
     }
 
@@ -82,6 +86,7 @@ public class Card {
     */
     public void learnColor(Color color) {
         if (this.color.equals(color)) {
+            this.colorHinted = true;
             for (Color anyColor : Color.ALL_COLORS) {
                 if (!anyColor.equals(color)) {
                     this.possibleColors.remove(anyColor);
@@ -101,6 +106,7 @@ public class Card {
      */
     public void learnNumber(Integer number) {
         if (this.number == number) {
+            this.numberHinted = true;
             for (Integer anyNumber : ALL_NUMBERS) {
                 if (!anyNumber.equals(number)) {
                     this.possibleNumbers.remove(anyNumber);

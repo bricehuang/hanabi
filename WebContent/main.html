@@ -31,7 +31,7 @@
 
     <div id=lobby-container class="content-container hidden">
         <div style='float:right; width:350px'>
-            <div id=lobby-games-players-tab class='tab-pane lobby-tab-pane active text-center'>
+            <div id=lobby-info class='tab-pane text-center'>
                 <table class='table table-hover table-striped'>
                     <thead><tr><th>Game</th><th>Players (5 max)</th><th>Status</th><th></th></tr></thead>
                     <tbody id=games_list></tbody>
@@ -61,12 +61,27 @@
     </div>
 
     <div id=game-container class='content-container hidden'>
+
+        <div style='float:right; width:350px'>
+            <div id=lobby-games-players-tab class='tab-pane text-center'>
+                <button id=exit_game class="btn btn-standard"> Exit to Lobby </button>
+
+                <p></p>
+
+                <table class='table table-hover table-striped'>
+                    <thead><tr><th>Players In Game</th></tr></thead>
+                    <tbody id=game_players class='players'></tbody>
+                </table>
+            </div>
+        </div>
+
+
         <div id=field-container style='height:500px'>
             <div id=game-field style='position:relative'></div>
             <div id=action-field class='text-center' style='position:relative; top:400px'>POTATO</div>
-            <span class='pull-right'>
+<!--             <span class='pull-right'>
                 <button id=exit_game class='btn btn-standard'>Exit to Lobby</button>
-            </span>
+            </span> -->
         </div>
         <div id=dashboard-container class='content-container'>
             <ul class='nav nav-tabs'>

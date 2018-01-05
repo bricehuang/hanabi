@@ -2,7 +2,6 @@ package game;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,16 +17,9 @@ public class JsonUtil {
     // card
     public static final String COLOR = "color";
     public static final String NUMBER = "number";
-    public static final String COLORS = "colors";
-    public static final String NUMBERS = "numbers";
+    public static final String HINTED = "hinted";
     public static final String CARD_IDENTITY = "card";
-    public static final String CARD_INFO_STATE = "card_info";
     public static final String UNKNOWN = "?";
-
-    public static final int [] NUMBER_ORDER = {1,2,3,4,5};
-    public static final Color[] COLOR_ORDER = {
-        Color.BLUE, Color.GREEN, Color.RED, Color.WHITE, Color.YELLOW
-    };
 
     // play and discard
     public static final String COUNT = "count";
@@ -63,22 +55,6 @@ public class JsonUtil {
     public static final String HANDS = "hands";
     public static final String IS_OVER = "is_over";
     public static final String CARDS_LEFT = "cards_left";
-
-    public static JSONArray jsonifyColorSet(Set<Color> colors) {
-        JSONArray result = new JSONArray();
-        for (Color color : COLOR_ORDER) {
-            result.put(colors.contains(color));
-        }
-        return result;
-    }
-
-    public static JSONArray jsonifyNumberSet(Set<Integer> numbers) {
-        JSONArray result = new JSONArray();
-        for (Integer number: NUMBER_ORDER) {
-            result.put(numbers.contains(number));
-        }
-        return result;
-    }
 
     public static JSONArray jsonifyPlays(Map<Color, Integer> plays) throws JSONException {
         JSONArray result = new JSONArray();

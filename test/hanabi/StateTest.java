@@ -25,13 +25,13 @@ public class StateTest extends ViewTestFramework {
         assertEquals("Deck:\n  G2 R5\n", deck.toString());
         ImList<CardSpec> view1 = deck.getView();
         assertEquals(
-            makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER),
+            makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER, false, false),
             deck.draw().visibleView()
         );
         assertEquals(1, deck.size());
         ImList<CardSpec> view2 = deck.getView();
         assertEquals(
-            makeVisibleCard(RED, 5, ANY_COLOR, ANY_NUMBER),
+            makeVisibleCard(RED, 5, ANY_COLOR, ANY_NUMBER, false, false),
             deck.draw().visibleView()
         );
         assertEquals(0, deck.size());

@@ -8,7 +8,7 @@ public class CardViewTest extends ViewTestFramework {
 
     @Test
     public void testHiddenCardView() {
-        HiddenCardView notRedNot5 = makeHiddenCard(NOT_RED, NOT_5);
+        HiddenCardView notRedNot5 = makeHiddenCard(NOT_RED, NOT_5, false, false);
         assertEquals(notRedNot5.colors(), NOT_RED);
         assertEquals(notRedNot5.numbers(), NOT_5);
         assertEquals(notRedNot5.toString(), "?? (BGWY , 1234 )");
@@ -16,7 +16,7 @@ public class CardViewTest extends ViewTestFramework {
 
     @Test
     public void testVisibleCardView() {
-        VisibleCardView g2NotRedNot5 = makeVisibleCard(GREEN, 2, NOT_RED, NOT_5);
+        VisibleCardView g2NotRedNot5 = makeVisibleCard(GREEN, 2, NOT_RED, NOT_5, false, false);
         assertEquals(GREEN, g2NotRedNot5.color());
         assertEquals( (Integer) 2, g2NotRedNot5.number());
         assertEquals(NOT_RED, g2NotRedNot5.colors());

@@ -12,11 +12,11 @@ public class CardTest extends ViewTestFramework {
     public void testViews() {
         Card card = new Card(RED, 5); // GA-BOH-MEEM
         assertEquals(
-            makeHiddenCard(ANY_COLOR, ANY_NUMBER), 
+            makeHiddenCard(ANY_COLOR, ANY_NUMBER, false, false), 
             card.hiddenView()
         );
         assertEquals(
-            makeVisibleCard(RED, 5, ANY_COLOR, ANY_NUMBER), 
+            makeVisibleCard(RED, 5, ANY_COLOR, ANY_NUMBER, false, false), 
             card.visibleView()
         );
     }
@@ -25,61 +25,61 @@ public class CardTest extends ViewTestFramework {
     public void testLearn() {
         Card card = new Card(GREEN, 2);
         assertEquals(
-            makeHiddenCard(ANY_COLOR, ANY_NUMBER), 
+            makeHiddenCard(ANY_COLOR, ANY_NUMBER, false, false), 
             card.hiddenView()
         );
         assertEquals(
-            makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER), 
+            makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER, false, false), 
             card.visibleView()
         );
 
         card.learnNumber(5);
         assertEquals(
-            makeHiddenCard(ANY_COLOR, NOT_5), 
+            makeHiddenCard(ANY_COLOR, NOT_5, false, false), 
             card.hiddenView()
         );
         assertEquals(
-            makeVisibleCard(GREEN, 2, ANY_COLOR, NOT_5), 
+            makeVisibleCard(GREEN, 2, ANY_COLOR, NOT_5, false, false), 
             card.visibleView()
         );
 
         card.learnColor(RED);
         assertEquals(
-            makeHiddenCard(NOT_RED, NOT_5), 
+            makeHiddenCard(NOT_RED, NOT_5, false, false), 
             card.hiddenView()
         );
         assertEquals(
-            makeVisibleCard(GREEN, 2, NOT_RED, NOT_5), 
+            makeVisibleCard(GREEN, 2, NOT_RED, NOT_5, false, false), 
             card.visibleView()
         );
 
         card.learnNumber(4);
         assertEquals(
-            makeHiddenCard(NOT_RED, NOT_45), 
+            makeHiddenCard(NOT_RED, NOT_45, false, false), 
             card.hiddenView()
         );
         assertEquals(
-            makeVisibleCard(GREEN, 2, NOT_RED, NOT_45), 
+            makeVisibleCard(GREEN, 2, NOT_RED, NOT_45, false, false), 
             card.visibleView()
         );
 
         card.learnColor(GREEN);
         assertEquals(
-            makeHiddenCard(ONLY_GREEN, NOT_45), 
+            makeHiddenCard(ONLY_GREEN, NOT_45, true, false), 
             card.hiddenView()
         );
         assertEquals(
-            makeVisibleCard(GREEN, 2, ONLY_GREEN, NOT_45), 
+            makeVisibleCard(GREEN, 2, ONLY_GREEN, NOT_45, true, false), 
             card.visibleView()
         );
 
         card.learnNumber(2);
         assertEquals(
-            makeHiddenCard(ONLY_GREEN, ONLY_2), 
+            makeHiddenCard(ONLY_GREEN, ONLY_2, true, true), 
             card.hiddenView()
         );
         assertEquals(
-            makeVisibleCard(GREEN, 2, ONLY_GREEN, ONLY_2), 
+            makeVisibleCard(GREEN, 2, ONLY_GREEN, ONLY_2, true, true), 
             card.visibleView()
         );
     }

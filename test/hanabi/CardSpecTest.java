@@ -14,7 +14,7 @@ public class CardSpecTest extends ViewTestFramework {
     public void testCreateCard() {
         Card r5Card = R5.createCard();
         assertEquals(
-            makeVisibleCard(RED, 5, ANY_COLOR, ANY_NUMBER),
+            makeVisibleCard(RED, 5, ANY_COLOR, ANY_NUMBER, false, false),
             r5Card.visibleView()
         );
     }

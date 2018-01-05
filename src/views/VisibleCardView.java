@@ -24,21 +24,23 @@ public class VisibleCardView implements JSONifiable {
         this.number = number;
         this.hiddenView = hiddenView;
     }
-
     public Color color() {
         return color;
     }
-
     public Integer number() {
         return number;
     }
-
     public Set<Color> colors() {
         return hiddenView.colors();
     }
-
     public Set<Integer> numbers() {
         return hiddenView.numbers();
+    }
+    public boolean colorHinted() {
+        return hiddenView.colorHinted();
+    }
+    public boolean numberHinted() {
+        return hiddenView.numberHinted();
     }
 
     @Override
@@ -75,8 +77,7 @@ public class VisibleCardView implements JSONifiable {
         JSONObject result = new JSONObject();
         result.put(JsonUtil.COLOR, color.toString());
         result.put(JsonUtil.NUMBER, number);
-        result.put(JsonUtil.COLORS, JsonUtil.jsonifyColorSet(colors()));
-        result.put(JsonUtil.NUMBERS, JsonUtil.jsonifyNumberSet(numbers()));
+        result.put(JsonUtil.HINTED, hiddenView.colorHinted() || hiddenView.numberHinted());
         return result;
     }
 

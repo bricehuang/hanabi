@@ -37,10 +37,10 @@ public class HandTest extends ViewTestFramework {
         );
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(BLUE, 5, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(RED, 1, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(RED, 2, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER)
+                makeVisibleCard(BLUE, 5, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(RED, 1, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(RED, 2, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER, false, false)
             )), 
             hand.visibleView()
         );
@@ -51,40 +51,40 @@ public class HandTest extends ViewTestFramework {
         Hand hand = genTestHand();
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(BLUE, 5, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(RED, 1, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(RED, 2, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER)
+                makeVisibleCard(BLUE, 5, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(RED, 1, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(RED, 2, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER, false, false)
             )), 
             hand.visibleView()
         );
         hand.hintColor(Color.RED);
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(BLUE, 5, NOT_RED, ANY_NUMBER),
-                makeVisibleCard(RED, 1, ONLY_RED, ANY_NUMBER),
-                makeVisibleCard(RED, 2, ONLY_RED, ANY_NUMBER),
-                makeVisibleCard(GREEN, 2, NOT_RED, ANY_NUMBER)
+                makeVisibleCard(BLUE, 5, NOT_RED, ANY_NUMBER, false, false),
+                makeVisibleCard(RED, 1, ONLY_RED, ANY_NUMBER, true, false),
+                makeVisibleCard(RED, 2, ONLY_RED, ANY_NUMBER, true, false),
+                makeVisibleCard(GREEN, 2, NOT_RED, ANY_NUMBER, false, false)
             )), 
             hand.visibleView()
         );
         hand.hintNumber(2);
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(BLUE, 5, NOT_RED, NOT_2),
-                makeVisibleCard(RED, 1, ONLY_RED, NOT_2),
-                makeVisibleCard(RED, 2, ONLY_RED, ONLY_2),
-                makeVisibleCard(GREEN, 2, NOT_RED, ONLY_2)
+                makeVisibleCard(BLUE, 5, NOT_RED, NOT_2, false, false),
+                makeVisibleCard(RED, 1, ONLY_RED, NOT_2, true, false),
+                makeVisibleCard(RED, 2, ONLY_RED, ONLY_2, true, true),
+                makeVisibleCard(GREEN, 2, NOT_RED, ONLY_2, false, true)
             )), 
             hand.visibleView()
         );
         hand.hintColor(GREEN);
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(BLUE, 5, NOT_RED_GREEN, NOT_2),
-                makeVisibleCard(RED, 1, ONLY_RED, NOT_2),
-                makeVisibleCard(RED, 2, ONLY_RED, ONLY_2),
-                makeVisibleCard(GREEN, 2, ONLY_GREEN, ONLY_2)
+                makeVisibleCard(BLUE, 5, NOT_RED_GREEN, NOT_2, false, false),
+                makeVisibleCard(RED, 1, ONLY_RED, NOT_2, true, false),
+                makeVisibleCard(RED, 2, ONLY_RED, ONLY_2, true, true),
+                makeVisibleCard(GREEN, 2, ONLY_GREEN, ONLY_2, true, true)
             )), 
             hand.visibleView()
         );
@@ -95,10 +95,10 @@ public class HandTest extends ViewTestFramework {
         Hand hand = genTestHand();
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(BLUE, 5, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(RED, 1, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(RED, 2, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER)
+                makeVisibleCard(BLUE, 5, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(RED, 1, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(RED, 2, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(GREEN, 2, ANY_COLOR, ANY_NUMBER, false, false)
             )), 
             hand.visibleView()
         );
@@ -106,10 +106,10 @@ public class HandTest extends ViewTestFramework {
         hand.hintNumber(1);
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_1),
-                makeVisibleCard(RED, 1, ANY_COLOR, ONLY_1),
-                makeVisibleCard(RED, 2, ANY_COLOR, NOT_1),
-                makeVisibleCard(GREEN, 2, ANY_COLOR, NOT_1)
+                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_1, false, false),
+                makeVisibleCard(RED, 1, ANY_COLOR, ONLY_1, false, true),
+                makeVisibleCard(RED, 2, ANY_COLOR, NOT_1, false, false),
+                makeVisibleCard(GREEN, 2, ANY_COLOR, NOT_1, false, false)
             )), 
             hand.visibleView()
         );
@@ -117,10 +117,10 @@ public class HandTest extends ViewTestFramework {
         hand.playOrDiscard(1, new Card(YELLOW, 3));
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(YELLOW, 3, ANY_COLOR, ANY_NUMBER),
-                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_1),
-                makeVisibleCard(RED, 2, ANY_COLOR, NOT_1),
-                makeVisibleCard(GREEN, 2, ANY_COLOR, NOT_1)
+                makeVisibleCard(YELLOW, 3, ANY_COLOR, ANY_NUMBER, false, false),
+                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_1, false, false),
+                makeVisibleCard(RED, 2, ANY_COLOR, NOT_1, false, false),
+                makeVisibleCard(GREEN, 2, ANY_COLOR, NOT_1, false, false)
             )), 
             hand.visibleView()
         );
@@ -128,10 +128,10 @@ public class HandTest extends ViewTestFramework {
         hand.hintNumber(2);
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(YELLOW, 3, ANY_COLOR, NOT_2),
-                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_12),
-                makeVisibleCard(RED, 2, ANY_COLOR, ONLY_2),
-                makeVisibleCard(GREEN, 2, ANY_COLOR, ONLY_2)
+                makeVisibleCard(YELLOW, 3, ANY_COLOR, NOT_2, false, false),
+                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_12, false, false),
+                makeVisibleCard(RED, 2, ANY_COLOR, ONLY_2, false, true),
+                makeVisibleCard(GREEN, 2, ANY_COLOR, ONLY_2, false, true)
             )), 
             hand.visibleView()
         );
@@ -139,9 +139,9 @@ public class HandTest extends ViewTestFramework {
         hand.playOrDiscardLast(3);
         assertEquals(
             new VisibleHandView(Arrays.asList( 
-                makeVisibleCard(YELLOW, 3, ANY_COLOR, NOT_2),
-                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_12),
-                makeVisibleCard(RED, 2, ANY_COLOR, ONLY_2)
+                makeVisibleCard(YELLOW, 3, ANY_COLOR, NOT_2, false, false),
+                makeVisibleCard(BLUE, 5, ANY_COLOR, NOT_12, false, false),
+                makeVisibleCard(RED, 2, ANY_COLOR, ONLY_2, false, true)
             )), 
             hand.visibleView()
         );

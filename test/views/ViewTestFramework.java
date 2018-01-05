@@ -57,11 +57,32 @@ public class ViewTestFramework {
         Arrays.asList(2)
     );
     
-    public static HiddenCardView makeHiddenCard(Set<Color> colors, Set<Integer> numbers){
-        return new HiddenCardView(colors, numbers);
+    public static HiddenCardView makeHiddenCard(
+        Set<Color> colors, 
+        Set<Integer> numbers, 
+        boolean colorHinted, 
+        boolean numberHinted
+    ){
+        return new HiddenCardView(colors, numbers, colorHinted, numberHinted);
     }
-    public static VisibleCardView makeVisibleCard(Color color, Integer number, Set<Color> colors, Set<Integer> numbers){
-        return new VisibleCardView(color, number, new HiddenCardView(colors, numbers));
+    public static VisibleCardView makeVisibleCard(
+        Color color, 
+        Integer number, 
+        Set<Color> colors, 
+        Set<Integer> numbers, 
+        boolean colorHinted, 
+        boolean numberHinted
+    ){
+        return new VisibleCardView(
+            color, 
+            number, 
+            new HiddenCardView(
+                colors, 
+                numbers, 
+                colorHinted, 
+                numberHinted
+            )
+        );
     }
 
 }
