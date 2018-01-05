@@ -149,10 +149,12 @@ var serverGameChatHandler = function(content) {
 }
 var gameStartHandler = function(content) {
     $('#game_status').text("In Progress");
+    // $('#start_game').addClass("disabled");
     pollLoop();
 }
 var gameStateHandler = function(content) {
-    $('#game_state').text(JSON.stringify(content.state) + JSON.stringify(content.users));
+    // $('#game_state').text(JSON.stringify(content.state) + JSON.stringify(content.users));
+    drawCardArray(content.state.hands);
     pollLoop();
 }
 var gameEndHandler = function(content) {
@@ -173,4 +175,92 @@ var doNothingHandler = function(content) {
 }
 var logoutHandler = function(content) {
     window.location = 'index.html';
+}
+
+
+
+
+var UNIT = 15;
+var BLUE = "#87CEFA";
+var GREEN = "#90EE90";
+var RED = "#FFB6C1";
+var WHITE = "#F8F8FF";
+var YELLOW = "#FFFF80";
+var GRAY = "#C3C3C3";
+var DARKGRAY = "#808080";
+var BLACK = "#000000";
+var COLORS = [BLUE, GREEN, RED, WHITE, YELLOW];
+var NUMBERS = [1,2,3,4,5];
+
+var getColor = function(color) {
+    switch(color) {
+        case "B": return BLUE;
+        case "G": return GREEN;
+        case "R": return RED;
+        case "W": return WHITE;
+        case "Y": return YELLOW;
+        default: return GRAY;
+    }
+}
+
+function appendHtml(targetC, htmldata) {
+    var theDiv = document.getElementById(targetC);
+    var newNode = document.createElement('div');
+    newNode.innerHTML = htmldata;
+    theDiv.appendChild(newNode)
+}
+
+var drawCard = function(canvas, spec) {
+    var ctx = canvas.getContext("2d");
+    ctx.fillStyle = getColor(spec.color);
+    ctx.font = (3*UNIT)+"px Arial";
+    if (spec.hinted) {
+        ctx.fillRect(0,0,6*UNIT,5*UNIT);
+        ctx.fillStyle = BLACK;
+        ctx.fillText(spec.number, 2.167*UNIT, 3.5*UNIT);
+    } else {
+        ctx.fillRect(0,0,5*UNIT,6*UNIT);
+        ctx.fillStyle = BLACK;
+        ctx.fillText(spec.number, 1.667*UNIT, 4*UNIT);
+    }
+}
+var drawCardGivenId = function(id, spec) {
+    var canvas = document.getElementById(id);
+    drawCard(canvas, spec);
+}
+
+var drawCardArray = function(hands) {
+    $('game-field').empty();
+    var players = hands.length;
+    var handSize = hands[0].length;
+
+    var html = "";
+    for (var i=0; i<players; i++) {
+        for (var j=0; j<handSize; j++) {
+            var width;
+            var height;
+            if (hands[i][j].hinted) {
+                width = 6*UNIT;
+                height = 5*UNIT;
+            } else {
+                width = 5*UNIT;
+                height = 6*UNIT;
+            }
+            html +=(
+                "<canvas"+
+                " id=card"+i+j+
+                " width="+width +
+                " height="+height +
+                " style='border:1px solid "+DARKGRAY+";'></canvas>"
+            );
+        }
+        html += "<br><p></p>"
+    }
+    appendHtml('game-field', html);
+
+    for (var i=0; i<players; i++) {
+        for (var j=0; j<handSize; j++) {
+            drawCardGivenId('card'+i+j, hands[i][j]);
+        }
+    }
 }

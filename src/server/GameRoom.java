@@ -149,6 +149,7 @@ public class GameRoom extends Room {
         game = new Game(nPlayers);
 
         broadcast(startNotification());
+        broadcast(serverMessage(player.name + " started the game."));
         broadcastPlayerViews();
         Lobby lobby = Config.getLobby(context);
         lobby.broadcast(lobby.openGames());
