@@ -93,8 +93,8 @@ var openGamesHandler = function(content) {
         $('#games_list').append(
             '<tr onclick="join_game(' + game.id + ')">' +
                 '<td>' + game.id + '</td>' +
-                '<td>' + game.status + '</td>' +
                 '<td>' + game.players + '</td>' +
+                '<td>' + game.status + '</td>' +
             '</tr>'
         );
     }
@@ -102,16 +102,15 @@ var openGamesHandler = function(content) {
 }
 var userLobbyChatHandler = function(content) {
     $('#lobby_messages').append($('<li>').html(content.from.bold() + ": " + content.message));
-    scrollLobby();
+    scrollChat($('#lobby_chat_text'));
     pollLoop();
 }
 var serverLobbyChatHandler = function(content) {
     $('#lobby_messages').append($('<li>').html(content.message.italics()));
-    scrollLobby();
+    scrollChat($('#lobby_chat_text'));
     pollLoop();
 }
-var scrollLobby = function() {
-    var chat_window = $('#lobby-chat-text');
+var scrollChat = function(chat_window) {
     if (chat_window.scrollTop() + chat_window.height() + 20 >= chat_window[0].scrollHeight) {
         chat_window.scrollTop(chat_window[0].scrollHeight);
     }
@@ -140,10 +139,12 @@ var gameUsersHandler = function(content) {
 }
 var userGameChatHandler = function(content) {
     $('#game_messages').append($('<li>').html(content.from.bold() + ": " + content.message));
+    scrollChat($('#game_chat_text'));
     pollLoop();
 }
 var serverGameChatHandler = function(content) {
     $('#game_messages').append($('<li>').html(content.message.italics()));
+    scrollChat($('#game_chat_text'));
     pollLoop();
 }
 var gameStartHandler = function(content) {
