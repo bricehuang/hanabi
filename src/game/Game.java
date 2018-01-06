@@ -6,7 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import hanabi.Card;
 import hanabi.Color;
@@ -311,6 +317,145 @@ public class Game {
         return new Pair<Boolean, String>(true, "");
     }
 
+    public Pair<Boolean, String> handleAction(int playerIndex, String move, JSONArray cards) throws JSONException{
+        switch (move) {
+            case "color_hint":
+                assert playerIndex == this.playerToMove;
+                return handleColorHint(cards);
+            case "number_hint":
+                assert playerIndex == this.playerToMove;
+                return handleNumberHint(cards);
+            case "play":
+                assert playerIndex == this.playerToMove;
+                return handlePlay(cards);
+            case "discard":
+                assert playerIndex == this.playerToMove;
+                return handleDiscard(cards);
+            case "resign":
+                return resign(playerIndex);
+            default:
+                return new Pair<Boolean, String>(false, "Invalid action.");
+        }
+    }
+    
+    private static final String EMPTY_HINT_ERR = "You cannot hint zero cards.";
+    private static final String MULTIPLE_PLAYER_HINT_ERR = "You cannot hint cards from more than one player.";
+    private static final String SELF_HINT_ERR = "You cannot hint yourself.";
+    private static final String INVALID_INDICES_ERR = "Invalid player or card index.";
+    private static final String INVALID_COLOR_HINT_ERR = "Invalid color hint.";
+    private static final String INVALID_NUMBER_HINT_ERR = "Invalid number hint.";
+    private static final String PLAY_NOT_1_CARD_ERR = "You can only play one card per turn.";
+    private static final String PLAY_NOT_OWN_CARD_ERR = "You can only play your own cards.";
+    private static final String DISCARD_NOT_1_CARD_ERR = "You can only discard one card per turn.";
+    private static final String DISCARD_NOT_OWN_CARD_ERR = "You can only discard your own cards.";
+    private boolean cardsBelongToSamePlayer(JSONArray cards) throws JSONException {
+        for (int i=0; i<cards.length(); i++) {
+            if (cards.getJSONObject(i).getInt("player") != cards.getJSONObject(0).getInt("player")) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean cardsBelongToSelf(JSONArray cards) throws JSONException {
+        return cards.getJSONObject(0).getInt("player") == this.playerToMove; 
+    }
+    private boolean indicesValid(JSONArray cards) throws JSONException {
+        for (int i=0; i<cards.length(); i++) {
+            JSONObject card = cards.getJSONObject(i);
+            int player = card.getInt("player");
+            int position = card.getInt("position");
+            if (player < 0 || player >= nPlayers || position < 0 || position >= handSize) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean isValidColorHint(JSONArray cards) throws JSONException {
+        int player = cards.getJSONObject(0).getInt("player");
+        Set<Integer> hintedCardPositions = new TreeSet<>();
+        for (int i=0; i<cards.length(); i++) {
+            hintedCardPositions.add(cards.getJSONObject(i).getInt("position"));
+        }
+        return hands.get(player).isValidColorHint(hintedCardPositions);
+    }
+    private boolean isValidNumberHint(JSONArray cards) throws JSONException {
+        int player = cards.getJSONObject(0).getInt("player");
+        Set<Integer> hintedCardPositions = new TreeSet<>();
+        for (int i=0; i<cards.length(); i++) {
+            hintedCardPositions.add(cards.getJSONObject(i).getInt("position"));
+        }
+        return hands.get(player).isValidNumberHint(hintedCardPositions);
+    }
+
+    private Pair<Boolean, String> handleColorHint(JSONArray cards) throws JSONException {
+        if (cards.length() == 0) {
+            return new Pair<Boolean, String>(false, EMPTY_HINT_ERR);
+        } else if (!cardsBelongToSamePlayer(cards)) {
+            return new Pair<Boolean, String> (false, MULTIPLE_PLAYER_HINT_ERR);
+        } else if (cardsBelongToSelf(cards)) {
+            return new Pair<Boolean, String> (false, SELF_HINT_ERR);
+        } else if (!indicesValid(cards)) {
+            return new Pair<Boolean, String> (false, INVALID_INDICES_ERR);
+        } else if (!isValidColorHint(cards)) {
+            return new Pair<Boolean, String> (false, INVALID_COLOR_HINT_ERR);
+        } else {
+            JSONObject firstCard = cards.getJSONObject(0);
+            int player = firstCard.getInt("player");
+            int position = firstCard.getInt("position");
+            Color color = omnescientView.hands.get(player).cardViews.get(position).color();
+            return hint(player, color);
+        }
+    }
+    private Pair<Boolean, String> handleNumberHint(JSONArray cards) throws JSONException {
+        if (cards.length() == 0) {
+            return new Pair<Boolean, String>(false, EMPTY_HINT_ERR);
+        } else if (!cardsBelongToSamePlayer(cards)) {
+            return new Pair<Boolean, String> (false, MULTIPLE_PLAYER_HINT_ERR);
+        } else if (cardsBelongToSelf(cards)) {
+            return new Pair<Boolean, String> (false, SELF_HINT_ERR);
+        } else if (!indicesValid(cards)) {
+            return new Pair<Boolean, String> (false, INVALID_INDICES_ERR);
+        } else if (!isValidNumberHint(cards)) {
+            return new Pair<Boolean, String> (false, INVALID_NUMBER_HINT_ERR);
+        } else {
+            JSONObject firstCard = cards.getJSONObject(0);
+            int player = firstCard.getInt("player");
+            int position = firstCard.getInt("position");
+            Integer number = omnescientView.hands.get(player).cardViews.get(position).number();
+            return hint(player, number);
+        }
+    }
+    private Pair<Boolean, String> handlePlay(JSONArray cards) throws JSONException {
+        if (cards.length() != 1) {
+            return new Pair<Boolean, String>(false, PLAY_NOT_1_CARD_ERR);
+        } else if (!indicesValid(cards)) {
+            return new Pair<Boolean, String> (false, INVALID_INDICES_ERR);
+        }
+        JSONObject card = cards.getJSONObject(0);
+        int player = card.getInt("player");
+        int position = card.getInt("position");
+        if (player != playerToMove) {
+            return new Pair<Boolean, String>(false, PLAY_NOT_OWN_CARD_ERR);
+        } else {
+            return play(position);
+        }
+    }
+    private Pair<Boolean, String> handleDiscard(JSONArray cards) throws JSONException {
+        if (cards.length() != 1) {
+            return new Pair<Boolean, String>(false, DISCARD_NOT_1_CARD_ERR);
+        } else if (!indicesValid(cards)) {
+            return new Pair<Boolean, String> (false, INVALID_INDICES_ERR);
+        }
+        JSONObject card = cards.getJSONObject(0);
+        int player = card.getInt("player");
+        int position = card.getInt("position");
+        if (player != playerToMove) {
+            return new Pair<Boolean, String>(false, DISCARD_NOT_OWN_CARD_ERR);
+        } else {
+            return discard(position);
+        }
+    }
+    
     /*
      * Print functions
      */

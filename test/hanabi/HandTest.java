@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.TreeSet;
 
 import org.junit.Test;
 
@@ -21,6 +22,21 @@ public class HandTest extends ViewTestFramework {
         Card r2 = new Card(RED, 2);
         Card g2 = new Card(GREEN, 2);
         return new Hand(4, Arrays.asList(b5, r1, r2, g2));        
+    }
+
+    @Test
+    public void testIsValidHint() {
+        Hand hand = genTestHand();
+        assertTrue(hand.isValidColorHint(new TreeSet<>(Arrays.asList(0))));
+        assertTrue(hand.isValidColorHint(new TreeSet<>(Arrays.asList(1,2))));
+        assertTrue(hand.isValidColorHint(new TreeSet<>(Arrays.asList(3))));
+        assertFalse(hand.isValidColorHint(new TreeSet<>(Arrays.asList(1))));
+        assertFalse(hand.isValidColorHint(new TreeSet<>(Arrays.asList(0,1))));
+        assertTrue(hand.isValidNumberHint(new TreeSet<>(Arrays.asList(0))));
+        assertTrue(hand.isValidNumberHint(new TreeSet<>(Arrays.asList(1))));
+        assertTrue(hand.isValidNumberHint(new TreeSet<>(Arrays.asList(2,3))));
+        assertFalse(hand.isValidNumberHint(new TreeSet<>(Arrays.asList(2))));
+        assertFalse(hand.isValidNumberHint(new TreeSet<>(Arrays.asList(1,2))));
     }
 
     @Test

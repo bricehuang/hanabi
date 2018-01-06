@@ -1,3 +1,5 @@
+// TODO dedupe all this code
+
 var lobby_chat = function() {
     $.post(
         "server/play",{
@@ -107,8 +109,6 @@ var exit_game = function() {
 }
 $('#exit_game').click(exit_game);
 
-
-
 var logout = function() {
     $.post(
         "server/play", {
@@ -120,3 +120,91 @@ var logout = function() {
     )
 }
 $('#logout').click(logout);
+
+var getAndClearAllHighlights = function() {
+    var canvasses = document.getElementsByTagName("canvas");
+    var highlights = [];
+    $( "canvas" ).each(function() {
+        if ($(this).data('highlight')) {
+            var id = $(this).attr('id');
+            highlights[highlights.length] = {
+                player: parseInt(id.charAt(4)),
+                position: parseInt(id.charAt(5)),
+            };
+            $(this).data('highlight', false);
+            drawCard($(this));
+        }
+    })
+    console.log(highlights);
+    return highlights;
+}
+
+var color_hint = function() {
+    $.post(
+        "server/play",{
+            data: JSON.stringify({
+                cmd: "game_action",
+                content: {
+                    move: "color_hint",
+                    cards: getAndClearAllHighlights(),
+                }
+            })
+        }
+    )
+}
+
+var number_hint = function() {
+    $.post(
+        "server/play",{
+            data: JSON.stringify({
+                cmd: "game_action",
+                content: {
+                    move: "number_hint",
+                    cards: getAndClearAllHighlights(),
+                }
+            })
+        }
+    )
+}
+
+var play = function() {
+    $.post(
+        "server/play",{
+            data: JSON.stringify({
+                cmd: "game_action",
+                content: {
+                    move: "play",
+                    cards: getAndClearAllHighlights(),
+                }
+            })
+        }
+    )
+}
+
+var discard = function() {
+    $.post(
+        "server/play",{
+            data: JSON.stringify({
+                cmd: "game_action",
+                content: {
+                    move: "discard",
+                    cards: getAndClearAllHighlights(),
+                }
+            })
+        }
+    )
+}
+
+var resign = function() {
+    $.post(
+        "server/play",{
+            data: JSON.stringify({
+                cmd: "game_action",
+                content: {
+                    move: "resign",
+                    cards: getAndClearAllHighlights(),
+                }
+            })
+        }
+    )
+}

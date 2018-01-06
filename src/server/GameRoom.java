@@ -155,6 +155,7 @@ public class GameRoom extends Room {
         lobby.broadcast(lobby.openGames());
     }
 
+    
     /**
      * Takes a game action.  Only valid when player is in game.  Valid
      * only on player's turn, except for resignations which are always
@@ -165,18 +166,24 @@ public class GameRoom extends Room {
      *     - game_end, to game room
      *     - open games, to lobby
      * @param player
-     * @param content {action: string} TODO make this better
+     * @param content {
+     *     move: string,
+     *     cards: [{player: int, position: int},...] 
+     * }
+     * string should be one of: "color_hint", "number_hint", "play", "discard,"
+     * "resign".  
+     * cards should be list of hinted cards if color or number hint, list of one 
+     * card if play or discard, and empty list if resign.      
      * @throws JSONException 
      */
     private void gameActionHandler(Player player, JSONObject content) throws InterruptedException, JSONException {
         if (!started || finished) { return; }
         int playerIndex = getPlayerIndex(player);
-        String action = content.getString("action");
-        if (playerIndex != game.getOmnescientView().playerToMove && !action.equals("resign")) { return;}
-        Pair<Boolean, String> gameResponse = 
-            action.equals("resign") ? 
-            game.makeMove(action + " " + playerIndex) : 
-            game.makeMove(action);
+        String move = content.getString("move");
+        JSONArray cards = content.getJSONArray("cards");
+        if (playerIndex != game.getOmnescientView().playerToMove && !move.equals("resign")) { return; }
+        
+        Pair<Boolean, String> gameResponse = game.handleAction(playerIndex, move, cards);
         if (gameResponse.getKey()) {
             broadcastPlayerViews();
             if (game.getOmnescientView().isOver) {
@@ -229,7 +236,12 @@ public class GameRoom extends Room {
     protected void onLeave(Player player) throws InterruptedException, JSONException {
         // if game is in progress, resign
         if (started && !finished) {
-            gameActionHandler(player, new JSONObject().put("action","resign"));
+            gameActionHandler(
+                player, 
+                new JSONObject()
+                    .put("move","resign")
+                    .put("cards", new JSONArray())
+            );
         }
         if (this.playersPresent() == 0) {
             this.kill();

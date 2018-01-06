@@ -203,14 +203,11 @@ var getColor = function(color) {
     }
 }
 
-function appendHtml(targetC, htmldata) {
-    var theDiv = document.getElementById(targetC);
-    var newNode = document.createElement('div');
-    newNode.innerHTML = htmldata;
-    theDiv.appendChild(newNode)
-}
+var drawCard = function(jqCanvas) {
+    var canvas = jqCanvas[0];
+    var spec = jqCanvas.data('spec');
+    var highlight = jqCanvas.data('highlight');
 
-var drawCard = function(canvas, spec) {
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = getColor(spec.color);
     ctx.font = (3*UNIT)+"px Arial";
@@ -218,15 +215,21 @@ var drawCard = function(canvas, spec) {
         ctx.fillRect(0,0,6*UNIT,5*UNIT);
         ctx.fillStyle = BLACK;
         ctx.fillText(spec.number, 2.167*UNIT, 3.5*UNIT);
+        if (highlight) {
+            ctx.lineWidth = 2;
+            ctx.rect(0,0,6*UNIT,5*UNIT);
+            ctx.stroke();
+        }
     } else {
         ctx.fillRect(0,0,5*UNIT,6*UNIT);
         ctx.fillStyle = BLACK;
         ctx.fillText(spec.number, 1.667*UNIT, 4*UNIT);
+        if (highlight) {
+            ctx.lineWidth = 2;
+            ctx.rect(0,0,5*UNIT,6*UNIT);
+            ctx.stroke();
+        }
     }
-}
-var drawCardGivenId = function(id, spec) {
-    var canvas = document.getElementById(id);
-    drawCard(canvas, spec);
 }
 
 var drawCardArray = function(hands) {
@@ -239,6 +242,8 @@ var drawCardArray = function(hands) {
         for (var j=0; j<handSize; j++) {
             var width;
             var height;
+            var id = 'card'+i+j;
+            var onclick = "'toggleHighlight("+'"'+id+'"'+")'";
             if (hands[i][j].hinted) {
                 width = 6*UNIT;
                 height = 5*UNIT;
@@ -248,19 +253,35 @@ var drawCardArray = function(hands) {
             }
             html +=(
                 "<canvas"+
-                " id=card"+i+j+
+                " id="+id +
                 " width="+width +
                 " height="+height +
+                " onclick="+onclick +
                 " style='border:1px solid "+DARKGRAY+";'></canvas>"
             );
         }
         html += "<br><p></p>"
     }
-    appendHtml('game-field', html);
+    // TODO put these somewhere more reasonable
+    html += "<button id=color_hint onclick='color_hint()' class='btn btn-standard'>Color Hint</button>";
+    html += "<button id=number_hint onclick='number_hint()' class='btn btn-standard'>Number Hint</button>";
+    html += "<button id=play onclick='play()' class='btn btn-standard'>Play</button>";
+    html += "<button id=discard onclick='discard()' class='btn btn-standard'>Discard</button>";
+    html += "<button id=resign onclick='resign()' class='btn btn-standard'>Resign</button>";
+    $('#game-field').html(html);
 
     for (var i=0; i<players; i++) {
         for (var j=0; j<handSize; j++) {
-            drawCardGivenId('card'+i+j, hands[i][j]);
+            var jqCanvas = $('#card'+i+j);
+            jqCanvas.data('spec', hands[i][j]);
+            jqCanvas.data('highlight', false);
+            drawCard(jqCanvas);
         }
     }
+}
+
+var toggleHighlight = function(id) {
+    var jqCanvas = $('#'+id);
+    jqCanvas.data('highlight', !jqCanvas.data('highlight'));
+    drawCard(jqCanvas);
 }

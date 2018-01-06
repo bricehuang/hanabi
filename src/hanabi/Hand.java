@@ -3,6 +3,7 @@ package hanabi;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import views.HiddenCardView;
 import views.HiddenHandView;
@@ -117,6 +118,34 @@ public class Hand {
         refreshViews();
         checkRep();
         return removedCard;
+    }
+    
+    public boolean isValidColorHint(Set<Integer> hintedPositions) {
+        if (hintedPositions.size() == 0) { return false; }
+        int arbitraryHintedPosition = hintedPositions.iterator().next();
+        Color color = cards.get(arbitraryHintedPosition).color();
+        for (int i=0; i<handSize; i++) {
+            Color cardColor = cards.get(i).color();
+            if (
+                hintedPositions.contains(i) && !cardColor.equals(color) ||
+                !hintedPositions.contains(i) && cardColor.equals(color)
+            ) { return false; }
+        }
+        return true;
+    }
+
+    public boolean isValidNumberHint(Set<Integer> hintedPositions) {
+        if (hintedPositions.size() == 0) { return false; }
+        int arbitraryHintedPosition = hintedPositions.iterator().next();
+        Integer number = cards.get(arbitraryHintedPosition).number();
+        for (int i=0; i<handSize; i++) {
+            Integer cardNumber = cards.get(i).number();
+            if (
+                hintedPositions.contains(i) && cardNumber != number ||
+                !hintedPositions.contains(i) && cardNumber == number
+            ) { return false; }
+        }
+        return true;
     }
 
     @Override
