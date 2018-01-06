@@ -244,8 +244,8 @@ public class Game {
     /**
      * Plays card from specified position
      * @param position
-     * @return (success, error message).  Valid hints return (true, "").
-     * invalid hints return (false, error message) and are guaranteed to
+     * @return (success, error message).  Valid plays return (true, "").
+     * invalid plays return (false, error message) and are guaranteed to
      * not mutate game state.
      */
     public Pair<Boolean, String> play(int position) {
@@ -257,6 +257,9 @@ public class Game {
             boolean playCorrect = plays.isPlayable(playedCard.color(), playedCard.number());
             if (playCorrect) {
                 plays.playCard(playedCard.color(), playedCard.number());
+                if (playedCard.number() == Card.NUMBER_MAX && this.hints < 8) {
+                    this.hints++;
+                }
             } else {
                 discards.discardCard(playedCard.color(), playedCard.number());
                 this.lives--;
@@ -274,8 +277,8 @@ public class Game {
     /**
      * Discards card from specified position
      * @param position
-     * @return (success, error message).  Valid hints return (true, "").
-     * invalid hints return (false, error message) and are guaranteed to
+     * @return (success, error message).  Valid discards return (true, "").
+     * invalid discards return (false, error message) and are guaranteed to
      * not mutate game state.
      */
     public Pair<Boolean, String> discard(int position) {
