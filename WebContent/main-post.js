@@ -50,7 +50,6 @@ var logout = post_formatted("logout", {});
 $('#logout').click(logout);
 
 var getAndClearAllHighlights = function() {
-    var canvasses = document.getElementsByTagName("canvas");
     var highlights = [];
     $( "canvas" ).each(function() {
         if ($(this).data('highlight')) {
