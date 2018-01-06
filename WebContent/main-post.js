@@ -1,16 +1,18 @@
-// TODO dedupe all this code
+var post_formatted = function(cmd, content) {
+    return function() {
+        $.post(
+            "server/play",{
+                data: JSON.stringify({
+                    cmd: cmd,
+                    content: content
+                })
+            }
+        )
+    }
+}
 
 var lobby_chat = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "chat",
-                content: {
-                    message: $('#lobby_chat_field').val()
-                }
-            })
-        }
-    )
+    post_formatted("chat",{message: $('#lobby_chat_field').val()})();
     $('#lobby_chat_field').val('');
 }
 $('#lobby_chat_field').keypress(function(event) {
@@ -20,42 +22,15 @@ $('#lobby_chat_field').keypress(function(event) {
 });
 $('#lobby_chat').click(lobby_chat);
 
-var make_game = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "make_game",
-                content: {}
-            })
-        }
-    )
-}
+var make_game = post_formatted("make_game", {});
 $('#make_game').click(make_game);
 
 var join_game = function(game_id) {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "join_game",
-                content: {
-                    game_id: game_id
-                }
-            })
-        }
-    )
+    post_formatted("join_game", {game_id: game_id})();
 }
 
 var game_chat = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "chat",
-                content: {
-                    message: $('#game_chat_field').val()
-                }
-            })
-        }
-    )
+    post_formatted("chat",{message: $('#game_chat_field').val()})();
     $('#game_chat_field').val('');
 }
 $('#game_chat_field').keypress(function(event) {
@@ -65,60 +40,13 @@ $('#game_chat_field').keypress(function(event) {
 });
 $('#game_chat').click(game_chat);
 
-var start_game = function() {
-    $.post(
-        "server/play", {
-            data: JSON.stringify({
-                cmd: "start_game",
-                content: {}
-            })
-        }
-    )
-}
+var start_game = post_formatted("start_game", {});
 $('#start_game').click(start_game);
 
-var game_action = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "game_action",
-                content: {
-                    action: $('#game_action_field').val()
-                }
-            })
-        }
-    )
-    $('#game_action_field').val('');
-}
-$('#game_action_field').keypress(function(event) {
-    if (event.keyCode === 13) {
-        game_action();
-    }
-});
-$('#game_action').click(game_action);
-
-var exit_game = function() {
-    $.post(
-        "server/play", {
-            data: JSON.stringify({
-                cmd: "exit_game",
-                content: {}
-            })
-        }
-    )
-}
+var exit_game = post_formatted("exit_game", {});
 $('#exit_game').click(exit_game);
 
-var logout = function() {
-    $.post(
-        "server/play", {
-            data: JSON.stringify({
-                cmd: "logout",
-                content: {}
-            })
-        }
-    )
-}
+var logout = post_formatted("logout", {});
 $('#logout').click(logout);
 
 var getAndClearAllHighlights = function() {
@@ -139,72 +67,14 @@ var getAndClearAllHighlights = function() {
     return highlights;
 }
 
-var color_hint = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "game_action",
-                content: {
-                    move: "color_hint",
-                    cards: getAndClearAllHighlights(),
-                }
-            })
-        }
-    )
+var game_action_formatted = function(move) {
+    return function() {
+        var cards = getAndClearAllHighlights();
+        post_formatted("game_action", {move: move, cards: cards})();
+    }
 }
-
-var number_hint = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "game_action",
-                content: {
-                    move: "number_hint",
-                    cards: getAndClearAllHighlights(),
-                }
-            })
-        }
-    )
-}
-
-var play = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "game_action",
-                content: {
-                    move: "play",
-                    cards: getAndClearAllHighlights(),
-                }
-            })
-        }
-    )
-}
-
-var discard = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "game_action",
-                content: {
-                    move: "discard",
-                    cards: getAndClearAllHighlights(),
-                }
-            })
-        }
-    )
-}
-
-var resign = function() {
-    $.post(
-        "server/play",{
-            data: JSON.stringify({
-                cmd: "game_action",
-                content: {
-                    move: "resign",
-                    cards: getAndClearAllHighlights(),
-                }
-            })
-        }
-    )
-}
+var color_hint = game_action_formatted("color_hint");
+var number_hint = game_action_formatted("number_hint");
+var play = game_action_formatted("play");
+var discard = game_action_formatted("discard");
+var resign = game_action_formatted("resign");
