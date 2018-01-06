@@ -318,6 +318,9 @@ public class Game {
     }
 
     public Pair<Boolean, String> handleAction(int playerIndex, String move, JSONArray cards) throws JSONException{
+        if (!move.equals("resign") && playerIndex != this.playerToMove) {
+            return new Pair<Boolean, String>(false, NOT_TURN_ERR);
+        }
         switch (move) {
             case "color_hint":
                 assert playerIndex == this.playerToMove;
@@ -338,6 +341,7 @@ public class Game {
         }
     }
     
+    private static final String NOT_TURN_ERR = "It is not your turn.";
     private static final String EMPTY_HINT_ERR = "You cannot hint zero cards.";
     private static final String MULTIPLE_PLAYER_HINT_ERR = "You cannot hint cards from more than one player.";
     private static final String SELF_HINT_ERR = "You cannot hint yourself.";

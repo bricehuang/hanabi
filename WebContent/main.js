@@ -149,16 +149,28 @@ var serverGameChatHandler = function(content) {
 }
 var gameStartHandler = function(content) {
     $('#game_status').text("In Progress");
-    // $('#start_game').addClass("disabled");
+    $('#start_game').addClass("disabled");
     pollLoop();
 }
 var gameStateHandler = function(content) {
-    // $('#game_state').text(JSON.stringify(content.state) + JSON.stringify(content.users));
-    drawCardArray(content.state.hands);
+    $('#game-field').html('');
+    var state = content.state;
+    var users = content.users;
+    drawLives(state.lives);
+    drawHints(state.hints);
+    drawToMove(users[state.to_move]);
+    drawPlaysNew(state.plays);
+    drawDiscardsNew(state.discards);
+    drawHands(state.hands, users);
     pollLoop();
 }
 var gameEndHandler = function(content) {
     $('#game_status').text("Finished.  Score: " + content.score);
+    $('#color_hint').addClass("disabled");
+    $('#number_hint').addClass("disabled");
+    $('#play').addClass("disabled");
+    $('#discard').addClass("disabled");
+    $('#resign').addClass("disabled");
     pollLoop();
 }
 var leaveGameHandler = function(content) {
@@ -202,63 +214,66 @@ var getColor = function(color) {
         default: return GRAY;
     }
 }
+var drawLives = function(lives) {
+    $('#game-field').append('<p>' + Array(lives+1).join('L') + '</p>');
+}
+var drawHints = function(hints) {
+    $('#game-field').append('<p>' + Array(hints+1).join('H') + '</p>');
+}
+var drawToMove = function(name) {
+    $('#game-field').append('<p>' + name + ' to move.</p>');
+}
 
-var drawCard = function(jqCanvas) {
-    var canvas = jqCanvas[0];
-    var spec = jqCanvas.data('spec');
-    var highlight = jqCanvas.data('highlight');
-
+var drawCard = function(canvas, spec, highlight) {
+    var unit = 0.2 * Math.min(canvas.height, canvas.width);
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = getColor(spec.color);
-    ctx.font = (3*UNIT)+"px Arial";
-    if (spec.hinted) {
-        ctx.fillRect(0,0,6*UNIT,5*UNIT);
-        ctx.fillStyle = BLACK;
-        ctx.fillText(spec.number, 2.167*UNIT, 3.5*UNIT);
-        if (highlight) {
-            ctx.lineWidth = 2;
-            ctx.rect(0,0,6*UNIT,5*UNIT);
-            ctx.stroke();
-        }
-    } else {
-        ctx.fillRect(0,0,5*UNIT,6*UNIT);
-        ctx.fillStyle = BLACK;
-        ctx.fillText(spec.number, 1.667*UNIT, 4*UNIT);
-        if (highlight) {
-            ctx.lineWidth = 2;
-            ctx.rect(0,0,5*UNIT,6*UNIT);
-            ctx.stroke();
-        }
+    ctx.font = (3*unit)+"px Arial";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = BLACK;
+    ctx.fillText(spec.number, canvas.width/2 - 0.833*unit, canvas.height/2 + unit);
+    if (highlight) {
+        ctx.lineWidth = 2;
+        ctx.rect(0,0,canvas.width,canvas.height);
+        ctx.stroke();
     }
 }
 
-var drawCardArray = function(hands) {
-    $('game-field').empty();
-    var players = hands.length;
-    var handSize = hands[0].length;
+var cardCanvas = function(id, sideways, toggleHighlightOnClick, unit) {
+    var width;
+    var height;
+    if (sideways) {
+        width = 6*unit;
+        height = 5*unit;
+    } else {
+        width = 5*unit;
+        height = 6*unit;
+    }
+    var onclick = "'toggleHighlight("+'"'+id+'"'+")'";
+    return (
+        "<canvas"+
+        " id="+id +
+        " width="+width +
+        " height="+height +
+        (toggleHighlightOnClick ? " onclick="+onclick : "") +
+        " style='border:1px solid "+DARKGRAY+";'></canvas>"
+    );
+}
 
+var drawCardInHand = function(jqCanvas) {
+    var canvas = jqCanvas[0];
+    var spec = jqCanvas.data('spec');
+    var highlight = jqCanvas.data('highlight');
+    drawCard(canvas, spec, highlight);
+}
+
+var drawHands = function(hands, names) {
+    var players = hands.length;
     var html = "";
     for (var i=0; i<players; i++) {
-        for (var j=0; j<handSize; j++) {
-            var width;
-            var height;
-            var id = 'card'+i+j;
-            var onclick = "'toggleHighlight("+'"'+id+'"'+")'";
-            if (hands[i][j].hinted) {
-                width = 6*UNIT;
-                height = 5*UNIT;
-            } else {
-                width = 5*UNIT;
-                height = 6*UNIT;
-            }
-            html +=(
-                "<canvas"+
-                " id="+id +
-                " width="+width +
-                " height="+height +
-                " onclick="+onclick +
-                " style='border:1px solid "+DARKGRAY+";'></canvas>"
-            );
+        html += names[i] + "<br>";
+        for (var j=0; j<hands[i].length; j++) {
+            html += cardCanvas('card'+i+j, hands[i][j].hinted, true, UNIT);
         }
         html += "<br><p></p>"
     }
@@ -268,20 +283,87 @@ var drawCardArray = function(hands) {
     html += "<button id=play onclick='play()' class='btn btn-standard'>Play</button>";
     html += "<button id=discard onclick='discard()' class='btn btn-standard'>Discard</button>";
     html += "<button id=resign onclick='resign()' class='btn btn-standard'>Resign</button>";
-    $('#game-field').html(html);
+    $('#game-field').append(html);
 
     for (var i=0; i<players; i++) {
-        for (var j=0; j<handSize; j++) {
+        for (var j=0; j<hands[i].length; j++) {
             var jqCanvas = $('#card'+i+j);
             jqCanvas.data('spec', hands[i][j]);
             jqCanvas.data('highlight', false);
-            drawCard(jqCanvas);
+            drawCardInHand(jqCanvas);
         }
     }
+}
+
+var drawCardOnTable = function(jqCanvas) {
+    var canvas = jqCanvas[0];
+    var spec = jqCanvas.data('spec');
+    drawCard(canvas, spec, false);
+}
+
+var drawCardArray = function(cardsByColor, idPrefix) {
+    var colors = cardsByColor.length;
+    var html = "";
+    for (var i=0; i<colors; i++) {
+        for (var j=0; j<cardsByColor[i].length; j++) {
+            html += cardCanvas(idPrefix+i+j, false, false, UNIT/2);
+        }
+        html += "<br>";
+    }
+    $('#game-field').append(html);
+    for (var i=0; i<colors; i++) {
+        for (var j=0; j<cardsByColor[i].length; j++) {
+            var jqCanvas = $('#'+idPrefix+i+j);
+            jqCanvas.data('spec', cardsByColor[i][j]);
+            drawCardOnTable(jqCanvas);
+        }
+    }
+}
+
+var drawPlaysNew = function(plays) {
+    var playArray = [];
+    for (var i=0; i<plays.length; i++) {
+        var colorRow = [];
+        var color = plays[i].color;
+        var count = plays[i].count;
+        for (var j=1; j<=count; j++) {
+            colorRow[colorRow.length] = {color: color, number: j};
+        }
+        if (colorRow.length > 0) {
+            playArray[playArray.length] = colorRow;
+        }
+    }
+    drawCardArray(playArray, 'play');
+}
+
+var drawDiscardsNew = function(discards) {
+    // first, make an array with all discarded cards.
+    var discardedCards = [];
+    for (var i=0; i<discards.length; i++) {
+        for (var j=0; j<discards[i].count; j++) {
+            discardedCards[discardedCards.length] = discards[i].card;
+        }
+    }
+    // then, splice it by color
+    var discardArray = [];
+    var currentRow = [];
+    for (var i=0; i<discardedCards.length; i++) {
+        if (currentRow.length === 0 || currentRow[0].color === discardedCards[i].color) {
+            currentRow[currentRow.length] = discardedCards[i];
+        } else {
+            discardArray[discardArray.length] = currentRow;
+            currentRow = [];
+            currentRow[currentRow.length] = discardedCards[i];
+        }
+    }
+    if (currentRow.length > 0) {
+        discardArray[discardArray.length] = currentRow;
+    }
+    drawCardArray(discardArray, 'discard');
 }
 
 var toggleHighlight = function(id) {
     var jqCanvas = $('#'+id);
     jqCanvas.data('highlight', !jqCanvas.data('highlight'));
-    drawCard(jqCanvas);
+    drawCardInHand(jqCanvas);
 }

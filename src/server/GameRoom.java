@@ -181,7 +181,6 @@ public class GameRoom extends Room {
         int playerIndex = getPlayerIndex(player);
         String move = content.getString("move");
         JSONArray cards = content.getJSONArray("cards");
-        if (playerIndex != game.getOmnescientView().playerToMove && !move.equals("resign")) { return; }
         
         Pair<Boolean, String> gameResponse = game.handleAction(playerIndex, move, cards);
         if (gameResponse.getKey()) {

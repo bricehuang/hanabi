@@ -59,7 +59,7 @@ var getAndClearAllHighlights = function() {
                 position: parseInt(id.charAt(5)),
             };
             $(this).data('highlight', false);
-            drawCard($(this));
+            drawCardInHand($(this));
         }
     })
     console.log(highlights);
