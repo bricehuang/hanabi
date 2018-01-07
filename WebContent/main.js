@@ -256,7 +256,7 @@ var cardCanvas = function(id, sideways, toggleHighlightOnClick, unit) {
         " width="+width +
         " height="+height +
         (toggleHighlightOnClick ? " onclick="+onclick : "") +
-        " style='border:1px solid "+DARKGRAY+";'></canvas>"
+        " style='vertical-align: bottom; border:1px solid "+DARKGRAY+";'></canvas>"
     );
 }
 
