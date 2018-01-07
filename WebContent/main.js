@@ -125,7 +125,6 @@ var leaveLobbyHandler = function(content) {
 
 var joinGameHandler = function(content) {
     $("#game-container").removeClass("hidden");
-    $('#game_status').text("Waiting");
     pollLoop();
 }
 var gameUsersHandler = function(content) {
@@ -148,14 +147,16 @@ var serverGameChatHandler = function(content) {
     pollLoop();
 }
 var gameStartHandler = function(content) {
-    $('#game_status').text("In Progress");
     $('#start_game').addClass("disabled");
+    $('#plays-helptext').removeClass("hidden");
+    $('#discards-helptext').removeClass("hidden");
     pollLoop();
 }
 var gameStateHandler = function(content) {
     $('#game-field').html('');
     var state = content.state;
     var users = content.users;
+    $('#game-info-field').html('');
     drawLives(state.lives);
     drawHints(state.hints);
     drawToMove(users[state.to_move]);
@@ -165,7 +166,6 @@ var gameStateHandler = function(content) {
     pollLoop();
 }
 var gameEndHandler = function(content) {
-    $('#game_status').text("Finished.  Score: " + content.score);
     $('#color_hint').addClass("disabled");
     $('#number_hint').addClass("disabled");
     $('#play').addClass("disabled");
@@ -176,8 +176,12 @@ var gameEndHandler = function(content) {
 var leaveGameHandler = function(content) {
     $('#game_messages').empty();
     $('#game_players').empty();
-    $('#game_status').text("");
-    $('#game_state').text("");
+    $('#game-field').html('');
+    $('#game-info-field').html('');
+    $('#plays-helptext').addClass("hidden");
+    $('#discards-helptext').addClass("hidden");
+    $('#plays-display').html('');
+    $('#discards-display').html('');
     $("#game-container").addClass("hidden");
     pollLoop();
 }
@@ -191,7 +195,7 @@ var logoutHandler = function(content) {
 
 
 
-
+var SMALLUNIT = 7;
 var UNIT = 15;
 var BLUE = "#87CEFA";
 var GREEN = "#90EE90";
@@ -215,13 +219,13 @@ var getColor = function(color) {
     }
 }
 var drawLives = function(lives) {
-    $('#game-field').append('<p>' + Array(lives+1).join('L') + '</p>');
+    $('#game-info-field').append('<p>Lives: ' + Array(lives+1).join('L') + '</p>');
 }
 var drawHints = function(hints) {
-    $('#game-field').append('<p>' + Array(hints+1).join('H') + '</p>');
+    $('#game-info-field').append('<p>Hints: ' + Array(hints+1).join('H') + '</p>');
 }
 var drawToMove = function(name) {
-    $('#game-field').append('<p>' + name + ' to move.</p>');
+    $('#game-info-field').append('<p>It is ' + name + "'" + 's turn to move.</p>');
 }
 
 var drawCard = function(canvas, spec, highlight) {
@@ -288,7 +292,7 @@ var drawHands = function(hands, names) {
     for (var i=0; i<players; i++) {
         for (var j=0; j<hands[i].length; j++) {
             var jqCanvas = $('#card'+i+j);
-            jqCanvas.data('spec', hands[i][j]);
+            jqCanvas.data('spec', {color: hands[i][j].color, number: hands[i][j].number});
             jqCanvas.data('highlight', false);
             drawCardInHand(jqCanvas);
         }
@@ -301,16 +305,16 @@ var drawCardOnTable = function(jqCanvas) {
     drawCard(canvas, spec, false);
 }
 
-var drawCardArray = function(cardsByColor, idPrefix) {
+var drawCardArray = function(cardsByColor, idPrefix, divIdToDraw) {
     var colors = cardsByColor.length;
     var html = "";
     for (var i=0; i<colors; i++) {
         for (var j=0; j<cardsByColor[i].length; j++) {
-            html += cardCanvas(idPrefix+i+j, false, false, UNIT/2);
+            html += cardCanvas(idPrefix+i+j, false, false, SMALLUNIT);
         }
         html += "<br>";
     }
-    $('#game-field').append(html);
+    $('#'+divIdToDraw).html(html);
     for (var i=0; i<colors; i++) {
         for (var j=0; j<cardsByColor[i].length; j++) {
             var jqCanvas = $('#'+idPrefix+i+j);
@@ -333,7 +337,7 @@ var drawPlaysNew = function(plays) {
             playArray[playArray.length] = colorRow;
         }
     }
-    drawCardArray(playArray, 'play');
+    drawCardArray(playArray, 'play', 'plays-display');
 }
 
 var drawDiscardsNew = function(discards) {
@@ -359,7 +363,7 @@ var drawDiscardsNew = function(discards) {
     if (currentRow.length > 0) {
         discardArray[discardArray.length] = currentRow;
     }
-    drawCardArray(discardArray, 'discard');
+    drawCardArray(discardArray, 'discard', 'discards-display');
 }
 
 var toggleHighlight = function(id) {

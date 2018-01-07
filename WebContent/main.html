@@ -9,6 +9,10 @@
         #lobby-container, #game-container { margin-right: 100px; }
         #lobby_messages, #game_messages { list-style-type: none; margin: 0; padding: 0; }
         #lobby_messages, #game_messages li { padding: 0px 5px; }
+        .scrollable {
+            height: 100%;
+            overflow: auto;
+        }
     </style>
 </head>
 <body class="main-page">
@@ -29,27 +33,29 @@
         </div>
     </nav>
 
-    <div id=lobby-container class="content-container hidden">
-        <div style='float:right; width:350px'>
-            <div id=lobby-info class='tab-pane text-center'>
-                <table class='table table-hover table-striped'>
-                    <thead><tr><th>Game</th><th>Players (5 max)</th><th>Status</th><th></th></tr></thead>
-                    <tbody id=games_list></tbody>
-                </table>
-
-                <button id=make_game class="btn btn-standard"> Create New Game </button>
-
-                <p></p>
-
-                <table class='table table-hover table-striped'>
-                    <thead><tr><th>Players In Lobby</th></tr></thead>
-                    <tbody id=lobby_players class='players'></tbody>
-                </table>
+    <div id=lobby-container class='container-fluid content-container hidden'>
+        <div class="row" style='height: 500px'>
+            <div class='span9'>
+                <div id=lobby_chat_text class="scrollable" style='height: 500px;'>
+                    <ul id="lobby_messages"></ul>
+                </div>
             </div>
-        </div>
-        <div style='margin-right:320px'>
-            <div id=lobby_chat_text class="pre-scrollable" style='height: 500px'>
-                <ul id="lobby_messages"></ul>
+            <div class='span3 pull-right' >
+                <div id=lobby-info class='tab-pane text-center'>
+                    <table class='table table-hover table-striped'>
+                        <thead><tr><th>Game</th><th>Players (5 max)</th><th>Status</th><th></th></tr></thead>
+                        <tbody id=games_list></tbody>
+                    </table>
+
+                    <button id=make_game class="btn btn-standard"> Create New Game </button>
+
+                    <p></p>
+
+                    <table class='table table-hover table-striped'>
+                        <thead><tr><th>Players In Lobby</th></tr></thead>
+                        <tbody id=lobby_players class='players'></tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <p></p>
@@ -60,30 +66,38 @@
         </div>
     </div>
 
-    <div id=game-container class='content-container hidden'>
+    <div id=game-container class='container-fluid content-container hidden'>
 
-        <div style='float:right; width:350px'>
-            <div id=lobby-games-players-tab class='tab-pane text-center'>
-                <button id=exit_game class="btn btn-standard"> Exit to Lobby </button>
-
-                <button id=start_game class="btn btn-standard"> Start Game </button>
-                <p></p>
-
-                <table class='table table-hover table-striped'>
-                    <thead><tr><th>Players In Game</th></tr></thead>
-                    <tbody id=game_players class='players'></tbody>
-                </table>
+        <div class='row' style='height:500px'>
+            <div class='span6'>
+                <div id=game-field></div>
+            </div>
+            <div class='span3 pull-right'>
+                <div id=room-info style='height: 240px'>
+                    <div id=lobby-games-players-tab class='tab-pane text-center'>
+                        <div class=text-center>
+                            <button id=exit_game class="btn btn-standard"> Exit to Lobby </button>
+                            <button id=start_game class="btn btn-standard"> Start Game </button>
+                        </div>
+                        <p></p>
+                        <table class='table table-hover table-striped'>
+                            <thead><tr><th>Players In Game</th></tr></thead>
+                            <tbody id=game_players class='players'></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id=game-info style='height: 240px'>
+                    <div id=game-info-field></div>
+                </div>
+            </div>
+            <div class='span3 pull-right'>
+                <p id='plays-helptext' class='hidden'>Plays:</p>
+                <div id=plays-display style='height: 240px'></div>
+                <p id='discards-helptext' class='hidden'>Discards:</p>
+                <div id=discards-display style='height: 240px'></div>
             </div>
         </div>
 
-
-        <div id=field-container style='height:500px'>
-            <div id=game-field style='position:relative'></div>
-            <div id=action-field class='text-center' style='position:relative; top:400px'></div>
-<!--             <span class='pull-right'>
-                <button id=exit_game class='btn btn-standard'>Exit to Lobby</button>
-            </span> -->
-        </div>
         <div id=dashboard-container class='content-container'>
             <ul class='nav nav-tabs'>
                 <li id=chat-nav-tab class='active'><a href='#chat-tab' data-toggle=tab>Chat</a></li>
@@ -91,7 +105,7 @@
             </ul>
             <div class='tab-content'>
                 <div id=chat-tab class='tab-pane active'>
-                    <div id=game_chat_text class='resizable pre-scrollable' style='height:120px' data-min-height='120'>
+                    <div id=game_chat_text class='resizable scrollable' style='height:120px' data-min-height='120'>
                         <ul id="game_messages"></ul>
                     </div>
                     <p></p>
