@@ -125,6 +125,7 @@ var leaveLobbyHandler = function(content) {
 
 var joinGameHandler = function(content) {
     $("#game-container").removeClass("hidden");
+    $('#start_game').removeClass("disabled");
     pollLoop();
 }
 var gameUsersHandler = function(content) {
@@ -196,9 +197,7 @@ var logoutHandler = function(content) {
     window.location = 'index.html';
 }
 
-
-
-var SMALLUNIT = 7;
+var SMALLUNIT = 6.5;
 var UNIT = 15;
 var BLUE = "#87CEFA";
 var GREEN = "#90EE90";
@@ -249,7 +248,7 @@ var drawCard = function(canvas, spec, highlight) {
     }
 }
 
-var cardCanvas = function(id, sideways, toggleHighlightOnClick, unit) {
+var cardCanvas = function(id, sideways, toggleHighlightOnClick, unit, alignBottom) {
     var width;
     var height;
     if (sideways) {
@@ -260,13 +259,15 @@ var cardCanvas = function(id, sideways, toggleHighlightOnClick, unit) {
         height = 6*unit;
     }
     var onclick = "'toggleHighlight("+'"'+id+'"'+")'";
+    var style = "'" + (alignBottom ? 'vertical-align: bottom;' : "") + "border: 1px solid " + DARKGRAY + ";'"
     return (
         "<canvas"+
-        " id="+id +
-        " width="+width +
-        " height="+height +
+        " id=" + id +
+        " width=" + width +
+        " height=" + height +
         (toggleHighlightOnClick ? " onclick="+onclick : "") +
-        " style='vertical-align: bottom; border:1px solid "+DARKGRAY+";'></canvas>"
+        " style=" + style +
+        "></canvas>"
     );
 }
 
@@ -279,25 +280,38 @@ var drawCardInHand = function(jqCanvas) {
 
 var drawHands = function(hands, names) {
     var players = hands.length;
-    var html = "";
+    var html = "<table style='display: inline'>";
     for (var i=0; i<players; i++) {
-        html += names[i] + "<br>";
-        html += "<div style='height: "+6*UNIT+"px'>";
+        html += "<tr>"
+        html += "<td align='right'>" + names[i] + "</td>";
+        html += "<td align='left'>";
+
+        html += "<div style='height: "+(6*UNIT+4)+"px; width: " + (6*hands[i].length*UNIT) + "px;'>";
         // this forces the row to be full height
         html += "<div style='display: inline-block; height: 100%;'></div>";
         for (var j=0; j<hands[i].length; j++) {
-            html += cardCanvas('card'+i+j, hands[i][j].hinted, true, UNIT);
+            html += cardCanvas('card'+i+j, hands[i][j].hinted, true, UNIT, false);
         }
         html += "</div>"
-        html += "<br><p></p>"
+
+        html += "</td>"
+        html += "</tr>"
     }
-    // TODO put these somewhere more reasonable
+    html += "<tr>"
+    html += "<td align='right'></td>"
+
+    html += "<td align='left'>"
     html += "<button id=color_hint onclick='color_hint()' class='btn btn-standard'>Color Hint</button>";
     html += "<button id=number_hint onclick='number_hint()' class='btn btn-standard'>Number Hint</button>";
     html += "<button id=play onclick='play()' class='btn btn-standard'>Play</button>";
     html += "<button id=discard onclick='discard()' class='btn btn-standard'>Discard</button>";
     html += "<button id=resign onclick='resign()' class='btn btn-standard'>Resign</button>";
-    $('#game-field').append(html);
+    html += "</td>"
+
+    html += "</table>"
+
+    html += "<p></p>"
+    $('#game-field').html(html);
 
     for (var i=0; i<players; i++) {
         for (var j=0; j<hands[i].length; j++) {
@@ -324,7 +338,7 @@ var drawCardArray = function(cardsByColor, idPrefix, divIdToDraw) {
             if (cardsByColor[i].length > 6) {
                 unit = SMALLUNIT * 6 / cardsByColor[i].length
             }
-            html += cardCanvas(idPrefix+i+j, false, false, SMALLUNIT);
+            html += cardCanvas(idPrefix+i+j, false, false, unit, true);
         }
         html += "<br>";
     }
