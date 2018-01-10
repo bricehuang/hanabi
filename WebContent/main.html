@@ -43,7 +43,7 @@
             <div class='span3 pull-right' >
                 <div id=lobby-info class='tab-pane text-center'>
                     <table class='table table-hover table-striped'>
-                        <thead><tr><th>Game</th><th>Players (5 max)</th><th>Status</th><th></th></tr></thead>
+                        <thead><tr><th>Game</th><th>Players</th><th>Status</th><th></th></tr></thead>
                         <tbody id=games_list></tbody>
                     </table>
 
@@ -59,7 +59,7 @@
             </div>
         </div>
         <p></p>
-        <div class='row-fluid'>
+        <div class='row'>
             <div class='well'>
                 <input id=lobby_chat_field type=text class='span12' placeholder='Type a message'>
             </div>
@@ -87,7 +87,10 @@
                     </div>
                 </div>
                 <div id=game-info style='height: 240px'>
-                    <div id=game-info-field></div>
+                    <p id=lives-info></p>
+                    <p id=hints-info></p>
+                    <p id=to-move-info></p>
+                    <p id=cards-left-info></p>
                 </div>
             </div>
             <div class='span3 pull-right'>

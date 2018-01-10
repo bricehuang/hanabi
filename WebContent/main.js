@@ -156,12 +156,12 @@ var gameStateHandler = function(content) {
     $('#game-field').html('');
     var state = content.state;
     var users = content.users;
-    $('#game-info-field').html('');
     drawLives(state.lives);
     drawHints(state.hints);
     drawToMove(users[state.to_move]);
-    drawPlaysNew(state.plays);
-    drawDiscardsNew(state.discards);
+    drawCardsLeft(state.cards_left);
+    drawPlays(state.plays);
+    drawDiscards(state.discards);
     drawHands(state.hands, users);
     pollLoop();
 }
@@ -177,7 +177,10 @@ var leaveGameHandler = function(content) {
     $('#game_messages').empty();
     $('#game_players').empty();
     $('#game-field').html('');
-    $('#game-info-field').html('');
+    $('#lives-info').text('');
+    $('#hints-info').text('');
+    $('#cards-left-info').text('');
+    $('#to-move-info').text('');
     $('#plays-helptext').addClass("hidden");
     $('#discards-helptext').addClass("hidden");
     $('#plays-display').html('');
@@ -219,13 +222,16 @@ var getColor = function(color) {
     }
 }
 var drawLives = function(lives) {
-    $('#game-info-field').append('<p>Lives: ' + Array(lives+1).join('L') + '</p>');
+    $('#lives-info').text('Lives: ' + Array(lives+1).join('L'));
 }
 var drawHints = function(hints) {
-    $('#game-info-field').append('<p>Hints: ' + Array(hints+1).join('H') + '</p>');
+    $('#hints-info').text('Hints: ' + Array(hints+1).join('H'));
 }
 var drawToMove = function(name) {
-    $('#game-info-field').append('<p>It is ' + name + "'" + 's turn to move.</p>');
+    $('#to-move-info').text('It is ' + name + "'" + 's turn to move.');
+}
+var drawCardsLeft = function(cardsLeft) {
+    $('#cards-left-info').text('There are ' + cardsLeft + ' cards left in the deck.');
 }
 
 var drawCard = function(canvas, spec, highlight) {
@@ -276,9 +282,13 @@ var drawHands = function(hands, names) {
     var html = "";
     for (var i=0; i<players; i++) {
         html += names[i] + "<br>";
+        html += "<div style='height: "+6*UNIT+"px'>";
+        // this forces the row to be full height
+        html += "<div style='display: inline-block; height: 100%;'></div>";
         for (var j=0; j<hands[i].length; j++) {
             html += cardCanvas('card'+i+j, hands[i][j].hinted, true, UNIT);
         }
+        html += "</div>"
         html += "<br><p></p>"
     }
     // TODO put these somewhere more reasonable
@@ -310,6 +320,10 @@ var drawCardArray = function(cardsByColor, idPrefix, divIdToDraw) {
     var html = "";
     for (var i=0; i<colors; i++) {
         for (var j=0; j<cardsByColor[i].length; j++) {
+            var unit = SMALLUNIT;
+            if (cardsByColor[i].length > 6) {
+                unit = SMALLUNIT * 6 / cardsByColor[i].length
+            }
             html += cardCanvas(idPrefix+i+j, false, false, SMALLUNIT);
         }
         html += "<br>";
@@ -324,7 +338,7 @@ var drawCardArray = function(cardsByColor, idPrefix, divIdToDraw) {
     }
 }
 
-var drawPlaysNew = function(plays) {
+var drawPlays = function(plays) {
     var playArray = [];
     for (var i=0; i<plays.length; i++) {
         var colorRow = [];
@@ -340,7 +354,7 @@ var drawPlaysNew = function(plays) {
     drawCardArray(playArray, 'play', 'plays-display');
 }
 
-var drawDiscardsNew = function(discards) {
+var drawDiscards = function(discards) {
     // first, make an array with all discarded cards.
     var discardedCards = [];
     for (var i=0; i<discards.length; i++) {
