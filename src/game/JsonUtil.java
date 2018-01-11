@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import hanabi.CardSpec;
 import hanabi.Color;
+import move.Move;
+import util.ImList;
 import views.HiddenHandView;
 import views.VisibleHandView;
 
@@ -31,10 +33,12 @@ public class JsonUtil {
     public static final String PLAY = "play";
     public static final String DISCARD = "discard";
     public static final String RESIGN = "resign";
+    public static final String NULL = "null";
 
     public static final String ACTOR = "actor";
     public static final String HINTEE = "hintee";
     public static final String POSITION = "position";
+    public static final String POSITIONS = "positions";
     public static final String CORRECT = "correct";
     public static final String SAFE = "safe";
 
@@ -109,5 +113,10 @@ public class JsonUtil {
         }
         return result;
     }
+    
+    public static JSONObject jsonifyLastMove(ImList<Move> history) throws JSONException {
+        return history.length() > 0 ? history.last().jsonify() : new JSONObject().put(MOVE_TYPE, NULL);
+    }
+
 
 }

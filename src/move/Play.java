@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import game.JsonUtil;
+import hanabi.CardSpec;
 
 public class Play implements Move {
 
@@ -11,11 +12,13 @@ public class Play implements Move {
 
     public final int position;
     public final boolean isCorrect;
+    public final CardSpec card;
 
-    public Play(int actor, int position, boolean isCorrect) {
+    public Play(int actor, int position, boolean isCorrect, CardSpec card) {
         this.actor = actor;
         this.position = position;
         this.isCorrect = isCorrect;
+        this.card = card;
     }
 
     @Override
@@ -38,6 +41,7 @@ public class Play implements Move {
         result.put(JsonUtil.ACTOR, actor);
         result.put(JsonUtil.POSITION, position);
         result.put(JsonUtil.CORRECT, isCorrect);
+        result.put(JsonUtil.CARD_IDENTITY, card.jsonify());
         return result;
     }
 }

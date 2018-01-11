@@ -6,15 +6,16 @@ import java.util.Arrays;
 
 import org.junit.Test;
 
+import hanabi.CardSpec;
 import hanabi.Color;
 import util.ImList;
 
 public class MoveTest {
 
-    private static final Move COLOR_HINT = new ColorHint(0, 3, Color.RED);
-    private static final Move NUMBER_HINT = new NumberHint(1, 2, 2);
-    private static final Move PLAY = new Play(2, 2, false);
-    private static final Move DISCARD = new Discard(3, 2, true);
+    private static final Move COLOR_HINT = new ColorHint(0, 3, Color.RED, Arrays.asList(1,2,3));
+    private static final Move NUMBER_HINT = new NumberHint(1, 2, 2, Arrays.asList(2,3,4));
+    private static final Move PLAY = new Play(2, 2, false, new CardSpec(Color.RED, 2));
+    private static final Move DISCARD = new Discard(3, 2, true, new CardSpec(Color.RED, 5));
 
     @Test
     public void testMove() {

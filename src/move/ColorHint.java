@@ -1,5 +1,10 @@
 package move;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,12 +17,14 @@ public class ColorHint implements Move {
 
     public final int hintee;
     public final Color color;
+    public final List<Integer> positions;
 
-    public ColorHint(int actor, int hintee, Color color) {
+    public ColorHint(int actor, int hintee, Color color, List<Integer> positions) {
         assert actor != hintee;
         this.actor = actor;
         this.hintee = hintee;
         this.color = color;
+        this.positions = Collections.unmodifiableList(new ArrayList<>(positions));
     }
 
     @Override
@@ -38,6 +45,8 @@ public class ColorHint implements Move {
         result.put(JsonUtil.ACTOR, actor);
         result.put(JsonUtil.HINTEE, hintee);
         result.put(JsonUtil.COLOR, color.toString());
+        JSONArray positionsJson = new JSONArray(positions);
+        result.put(JsonUtil.POSITIONS, positionsJson);
         return result;
     }
 

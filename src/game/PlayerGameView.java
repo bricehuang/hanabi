@@ -83,14 +83,14 @@ public class PlayerGameView implements JSONifiable {
     @Override
     public JSONObject jsonify() throws JSONException {
         JSONObject result = new JSONObject();
-        result.put(JsonUtil.IS_OMNESCIENT, false);
+//        result.put(JsonUtil.IS_OMNESCIENT, false);
         result.put(JsonUtil.N_PLAYERS, nPlayers);
         result.put(JsonUtil.HAND_SIZE, handSize);
         result.put(JsonUtil.TO_MOVE, playerToMove);
         result.put(JsonUtil.LIVES, lives);
         result.put(JsonUtil.HINTS, hints);
-        result.put(JsonUtil.HISTORY, history.jsonArrayify());
-        result.put(JsonUtil.LAST_MOVE, Util.lastMoveRep(history));
+//        result.put(JsonUtil.HISTORY, history.jsonArrayify());
+        result.put(JsonUtil.LAST_MOVE, JsonUtil.jsonifyLastMove(history));
         result.put(JsonUtil.PLAYS, JsonUtil.jsonifyPlays(plays));
         result.put(JsonUtil.DISCARDS, JsonUtil.jsonifyDiscards(discards));
         result.put(JsonUtil.HANDS, JsonUtil.jsonifyPlayerHandViews(otherHands, myHand, playerID));

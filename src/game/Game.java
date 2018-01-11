@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import hanabi.Card;
+import hanabi.CardSpec;
 import hanabi.Color;
 import hanabi.Deck;
 import hanabi.DiscardState;
@@ -181,10 +182,10 @@ public class Game {
         } else if (hints == 0) {
             return new Pair<Boolean, String>(false, "You have no hints.");
         } else {
-            boolean success = hands.get(player).hintColor(color);
-            if (success){
+            List<Integer> hintedCards = hands.get(player).hintColor(color);
+            if (hintedCards.size() > 0){
                 this.history = history.extend(
-                    new ColorHint(this.playerToMove, player, color)
+                    new ColorHint(this.playerToMove, player, color, hintedCards)
                 );
                 this.hints -= 1;
                 updatePlayerToMove();
@@ -216,10 +217,10 @@ public class Game {
         } else if (hints == 0) {
             return new Pair<Boolean, String>(false, "You have no hints.");
         } else {
-            boolean success = hands.get(player).hintNumber(number);
-            if (success){
+            List<Integer> hintedPositions = hands.get(player).hintNumber(number);
+            if (hintedPositions.size() > 0){
                 this.history = history.extend(
-                    new NumberHint(this.playerToMove, player, number)
+                    new NumberHint(this.playerToMove, player, number, hintedPositions)
                 );
                 this.hints -= 1;
                 updatePlayerToMove();
@@ -265,7 +266,15 @@ public class Game {
                 this.lives--;
             }
             this.history = history.extend(
-                new Play(this.playerToMove, position, playCorrect)
+                new Play(
+                    playerToMove, 
+                    position, 
+                    playCorrect, 
+                    new CardSpec(
+                        playedCard.color(), 
+                        playedCard.number()
+                    )
+                )
             );
             updatePlayerToMove();
             updateIsOver();
@@ -295,7 +304,15 @@ public class Game {
                 discardedCard.color(), discardedCard.number()
             );
             this.history = history.extend(
-                new Discard(this.playerToMove, position, discardSafe)
+                new Discard(
+                    this.playerToMove, 
+                    position, 
+                    discardSafe, 
+                    new CardSpec(
+                        discardedCard.color(), 
+                        discardedCard.number()
+                    )
+                )
             );
             updatePlayerToMove();
             updateIsOver();

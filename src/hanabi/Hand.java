@@ -73,32 +73,54 @@ public class Hand {
         return visibleView;
     }
 
-    public boolean hintColor(Color color) {
+    /**
+     * Gives a color hint to this hand.  
+     * @param color
+     * @return list of positions hinted.  If hint invalid, returns empty 
+     * list with no mutation of state.    
+     */
+    public List<Integer> hintColor(Color color) {
         boolean colorExists = false;
         for (Card card : this.cards) {
             colorExists = colorExists || card.color().equals(color);
         }
-        if (!colorExists) { return false; }
-        for (Card card: this.cards) {
+        if (!colorExists) { return new ArrayList<>(); }
+        List<Integer> hintedPositions = new ArrayList<>();
+        for (int i=0; i<this.cards.size(); i++) {
+            Card card = cards.get(i);
             card.learnColor(color);
+            if (card.color().equals(color)) {
+                hintedPositions.add(i);
+            }
         }
         refreshViews();
         checkRep();
-        return true;
+        return hintedPositions;
     }
 
-    public boolean hintNumber(int number) {
+    /**
+     * Gives a number hint to this hand
+     * @param number
+     * @return list of positions hinted.  If hint invalid, returns empty 
+     * list with no mutation of state.  
+     */
+    public List<Integer> hintNumber(int number) {
         boolean numberExists = false;
         for (Card card: this.cards) {
             numberExists = numberExists || card.number() == number;
         }
-        if (!numberExists) { return false; }
-        for (Card card: this.cards) {
+        if (!numberExists) { return new ArrayList<>(); }
+        List<Integer> hintedPositions = new ArrayList<>();
+        for (int i=0; i<this.cards.size(); i++) {
+            Card card = cards.get(i);
             card.learnNumber(number);
+            if (card.number() == number) {
+                hintedPositions.add(i);
+            }
         }
         refreshViews();
         checkRep();
-        return true;
+        return hintedPositions;
     }
 
     public Card playOrDiscard(int position, Card newCard) {
