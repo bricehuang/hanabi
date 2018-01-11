@@ -161,6 +161,7 @@ var gameStateHandler = function(content) {
     drawHints(state.hints);
     drawToMove(users[state.to_move]);
     drawCardsLeft(state.cards_left);
+    drawLastMove(users, state.last_move);
     drawPlays(state.plays);
     drawDiscards(state.discards);
     drawHands(state.hands, users);
@@ -233,6 +234,95 @@ var drawCardsLeft = function(cardsLeft) {
     $('#cards-left-info').text('There are ' + cardsLeft + ' cards left in the deck.');
 }
 
+var parseList = function(list) {
+    result = "" + (list[0]+1);
+    for (var i=1; i<list.length; i++) {
+        result += ", " + (list[i]+1);
+    }
+    return result;
+}
+var parseColor = function(color) {
+    switch (color) {
+        case "B": return "Blue";
+        case "G": return "Green";
+        case "R": return "Red";
+        case "W": return "White";
+        case "Y": return "Yellow";
+        default: return "?????";
+    }
+}
+var parseCard = function(card) {
+    return parseColor(card.color) + " " + card.number
+}
+
+var parseColorHint = function(users, lastMove) {
+    if (lastMove.positions.length === 1) {
+        return (
+            users[lastMove.actor] + " hinted that " + users[lastMove.hintee] + "'s position " +
+            (lastMove.positions[0]+1) + " is " + parseColor(lastMove.color) + "."
+        )
+    } else {
+        return (
+            users[lastMove.actor] + " hinted that " + users[lastMove.hintee] + "'s positions " +
+            parseList(lastMove.positions) + " are " + parseColor(lastMove.color) + "."
+        )
+    }
+}
+var parseNumberHint = function(users, lastMove) {
+    if (lastMove.positions.length === 1) {
+        return (
+            users[lastMove.actor] + " hinted that " + users[lastMove.hintee] + "'s position " +
+            (lastMove.positions[0]+1) + " is a " + lastMove.number + "."
+        )
+    } else {
+        return (
+            users[lastMove.actor] + " hinted that " + users[lastMove.hintee] + "'s positions " +
+            parseList(lastMove.positions) + " are " + lastMove.number + "s."
+        )
+    }
+}
+var parsePlay = function(users, lastMove) {
+    return (
+        users[lastMove.actor] + " " + (lastMove.correct ? "correctly" : "incorrectly") +
+        " played a " + parseCard(lastMove.card) + " from position " + (lastMove.position+1) + "."
+    )
+}
+var parseDiscard = function(users, lastMove) {
+    return (
+        users[lastMove.actor] + " " + (lastMove.safe ? "safely" : "unsafely") +
+        " discarded a " + parseCard(lastMove.card) + " from position " + (lastMove.position+1) + "."
+    )
+}
+var parseResign = function(users, lastMove) {
+    return users[lastMove.actor] + " resigned.";
+}
+var parseInvalid = function(users, lastMove) {
+    return "";
+}
+var getParser = function(move_type) {
+    switch (move_type) {
+        case "color_hint":
+            return parseColorHint;
+        case "number_hint":
+            return parseNumberHint;
+        case "play":
+            return parsePlay;
+        case "discard":
+            return parseDiscard;
+        case "resign":
+            return parseResign;
+        default:
+            return parseInvalid;
+    }
+}
+
+var drawLastMove = function(users, lastMove) {
+    var parsed = getParser(lastMove.move_type)(users, lastMove);
+    if (parsed != "") {
+        $('#game_history').append($('<li>').text(parsed));
+    }
+}
+
 var drawCard = function(canvas, spec, highlight) {
     var unit = 0.2 * Math.min(canvas.height, canvas.width);
     var ctx = canvas.getContext("2d");
@@ -286,7 +376,7 @@ var drawHands = function(hands, names) {
         html += "<td align='right'>" + names[i] + "</td>";
         html += "<td align='left'>";
 
-        html += "<div style='height: "+(6*UNIT+4)+"px; width: " + (6*hands[i].length*UNIT) + "px;'>";
+        html += "<div style='height: "+(6*UNIT+5)+"px; width: " + (6*hands[i].length*UNIT+10) + "px;'>";
         // this forces the row to be full height
         html += "<div style='display: inline-block; height: 100%;'></div>";
         for (var j=0; j<hands[i].length; j++) {
